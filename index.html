@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Controle de Contas</title>
+<style>
+  :root{
+    --bg:#121821;
+    --bg-elev:#1a2229;
+    --surface:#202a34;
+    --surface-2:#26313c;
+    --ink:#edeee8;
+    --ink-dim:#98a4ae;
+    --ink-faint:#657079;
+    --line:rgba(237,238,232,0.09);
+    --line-strong:rgba(237,238,232,0.16);
+    --gold:#c79a4b;
+    --teal:#4fa98c;
+    --teal-dim:#2c4b40;
+    --brick:#c1573b;
+    --brick-dim:#4a2c22;
+    --amber:#d9a441;
+    --radius:14px;
+    --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent;}
+  body{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom));}
+  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;display:none;}
+  button, input, select{font-family:var(--sans);}
+  button{cursor:pointer;}
+
+  #loginScreen{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px;}
+  #loginScreen h1{font-family:var(--serif);font-size:24px;font-weight:400;margin:0 0 6px;}
+  #loginScreen p.sub{color:var(--ink-dim);font-size:14px;margin:0 0 28px;}
+  #loginScreen label{display:block;font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
+  #loginScreen input{width:100%;height:46px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:0 13px;font-size:15px;margin-bottom:16px;}
+  #loginScreen input:focus{outline:none;border-color:var(--gold);}
+  #loginBtn{width:100%;height:50px;border-radius:12px;border:none;background:var(--gold);color:#26190a;font-size:15px;font-weight:600;}
+  #loginErro{color:var(--brick);font-size:13px;margin-top:12px;min-height:16px;}
+  #syncState{text-align:center;color:var(--ink-faint);font-size:13px;padding:40px 0;}
+
+  header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:18px 20px 14px;border-bottom:1px solid var(--line);}
+  header.top .row1{display:flex;align-items:baseline;justify-content:space-between;}
+  header.top h1{font-family:var(--serif);font-size:21px;font-weight:400;margin:0 0 12px;letter-spacing:0.2px;}
+  #logoutBtn{background:none;border:none;color:var(--ink-faint);font-size:12px;padding:4px;}
+  .month-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .month-switch button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
+  .month-switch button:active{background:var(--surface-2);}
+  .month-label{font-family:var(--serif);font-size:17px;text-transform:capitalize;}
+
+  main{padding:18px 20px 24px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .card{background:var(--surface);border-radius:var(--radius);padding:14px 14px;border:1px solid var(--line);}
+  .card.wide{grid-column:1 / -1;}
+  .card .label{font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
+  .card .num{font-family:var(--serif);font-size:22px;margin:0;}
+  .card .sub{font-size:12px;color:var(--ink-faint);margin:4px 0 0;}
+  .num.teal{color:var(--teal);}
+  .num.brick{color:var(--brick);}
+  .num.gold{color:var(--gold);}
+
+  .section-title{font-size:13px;color:var(--ink-dim);margin:22px 0 10px;}
+  .bar-row{display:flex;align-items:center;gap:10px;padding:8px 0;}
+  .bar-row .bar-name{width:120px;flex:none;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bar-track{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
+  .bar-fill{height:100%;background:var(--brick);border-radius:4px;}
+  .bar-val{width:76px;flex:none;text-align:right;font-size:13px;color:var(--ink-dim);}
+  .empty{color:var(--ink-faint);font-size:14px;padding:24px 0;text-align:center;}
+
+  .chip-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;}
+  .chip{flex:none;padding:7px 14px;border-radius:20px;border:1px solid var(--line-strong);background:transparent;color:var(--ink-dim);font-size:13px;}
+  .chip.active{background:var(--surface-2);color:var(--ink);border-color:var(--line-strong);}
+
+  .tx-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .tx-dot{width:8px;height:8px;border-radius:50%;flex:none;}
+  .tx-dot.receita{background:var(--teal);}
+  .tx-dot.despesa{background:var(--brick);}
+  .tx-mid{flex:1;min-width:0;}
+  .tx-cat{font-size:14px;margin:0;}
+  .tx-desc{font-size:12px;color:var(--ink-dim);margin:2px 0 0;}
+  .tx-right{text-align:right;flex:none;}
+  .tx-val{font-family:var(--serif);font-size:15px;margin:0;}
+  .tx-val.receita{color:var(--teal);}
+  .tx-val.despesa{color:var(--brick);}
+  .tx-status{font-size:11px;margin:3px 0 0;padding:2px 7px;border-radius:10px;display:inline-block;border:1px solid var(--line-strong);color:var(--ink-faint);}
+  .tx-status.ok{color:var(--teal);border-color:var(--teal-dim);}
+  .tx-del{width:30px;height:30px;flex:none;border-radius:50%;border:none;background:transparent;color:var(--ink-faint);font-size:16px;}
+  .tx-del:active{background:var(--surface-2);}
+
+  form label{display:block;font-size:12px;color:var(--ink-dim);margin:16px 0 6px;}
+  form label:first-of-type{margin-top:0;}
+  .toggle-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .toggle-pair button{padding:13px 0;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-dim);font-size:14px;}
+  .toggle-pair button.on-receita.active{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);}
+  .toggle-pair button.on-despesa.active{background:var(--brick-dim);color:var(--brick);border-color:var(--brick);}
+
+  input[type=text], input[type=number], input[type=month], select{
+    width:100%;height:46px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:0 13px;font-size:15px;
+  }
+  input:focus, select:focus{outline:none;border-color:var(--gold);}
+  .valor-wrap{position:relative;}
+  .valor-wrap span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ink-dim);font-size:15px;}
+  .valor-wrap input{padding-left:34px;}
+  .check-row{display:flex;align-items:center;gap:10px;margin-top:18px;padding:12px 13px;background:var(--surface);border-radius:10px;border:1px solid var(--line);}
+  .check-row input{width:20px;height:20px;flex:none;}
+  .check-row label{margin:0;font-size:14px;color:var(--ink);}
+  .save-btn{width:100%;height:50px;border-radius:12px;border:none;background:var(--gold);color:#26190a;font-size:15px;font-weight:600;margin-top:22px;}
+  .save-btn:active{opacity:0.85;}
+  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--surface-2);color:var(--ink);padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid var(--line-strong);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;}
+  .toast.show{opacity:1;}
+
+  nav.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--bg-elev);border-top:1px solid var(--line);z-index:30;}
+  nav.bottom .inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;padding-bottom:env(safe-area-inset-bottom);}
+  nav.bottom button{background:none;border:none;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;font-size:11px;}
+  nav.bottom button.active{color:var(--gold);}
+  nav.bottom svg{width:22px;height:22px;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <h1>Controle de contas</h1>
+  <p class="sub">Entre com a conta cadastrada no Firebase.</p>
+  <form id="formLogin">
+    <label for="loginEmail">E-mail</label>
+    <input type="email" id="loginEmail" autocomplete="username" required>
+    <label for="loginSenha">Senha</label>
+    <input type="password" id="loginSenha" autocomplete="current-password" required>
+    <button type="submit" id="loginBtn">Entrar</button>
+    <p id="loginErro"></p>
+  </form>
+</div>
+
+<div id="app">
+
+  <header class="top">
+    <div class="row1">
+      <h1>Controle de contas</h1>
+      <button id="logoutBtn">Sair</button>
+    </div>
+    <div class="month-switch">
+      <button id="mesPrev" aria-label="Mês anterior">‹</button>
+      <span class="month-label" id="mesLabel">março 2026</span>
+      <button id="mesNext" aria-label="Próximo mês">›</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="view" id="view-resumo">
+      <div class="cards">
+        <div class="card">
+          <p class="label">Receitas recebidas</p>
+          <p class="num teal" id="rReceb">R$ 0,00</p>
+          <p class="sub" id="rPrev">de R$ 0,00 previsto</p>
+        </div>
+        <div class="card">
+          <p class="label">Despesas pagas</p>
+          <p class="num brick" id="rPago">R$ 0,00</p>
+          <p class="sub" id="rPrevD">de R$ 0,00 previsto</p>
+        </div>
+        <div class="card wide">
+          <p class="label">Saldo realizado no mês</p>
+          <p class="num gold" id="rSaldo">R$ 0,00</p>
+          <p class="sub" id="rSaldoPrev">saldo previsto: R$ 0,00</p>
+        </div>
+      </div>
+
+      <p class="section-title">Despesas por categoria</p>
+      <div id="rCategorias"></div>
+
+      <p class="section-title">Por pessoa</p>
+      <div id="rPessoas"></div>
+    </section>
+
+    <section class="view" id="view-extrato">
+      <div class="chip-row" id="filtroTipo">
+        <button class="chip active" data-f="todos">Todos</button>
+        <button class="chip" data-f="receita">Receitas</button>
+        <button class="chip" data-f="despesa">Despesas</button>
+      </div>
+      <div id="listaExtrato"></div>
+    </section>
+
+    <section class="view" id="view-lancar">
+      <form id="formLancamento">
+        <div class="toggle-pair">
+          <button type="button" class="on-receita active" data-tipo="receita">Receita</button>
+          <button type="button" class="on-despesa" data-tipo="despesa">Despesa</button>
+        </div>
+
+        <label for="fPessoa">Pessoa</label>
+        <select id="fPessoa">
+          <option>Brenno</option>
+          <option>Karen</option>
+        </select>
+
+        <label for="fCategoria">Categoria</label>
+        <select id="fCategoria"></select>
+
+        <label for="fDescricao">Descrição</label>
+        <input type="text" id="fDescricao" placeholder="Ex.: salário, aluguel, Nubank">
+
+        <label for="fValor">Valor</label>
+        <div class="valor-wrap">
+          <span>R$</span>
+          <input type="number" id="fValor" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+        </div>
+
+        <label for="fMes">Mês de referência</label>
+        <input type="month" id="fMes">
+
+        <div class="check-row">
+          <input type="checkbox" id="fConfirmado">
+          <label for="fConfirmado" id="fConfirmadoLabel">Já recebido</label>
+        </div>
+
+        <button type="submit" class="save-btn" id="btnSalvar">Lançar receita</button>
+      </form>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <nav class="bottom">
+    <div class="inner">
+      <button data-view="lancar" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+        Lançar
+      </button>
+      <button data-view="extrato">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M8 9h8M8 13h8"/></svg>
+        Extrato
+      </button>
+      <button data-view="resumo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M11 20V4M18 20v-7"/></svg>
+        Resumo
+      </button>
+    </div>
+  </nav>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// 1) Cole aqui as chaves do seu projeto Firebase (Configurações do projeto > Seus apps > SDK).
+const firebaseConfig = {
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const CATEGORIAS = {
+  receita: ['SALÁRIO','FÉRIAS','13º SALÁRIO','AUXÍLIO MORADIA','OUTROS'],
+  despesa: ['CASA','VEÍCULO','CARTÃO DE CRÉDITO','CONSÓRCIO','ALIMENTAÇÃO','MERCADO','FARMÁCIA','DÍZIMOS E OFERTAS','EMPRÉSTIMO','OUTROS']
+};
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+let lancamentos = [];
+let tipoAtual = 'receita';
+let filtroExtrato = 'todos';
+let unsubscribe = null;
+const hoje = new Date();
+let refMes = hoje.getMonth() + 1;
+let refAno = hoje.getFullYear();
+
+function fmtMoeda(v){
+  return (v||0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+document.getElementById('formLogin').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const senha = document.getElementById('loginSenha').value;
+  document.getElementById('loginErro').textContent = '';
+  auth.signInWithEmailAndPassword(email, senha).catch(err=>{
+    document.getElementById('loginErro').textContent = 'E-mail ou senha incorretos.';
+  });
+});
+document.getElementById('logoutBtn').addEventListener('click', ()=> auth.signOut());
+
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    iniciarSincronizacao();
+  }else{
+    if(unsubscribe){ unsubscribe(); unsubscribe = null; }
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+  }
+});
+
+function iniciarSincronizacao(){
+  unsubscribe = db.collection('lancamentos').onSnapshot(snapshot=>{
+    lancamentos = snapshot.docs.map(d=>({id:d.id, ...d.data()}));
+    renderAll();
+  }, err=>{
+    showToast('Não foi possível sincronizar. Verifique sua conexão.');
+  });
+}
+
+function trocarView(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  if(view==='resumo') renderResumo();
+  if(view==='extrato') renderExtrato();
+}
+
+function mudarMes(delta){
+  refMes += delta;
+  if(refMes>12){refMes=1;refAno++;}
+  if(refMes<1){refMes=12;refAno--;}
+  renderMesLabel();
+  renderResumo();
+  renderExtrato();
+}
+function renderMesLabel(){
+  document.getElementById('mesLabel').textContent = MESES[refMes-1] + ' ' + refAno;
+}
+
+function doMes(item){
+  return item.mes === refMes && item.ano === refAno;
+}
+
+function renderResumo(){
+  const doMesArr = lancamentos.filter(doMes);
+  const receitas = doMesArr.filter(i=>i.tipo==='receita');
+  const despesas = doMesArr.filter(i=>i.tipo==='despesa');
+
+  const recebido = receitas.filter(i=>i.confirmado).reduce((s,i)=>s+i.valor,0);
+  const previstoR = receitas.reduce((s,i)=>s+i.valor,0);
+  const pago = despesas.filter(i=>i.confirmado).reduce((s,i)=>s+i.valor,0);
+  const previstoD = despesas.reduce((s,i)=>s+i.valor,0);
+
+  document.getElementById('rReceb').textContent = fmtMoeda(recebido);
+  document.getElementById('rPrev').textContent = 'de ' + fmtMoeda(previstoR) + ' previsto';
+  document.getElementById('rPago').textContent = fmtMoeda(pago);
+  document.getElementById('rPrevD').textContent = 'de ' + fmtMoeda(previstoD) + ' previsto';
+  document.getElementById('rSaldo').textContent = fmtMoeda(recebido - pago);
+  document.getElementById('rSaldoPrev').textContent = 'saldo previsto: ' + fmtMoeda(previstoR - previstoD);
+
+  const porCategoria = {};
+  despesas.forEach(i=>{ porCategoria[i.categoria] = (porCategoria[i.categoria]||0) + i.valor; });
+  const catEntries = Object.entries(porCategoria).sort((a,b)=>b[1]-a[1]);
+  const maxCat = catEntries.length ? catEntries[0][1] : 1;
+  const catBox = document.getElementById('rCategorias');
+  catBox.innerHTML = catEntries.length ? catEntries.map(([cat,val])=>`
+    <div class="bar-row">
+      <span class="bar-name">${cat}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(4,(val/maxCat)*100)}%"></div></div>
+      <span class="bar-val">${fmtMoeda(val)}</span>
+    </div>`).join('') : '<p class="empty">Nenhuma despesa lançada neste mês.</p>';
+
+  const porPessoa = {};
+  doMesArr.forEach(i=>{
+    porPessoa[i.pessoa] = porPessoa[i.pessoa] || {receita:0, despesa:0};
+    porPessoa[i.pessoa][i.tipo] += i.valor;
+  });
+  const pessoaBox = document.getElementById('rPessoas');
+  const pessoaEntries = Object.entries(porPessoa);
+  pessoaBox.innerHTML = pessoaEntries.length ? pessoaEntries.map(([p,v])=>`
+    <div class="bar-row">
+      <span class="bar-name">${p}</span>
+      <div class="bar-track"><div class="bar-fill" style="background:var(--teal);width:${v.receita?Math.max(4,Math.min(100,(v.receita/(v.receita+v.despesa||1))*100)):4}%"></div></div>
+      <span class="bar-val">${fmtMoeda(v.receita)} / ${fmtMoeda(v.despesa)}</span>
+    </div>`).join('') : '<p class="empty">Nenhum lançamento neste mês.</p>';
+}
+
+function renderExtrato(){
+  let itens = lancamentos.filter(doMes);
+  if(filtroExtrato!=='todos') itens = itens.filter(i=>i.tipo===filtroExtrato);
+  itens.sort((a,b)=> (b.criadoEm||'').localeCompare(a.criadoEm||''));
+
+  const box = document.getElementById('listaExtrato');
+  if(!itens.length){
+    box.innerHTML = '<p class="empty">Nenhum lançamento neste mês.</p>';
+    return;
+  }
+  box.innerHTML = itens.map(i=>`
+    <div class="tx-row" data-id="${i.id}">
+      <span class="tx-dot ${i.tipo}"></span>
+      <div class="tx-mid">
+        <p class="tx-cat">${i.categoria}</p>
+        <p class="tx-desc">${i.descricao || ''}${i.descricao?' · ':''}${i.pessoa}</p>
+      </div>
+      <div class="tx-right">
+        <p class="tx-val ${i.tipo}">${i.tipo==='receita'?'+':'-'} ${fmtMoeda(i.valor)}</p>
+        <span class="tx-status ${i.confirmado?'ok':''}" data-toggle="${i.id}">${i.confirmado ? (i.tipo==='receita'?'Recebido':'Pago') : 'Pendente'}</span>
+      </div>
+      <button class="tx-del" data-del="${i.id}" aria-label="Excluir">×</button>
+    </div>`).join('');
+}
+
+function renderAll(){
+  renderMesLabel();
+  renderResumo();
+  renderExtrato();
+  atualizarCategorias();
+}
+
+function atualizarCategorias(){
+  const sel = document.getElementById('fCategoria');
+  sel.innerHTML = CATEGORIAS[tipoAtual].map(c=>`<option>${c}</option>`).join('');
+}
+
+document.getElementById('mesPrev').addEventListener('click', ()=>mudarMes(-1));
+document.getElementById('mesNext').addEventListener('click', ()=>mudarMes(1));
+
+document.querySelectorAll('nav.bottom button').forEach(b=>{
+  b.addEventListener('click', ()=>trocarView(b.dataset.view));
+});
+
+document.querySelectorAll('.toggle-pair button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    tipoAtual = b.dataset.tipo;
+    document.querySelectorAll('.toggle-pair button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    atualizarCategorias();
+    document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa';
+    document.getElementById('fConfirmadoLabel').textContent = tipoAtual==='receita' ? 'Já recebido' : 'Já pago';
+  });
+});
+
+document.querySelectorAll('#filtroTipo .chip').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    filtroExtrato = c.dataset.f;
+    document.querySelectorAll('#filtroTipo .chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');
+    renderExtrato();
+  });
+});
+
+document.getElementById('listaExtrato').addEventListener('click', (e)=>{
+  const toggleId = e.target.dataset.toggle;
+  const delId = e.target.dataset.del;
+  if(toggleId){
+    const item = lancamentos.find(i=>i.id===toggleId);
+    if(item){
+      db.collection('lancamentos').doc(toggleId).update({confirmado: !item.confirmado})
+        .catch(()=>showToast('Não foi possível atualizar.'));
+    }
+  }
+  if(delId){
+    if(confirm('Excluir este lançamento?')){
+      db.collection('lancamentos').doc(delId).delete()
+        .then(()=>showToast('Lançamento excluído.'))
+        .catch(()=>showToast('Não foi possível excluir.'));
+    }
+  }
+});
+
+document.getElementById('formLancamento').addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const valorStr = document.getElementById('fValor').value;
+  const valor = parseFloat(valorStr);
+  if(!valorStr || isNaN(valor) || valor<=0){
+    showToast('Informe um valor válido.');
+    return;
+  }
+  const mesInput = document.getElementById('fMes').value;
+  let mes = refMes, ano = refAno;
+  if(mesInput){
+    const [a,m] = mesInput.split('-');
+    ano = parseInt(a,10); mes = parseInt(m,10);
+  }
+  const item = {
+    tipo: tipoAtual,
+    pessoa: document.getElementById('fPessoa').value,
+    categoria: document.getElementById('fCategoria').value,
+    descricao: document.getElementById('fDescricao').value.trim(),
+    valor: Math.round(valor*100)/100,
+    mes, ano,
+    confirmado: document.getElementById('fConfirmado').checked,
+    criadoEm: new Date().toISOString(),
+    criadoPor: auth.currentUser ? auth.currentUser.email : ''
+  };
+  db.collection('lancamentos').add(item)
+    .then(()=> showToast(tipoAtual==='receita' ? 'Receita lançada.' : 'Despesa lançada.'))
+    .catch(()=> showToast('Não foi possível salvar. Tente novamente.'));
+  e.target.reset();
+  document.getElementById('fConfirmado').checked = false;
+  initMesInput();
+});
+
+function initMesInput(){
+  const mm = String(refMes).padStart(2,'0');
+  document.getElementById('fMes').value = refAno + '-' + mm;
+}
+
+initMesInput();
+atualizarCategorias();
+renderMesLabel();
+</script>
+</body>
+</html>
