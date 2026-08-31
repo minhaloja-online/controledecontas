@@ -28,7 +28,6 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent;}
   body{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom));}
-  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;display:none;}
   button, input, select{font-family:var(--sans);}
   button{cursor:pointer;}
 
@@ -41,10 +40,19 @@
   #loginBtn{width:100%;height:50px;border-radius:12px;border:none;background:var(--gold);color:#26190a;font-size:15px;font-weight:600;}
   #loginErro{color:var(--brick);font-size:13px;margin-top:12px;min-height:16px;}
 
+  #app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;display:none;}
+
+  nav.sidenav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-elev);border-top:1px solid var(--line);z-index:30;}
+  .side-brand, .side-logout{display:none;}
+  .side-links{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom);}
+  .side-links button{background:none;border:none;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;font-size:10.5px;}
+  .side-links button.active{color:var(--gold);}
+  .side-links svg{width:21px;height:21px;flex:none;}
+
   header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:18px 20px 14px;border-bottom:1px solid var(--line);}
   header.top .row1{display:flex;align-items:baseline;justify-content:space-between;}
   header.top h1{font-family:var(--serif);font-size:21px;font-weight:400;margin:0 0 12px;letter-spacing:0.2px;}
-  #logoutBtn{background:none;border:none;color:var(--ink-faint);font-size:12px;padding:4px;}
+  .logoutBtn{background:none;border:none;color:var(--ink-faint);font-size:12px;padding:4px;}
   .month-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .month-switch button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;}
   .month-switch button:active{background:var(--surface-2);}
@@ -71,9 +79,6 @@
   .bar-fill{height:100%;background:var(--brick);border-radius:4px;}
   .bar-val{width:auto;flex:1;text-align:right;font-size:13px;color:var(--ink-dim);}
   .empty{color:var(--ink-faint);font-size:14px;padding:24px 0;text-align:center;}
-
-  .prev-card{border-top:1px solid var(--line);padding-top:10px;margin-top:6px;}
-  .prev-card .bar-row:last-child{border-top:1px solid var(--line);margin-top:4px;padding-top:8px;}
 
   .chip-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;}
   .chip{flex:none;padding:7px 14px;border-radius:20px;border:1px solid var(--line-strong);background:transparent;color:var(--ink-dim);font-size:13px;}
@@ -121,12 +126,8 @@
   .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--surface-2);color:var(--ink);padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid var(--line-strong);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;max-width:80%;text-align:center;}
   .toast.show{opacity:1;}
 
-  nav.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--bg-elev);border-top:1px solid var(--line);z-index:30;}
-  nav.bottom .inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding-bottom:env(safe-area-inset-bottom);}
-  nav.bottom button{background:none;border:none;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;font-size:10.5px;}
-  nav.bottom button.active{color:var(--gold);}
-  nav.bottom svg{width:21px;height:21px;}
-
+  .prev-filtros{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+  .prev-filtros label{display:block;font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
   .prev-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table.prev-table{border-collapse:collapse;font-size:12px;white-space:nowrap;width:100%;}
   table.prev-table th, table.prev-table td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line);}
@@ -150,18 +151,31 @@
   .btn-danger:active{opacity:0.85;}
 
   @media (min-width:860px){
-    body{padding-bottom:0;}
+    html,body{height:100%;}
+    body{padding-bottom:0;overflow:hidden;}
     #loginScreen{min-height:100vh;}
     #loginScreen form{max-width:380px;background:var(--surface);border-radius:16px;border:1px solid var(--line);padding:28px;margin:0 auto;}
-    #app{max-width:980px;margin:32px auto;min-height:auto;border-radius:18px;border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column;}
-    header.top{order:1;position:static;}
-    nav.bottom{order:2;position:static;border-top:none;border-bottom:1px solid var(--line);background:var(--bg-elev);}
-    main{order:3;padding:28px 40px 44px;}
-    nav.bottom .inner{grid-template-columns:none;grid-auto-flow:column;justify-content:center;gap:48px;max-width:none;}
-    nav.bottom button{flex-direction:row;gap:8px;font-size:13px;padding:16px 4px;}
-    nav.bottom svg{width:19px;height:19px;}
+
+    #app{max-width:none;margin:0;min-height:100vh;height:100vh;display:flex;flex-direction:row;}
+
+    nav.sidenav{position:relative;bottom:auto;left:auto;right:auto;width:232px;flex:none;height:100vh;border-top:none;border-right:1px solid var(--line);display:flex;flex-direction:column;}
+    .side-brand{display:block;padding:26px 22px 16px;}
+    .side-brand-title{font-family:var(--serif);font-size:18px;margin:0 0 3px;font-weight:400;}
+    .side-brand-sub{font-size:12px;color:var(--ink-faint);margin:0;}
+    .side-links{max-width:none;margin:6px 0 0;display:flex;flex-direction:column;gap:2px;padding:0 12px;}
+    .side-links button{flex-direction:row;justify-content:flex-start;gap:12px;padding:11px 12px;border-radius:10px;font-size:13.5px;}
+    .side-links button.active{background:var(--surface-2);color:var(--gold);}
+    .side-links svg{width:18px;height:18px;}
+    .side-logout{display:flex;align-items:center;gap:10px;margin:auto 12px 22px;padding:10px 12px;border-radius:10px;border:1px solid var(--line-strong);background:none;color:var(--ink-faint);font-size:13px;}
+    .side-logout:hover{color:var(--ink);border-color:var(--line-strong);}
+    .header-logout{display:none;}
+
+    .content-col{flex:1;min-width:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+    header.top{flex:none;padding:22px 40px 16px;}
+    main{flex:1;padding:0 40px 48px;max-width:900px;}
+
     .cards{grid-template-columns:repeat(4,1fr);}
-    #view-lancar form{max-width:460px;}
+    #view-lancar form{max-width:440px;}
     .periodo-row{grid-template-columns:1fr 1fr 1fr;align-items:end;}
   }
 </style>
@@ -183,163 +197,190 @@
 
 <div id="app">
 
-  <header class="top">
-    <div class="row1">
-      <h1>Controle de contas</h1>
-      <button id="logoutBtn">Sair</button>
+  <nav class="sidenav" id="mainNav">
+    <div class="side-brand">
+      <p class="side-brand-title">Controle de contas</p>
+      <p class="side-brand-sub">Brenno &amp; Karen</p>
     </div>
-    <div class="month-switch" id="monthSwitch">
-      <button id="mesPrev" aria-label="Mês anterior">‹</button>
-      <span class="month-label" id="mesLabel">março 2026</span>
-      <button id="mesNext" aria-label="Próximo mês">›</button>
-    </div>
-  </header>
-
-  <main>
-    <section class="view" id="view-resumo">
-      <div class="cards">
-        <div class="card">
-          <p class="label">Receitas recebidas</p>
-          <p class="num teal" id="rReceb">R$ 0,00</p>
-          <p class="sub" id="rPrev">de R$ 0,00 previsto</p>
-        </div>
-        <div class="card">
-          <p class="label">Despesas pagas</p>
-          <p class="num brick" id="rPago">R$ 0,00</p>
-          <p class="sub" id="rPrevD">de R$ 0,00 previsto</p>
-        </div>
-        <div class="card wide">
-          <p class="label">Saldo realizado no mês</p>
-          <p class="num gold" id="rSaldo">R$ 0,00</p>
-          <p class="sub" id="rSaldoPrev">saldo previsto: R$ 0,00</p>
-        </div>
-      </div>
-
-      <p class="section-title">Despesas por categoria</p>
-      <div id="rCategorias"></div>
-
-      <p class="section-title">Por pessoa</p>
-      <div id="rPessoas"></div>
-    </section>
-
-    <section class="view" id="view-extrato">
-      <div class="chip-row" id="filtroTipo">
-        <button class="chip active" data-f="todos">Todos</button>
-        <button class="chip" data-f="receita">Receitas</button>
-        <button class="chip" data-f="despesa">Despesas</button>
-      </div>
-      <div id="listaExtrato"></div>
-
-      <div class="fixas-toggle">
-        <span class="section-title" style="margin:0;">Contas fixas cadastradas</span>
-        <button id="toggleGestaoFixas" type="button">Gerenciar</button>
-      </div>
-      <div id="gestaoFixas" style="display:none;">
-        <div id="listaRecorrentes"></div>
-        <p class="section-title" style="margin:16px 0 6px;">Excluir lançamentos das contas marcadas, no período:</p>
-        <div class="periodo-row">
-          <div>
-            <label for="fixaDe" style="margin:0 0 6px;">De</label>
-            <input type="month" id="fixaDe">
-          </div>
-          <div>
-            <label for="fixaAte" style="margin:0 0 6px;">Até</label>
-            <input type="month" id="fixaAte">
-          </div>
-        </div>
-        <button type="button" class="btn-danger" id="btnExcluirFixas">Excluir lançamentos do período</button>
-      </div>
-    </section>
-
-    <section class="view" id="view-previsao">
-      <p class="section-title" style="margin-top:0;">Próximos 12 meses: despesas por conta, receita prevista e saldo de cada mês.</p>
-      <div id="listaPrevisao"></div>
-    </section>
-
-    <section class="view" id="view-lancar">
-      <form id="formLancamento">
-        <div class="toggle-pair">
-          <button type="button" class="on-receita active" data-tipo="receita">Receita</button>
-          <button type="button" class="on-despesa" data-tipo="despesa">Despesa</button>
-        </div>
-
-        <label for="fPessoa">Pessoa</label>
-        <select id="fPessoa">
-          <option>Brenno</option>
-          <option>Karen</option>
-        </select>
-
-        <label for="fCategoria">Categoria</label>
-        <select id="fCategoria"></select>
-
-        <div id="tipoContaWrap" style="display:none;">
-          <label for="fTipoConta">Tipo de conta</label>
-          <select id="fTipoConta"></select>
-        </div>
-
-        <label for="fValor">Valor</label>
-        <div class="valor-wrap">
-          <span>R$</span>
-          <input type="number" id="fValor" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
-        </div>
-
-        <label for="fMes">Mês de referência</label>
-        <input type="month" id="fMes">
-
-        <div id="repeticaoWrap" style="display:none;">
-          <label>Repetição</label>
-          <div class="toggle-tri">
-            <button type="button" class="rep-btn active" data-rep="unica">Única</button>
-            <button type="button" class="rep-btn" data-rep="parcelada">Parcelada</button>
-            <button type="button" class="rep-btn" data-rep="fixa">Fixa</button>
-          </div>
-          <div id="parcelasWrap" style="display:none;">
-            <label for="fParcelas">Número de parcelas</label>
-            <input type="number" id="fParcelas" min="2" step="1" placeholder="Ex.: 3">
-          </div>
-        </div>
-
-        <div class="check-row">
-          <input type="checkbox" id="fConfirmado">
-          <label for="fConfirmado" id="fConfirmadoLabel">Já recebido</label>
-        </div>
-
-        <button type="submit" class="save-btn" id="btnSalvar">Lançar receita</button>
-      </form>
-    </section>
-  </main>
-
-  <div class="toast" id="toast"></div>
-
-  <nav class="bottom">
-    <div class="inner">
-      <button data-view="lancar" class="active">
+    <div class="side-links">
+      <button type="button" data-view="lancar" class="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
         Lançar
       </button>
-      <button data-view="extrato">
+      <button type="button" data-view="extrato">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M8 9h8M8 13h8"/></svg>
         Extrato
       </button>
-      <button data-view="previsao">
+      <button type="button" data-view="previsao">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>
         Previsão
       </button>
-      <button data-view="resumo">
+      <button type="button" data-view="resumo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M11 20V4M18 20v-7"/></svg>
         Resumo
       </button>
     </div>
+    <button type="button" class="logoutBtn side-logout">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      Sair
+    </button>
   </nav>
 
+  <div class="content-col">
+    <header class="top">
+      <div class="row1">
+        <h1 id="pageTitle">Lançar</h1>
+        <button type="button" class="logoutBtn header-logout">Sair</button>
+      </div>
+      <div class="month-switch" id="monthSwitch">
+        <button id="mesPrev" aria-label="Mês anterior">‹</button>
+        <span class="month-label" id="mesLabel">março 2026</span>
+        <button id="mesNext" aria-label="Próximo mês">›</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="view" id="view-resumo">
+        <div class="cards">
+          <div class="card">
+            <p class="label">Receitas recebidas</p>
+            <p class="num teal" id="rReceb">R$ 0,00</p>
+            <p class="sub" id="rPrev">de R$ 0,00 previsto</p>
+          </div>
+          <div class="card">
+            <p class="label">Despesas pagas</p>
+            <p class="num brick" id="rPago">R$ 0,00</p>
+            <p class="sub" id="rPrevD">de R$ 0,00 previsto</p>
+          </div>
+          <div class="card wide">
+            <p class="label">Saldo realizado no mês</p>
+            <p class="num gold" id="rSaldo">R$ 0,00</p>
+            <p class="sub" id="rSaldoPrev">saldo previsto: R$ 0,00</p>
+          </div>
+        </div>
+
+        <p class="section-title">Despesas por categoria</p>
+        <div id="rCategorias"></div>
+
+        <p class="section-title">Por pessoa</p>
+        <div id="rPessoas"></div>
+      </section>
+
+      <section class="view" id="view-extrato">
+        <div class="chip-row" id="filtroTipo">
+          <button class="chip active" data-f="todos">Todos</button>
+          <button class="chip" data-f="receita">Receitas</button>
+          <button class="chip" data-f="despesa">Despesas</button>
+        </div>
+        <div id="listaExtrato"></div>
+
+        <div class="fixas-toggle">
+          <span class="section-title" style="margin:0;">Contas fixas cadastradas</span>
+          <button id="toggleGestaoFixas" type="button">Gerenciar</button>
+        </div>
+        <div id="gestaoFixas" style="display:none;">
+          <div id="listaRecorrentes"></div>
+          <p class="section-title" style="margin:16px 0 6px;">Excluir lançamentos das contas marcadas, no período:</p>
+          <div class="periodo-row">
+            <div>
+              <label for="fixaDe" style="margin:0 0 6px;">De</label>
+              <input type="month" id="fixaDe">
+            </div>
+            <div>
+              <label for="fixaAte" style="margin:0 0 6px;">Até</label>
+              <input type="month" id="fixaAte">
+            </div>
+          </div>
+          <button type="button" class="btn-danger" id="btnExcluirFixas">Excluir lançamentos do período</button>
+        </div>
+      </section>
+
+      <section class="view" id="view-previsao">
+        <div class="prev-filtros">
+          <div>
+            <label for="prevPessoa">Pessoa</label>
+            <select id="prevPessoa">
+              <option value="todos">Todos</option>
+              <option>Brenno</option>
+              <option>Karen</option>
+            </select>
+          </div>
+          <div>
+            <label for="prevDe">De</label>
+            <input type="month" id="prevDe">
+          </div>
+          <div>
+            <label for="prevAte">Até</label>
+            <input type="month" id="prevAte">
+          </div>
+        </div>
+        <div id="listaPrevisao"></div>
+      </section>
+
+      <section class="view" id="view-lancar">
+        <form id="formLancamento">
+          <div class="toggle-pair">
+            <button type="button" class="on-receita active" data-tipo="receita">Receita</button>
+            <button type="button" class="on-despesa" data-tipo="despesa">Despesa</button>
+          </div>
+
+          <label for="fPessoa">Pessoa</label>
+          <select id="fPessoa">
+            <option>Brenno</option>
+            <option>Karen</option>
+          </select>
+
+          <label for="fCategoria">Categoria</label>
+          <select id="fCategoria"></select>
+
+          <div id="tipoContaWrap" style="display:none;">
+            <label for="fTipoConta">Tipo de conta</label>
+            <select id="fTipoConta"></select>
+          </div>
+
+          <label for="fValor">Valor</label>
+          <div class="valor-wrap">
+            <span>R$</span>
+            <input type="number" id="fValor" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+          </div>
+
+          <label for="fMes">Mês de referência</label>
+          <input type="month" id="fMes">
+
+          <div id="repeticaoWrap" style="display:none;">
+            <label>Repetição</label>
+            <div class="toggle-tri">
+              <button type="button" class="rep-btn active" data-rep="unica">Única</button>
+              <button type="button" class="rep-btn" data-rep="parcelada">Parcelada</button>
+              <button type="button" class="rep-btn" data-rep="fixa">Fixa</button>
+            </div>
+            <div id="parcelasWrap" style="display:none;">
+              <label for="fParcelas">Número de parcelas</label>
+              <input type="number" id="fParcelas" min="2" step="1" placeholder="Ex.: 3">
+            </div>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="fConfirmado">
+            <label for="fConfirmado" id="fConfirmadoLabel">Já recebido</label>
+          </div>
+
+          <button type="submit" class="save-btn" id="btnSalvar">Lançar receita</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-    apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
+  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
   authDomain: "controle-de-contas-7c11f.firebaseapp.com",
   projectId: "controle-de-contas-7c11f",
   storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
@@ -358,6 +399,7 @@ const DEFAULTS = {
 let opcoes = {categoriasReceita:[...DEFAULTS.categoriasReceita], categoriasDespesa:[...DEFAULTS.categoriasDespesa], tiposConta:[...DEFAULTS.tiposConta]};
 
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const TITULOS = {lancar:'Lançar', extrato:'Extrato', previsao:'Previsão', resumo:'Resumo'};
 
 let lancamentos = [];
 let recorrentes = [];
@@ -399,12 +441,12 @@ document.getElementById('formLogin').addEventListener('submit', (e)=>{
     document.getElementById('loginErro').textContent = 'E-mail ou senha incorretos.';
   });
 });
-document.getElementById('logoutBtn').addEventListener('click', ()=> auth.signOut());
+document.querySelectorAll('.logoutBtn').forEach(b=> b.addEventListener('click', ()=> auth.signOut()));
 
 auth.onAuthStateChanged(user=>{
   if(user){
     document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
+    document.getElementById('app').style.display = 'flex';
     iniciarSincronizacao();
   }else{
     if(unsubLanc){unsubLanc();unsubLanc=null;}
@@ -465,11 +507,13 @@ function trocarView(view){
   currentView = view;
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
-  document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
-  document.getElementById('monthSwitch').style.display = view==='previsao' ? 'none' : 'flex';
+  document.querySelectorAll('.side-links button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  document.getElementById('pageTitle').textContent = TITULOS[view] || 'Controle de contas';
+  document.getElementById('monthSwitch').style.display = (view==='resumo'||view==='extrato') ? 'flex' : 'none';
   if(view==='resumo') renderResumo();
   if(view==='extrato') renderExtrato();
   if(view==='previsao') abrirPrevisao();
+  document.querySelector('.content-col').scrollTop = 0;
 }
 
 function mudarMes(delta){
@@ -567,25 +611,51 @@ function renderExtrato(){
     </div>`).join('');
 }
 
+function initPrevisaoFiltros(){
+  const de = document.getElementById('prevDe');
+  const ate = document.getElementById('prevAte');
+  if(!de.value){
+    de.value = refAno + '-' + String(refMes).padStart(2,'0');
+    let m = refMes + 11, y = refAno;
+    while(m>12){m-=12;y++;}
+    ate.value = y + '-' + String(m).padStart(2,'0');
+  }
+}
+
 function abrirPrevisao(){
+  initPrevisaoFiltros();
+  const deVal = document.getElementById('prevDe').value;
+  const ateVal = document.getElementById('prevAte').value;
+  if(!deVal || !ateVal){
+    document.getElementById('listaPrevisao').innerHTML = '<p class="empty">Selecione o período.</p>';
+    return;
+  }
+  const [anoDe, mesDe] = deVal.split('-').map(Number);
+  const [anoAte, mesAte] = ateVal.split('-').map(Number);
   const lista = [];
-  let m = hoje.getMonth()+1, y = hoje.getFullYear();
-  for(let i=0;i<12;i++){
+  let m = mesDe, y = anoDe, guard = 0;
+  while((y<anoAte || (y===anoAte && m<=mesAte)) && guard<60){
     materializarMes(m,y);
     lista.push({m,y});
     m++; if(m>12){m=1;y++;}
+    guard++;
   }
-  renderPrevisao(lista);
+  if(!lista.length){
+    document.getElementById('listaPrevisao').innerHTML = '<p class="empty">Selecione um período válido (até deve ser depois de).</p>';
+    return;
+  }
+  const pessoaFiltro = document.getElementById('prevPessoa').value;
+  renderPrevisao(lista, pessoaFiltro);
 }
 
-function renderPrevisao(lista){
+function renderPrevisao(lista, pessoaFiltro){
   const porConta = {};
   const totalDespesa = {};
   const totalReceita = {};
   lista.forEach(({m,y})=>{
     const key = y+'-'+m;
     let td = 0, tr = 0;
-    lancamentos.filter(i=>i.mes===m && i.ano===y).forEach(i=>{
+    lancamentos.filter(i=> i.mes===m && i.ano===y && (pessoaFiltro==='todos' || i.pessoa===pessoaFiltro)).forEach(i=>{
       if(i.tipo==='despesa'){
         td += i.valor;
         const nome = i.tipoConta || i.categoria || 'Outros';
@@ -620,6 +690,10 @@ function renderPrevisao(lista){
   }).join('')}</tr>`;
 
   const box = document.getElementById('listaPrevisao');
+  if(!nomesConta.length){
+    box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Conta</th>${headerCols}</tr></thead><tbody>${rowTotalDespesa}${rowReceita}${rowSaldo}</tbody></table></div>`;
+    return;
+  }
   box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Conta</th>${headerCols}</tr></thead><tbody>${rowsContas}${rowTotalDespesa}${rowReceita}${rowSaldo}</tbody></table></div>`;
 }
 
@@ -700,7 +774,7 @@ document.getElementById('fTipoConta').addEventListener('change', (e)=>{
 document.getElementById('mesPrev').addEventListener('click', ()=>mudarMes(-1));
 document.getElementById('mesNext').addEventListener('click', ()=>mudarMes(1));
 
-document.querySelectorAll('nav.bottom button').forEach(b=>{
+document.querySelectorAll('.side-links button').forEach(b=>{
   b.addEventListener('click', ()=>trocarView(b.dataset.view));
 });
 
@@ -793,6 +867,12 @@ document.getElementById('btnExcluirFixas').addEventListener('click', async ()=>{
   }
 });
 
+['prevPessoa','prevDe','prevAte'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', ()=>{
+    if(currentView==='previsao') abrirPrevisao();
+  });
+});
+
 document.getElementById('formLancamento').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const valorStr = document.getElementById('fValor').value;
@@ -858,6 +938,7 @@ initMesInput();
 atualizarCategorias();
 atualizarTiposConta();
 renderMesLabel();
+document.getElementById('monthSwitch').style.display = 'none';
 </script>
 </body>
 </html>
