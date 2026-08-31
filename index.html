@@ -172,11 +172,18 @@
 
     .content-col{flex:1;min-width:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
     header.top{flex:none;padding:22px 40px 16px;}
-    main{flex:1;padding:0 40px 48px;max-width:900px;}
+    main{flex:1;padding:0 44px 48px;max-width:none;}
 
     .cards{grid-template-columns:repeat(4,1fr);}
-    #view-lancar form{max-width:440px;}
+    #view-lancar form{max-width:460px;}
     .periodo-row{grid-template-columns:1fr 1fr 1fr;align-items:end;}
+    #view-resumo, #view-extrato{max-width:1100px;}
+    .prev-filtros{max-width:640px;}
+  }
+
+  @media (min-width:1280px){
+    table.prev-table{font-size:13px;}
+    table.prev-table th, table.prev-table td{padding:10px 16px;}
   }
 </style>
 </head>
