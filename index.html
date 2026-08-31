@@ -40,7 +40,6 @@
   #loginScreen input:focus{outline:none;border-color:var(--gold);}
   #loginBtn{width:100%;height:50px;border-radius:12px;border:none;background:var(--gold);color:#26190a;font-size:15px;font-weight:600;}
   #loginErro{color:var(--brick);font-size:13px;margin-top:12px;min-height:16px;}
-  #syncState{text-align:center;color:var(--ink-faint);font-size:13px;padding:40px 0;}
 
   header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:18px 20px 14px;border-bottom:1px solid var(--line);}
   header.top .row1{display:flex;align-items:baseline;justify-content:space-between;}
@@ -58,7 +57,7 @@
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
   .card{background:var(--surface);border-radius:var(--radius);padding:14px 14px;border:1px solid var(--line);}
   .card.wide{grid-column:1 / -1;}
-  .card .label{font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
+  .card .label{font-size:12px;color:var(--ink-dim);margin:0 0 6px;text-transform:capitalize;}
   .card .num{font-family:var(--serif);font-size:22px;margin:0;}
   .card .sub{font-size:12px;color:var(--ink-faint);margin:4px 0 0;}
   .num.teal{color:var(--teal);}
@@ -66,12 +65,15 @@
   .num.gold{color:var(--gold);}
 
   .section-title{font-size:13px;color:var(--ink-dim);margin:22px 0 10px;}
-  .bar-row{display:flex;align-items:center;gap:10px;padding:8px 0;}
-  .bar-row .bar-name{width:120px;flex:none;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bar-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+  .bar-row .bar-name{width:110px;flex:none;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .bar-track{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
   .bar-fill{height:100%;background:var(--brick);border-radius:4px;}
-  .bar-val{width:76px;flex:none;text-align:right;font-size:13px;color:var(--ink-dim);}
+  .bar-val{width:auto;flex:1;text-align:right;font-size:13px;color:var(--ink-dim);}
   .empty{color:var(--ink-faint);font-size:14px;padding:24px 0;text-align:center;}
+
+  .prev-card{border-top:1px solid var(--line);padding-top:10px;margin-top:6px;}
+  .prev-card .bar-row:last-child{border-top:1px solid var(--line);margin-top:4px;padding-top:8px;}
 
   .chip-row{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;}
   .chip{flex:none;padding:7px 14px;border-radius:20px;border:1px solid var(--line-strong);background:transparent;color:var(--ink-dim);font-size:13px;}
@@ -100,6 +102,10 @@
   .toggle-pair button.on-receita.active{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);}
   .toggle-pair button.on-despesa.active{background:var(--brick-dim);color:var(--brick);border-color:var(--brick);}
 
+  .toggle-tri{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .rep-btn{padding:11px 0;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-dim);font-size:13px;}
+  .rep-btn.active{background:var(--surface-2);color:var(--gold);border-color:var(--gold);}
+
   input[type=text], input[type=number], input[type=month], select{
     width:100%;height:46px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);padding:0 13px;font-size:15px;
   }
@@ -112,14 +118,14 @@
   .check-row label{margin:0;font-size:14px;color:var(--ink);}
   .save-btn{width:100%;height:50px;border-radius:12px;border:none;background:var(--gold);color:#26190a;font-size:15px;font-weight:600;margin-top:22px;}
   .save-btn:active{opacity:0.85;}
-  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--surface-2);color:var(--ink);padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid var(--line-strong);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;}
+  .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--surface-2);color:var(--ink);padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid var(--line-strong);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;max-width:80%;text-align:center;}
   .toast.show{opacity:1;}
 
   nav.bottom{position:fixed;bottom:0;left:0;right:0;background:var(--bg-elev);border-top:1px solid var(--line);z-index:30;}
-  nav.bottom .inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;padding-bottom:env(safe-area-inset-bottom);}
-  nav.bottom button{background:none;border:none;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;font-size:11px;}
+  nav.bottom .inner{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding-bottom:env(safe-area-inset-bottom);}
+  nav.bottom button{background:none;border:none;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 0 9px;font-size:10.5px;}
   nav.bottom button.active{color:var(--gold);}
-  nav.bottom svg{width:22px;height:22px;}
+  nav.bottom svg{width:21px;height:21px;}
 </style>
 </head>
 <body>
@@ -144,7 +150,7 @@
       <h1>Controle de contas</h1>
       <button id="logoutBtn">Sair</button>
     </div>
-    <div class="month-switch">
+    <div class="month-switch" id="monthSwitch">
       <button id="mesPrev" aria-label="Mês anterior">‹</button>
       <span class="month-label" id="mesLabel">março 2026</span>
       <button id="mesNext" aria-label="Próximo mês">›</button>
@@ -187,6 +193,11 @@
       <div id="listaExtrato"></div>
     </section>
 
+    <section class="view" id="view-previsao">
+      <p class="section-title" style="margin-top:0;">Próximos 12 meses: quanto falta receber, quanto falta pagar e o saldo previsto de cada mês.</p>
+      <div id="listaPrevisao"></div>
+    </section>
+
     <section class="view" id="view-lancar">
       <form id="formLancamento">
         <div class="toggle-pair">
@@ -203,8 +214,10 @@
         <label for="fCategoria">Categoria</label>
         <select id="fCategoria"></select>
 
-        <label for="fDescricao">Descrição</label>
-        <input type="text" id="fDescricao" placeholder="Ex.: salário, aluguel, Nubank">
+        <div id="tipoContaWrap" style="display:none;">
+          <label for="fTipoConta">Tipo de conta</label>
+          <select id="fTipoConta"></select>
+        </div>
 
         <label for="fValor">Valor</label>
         <div class="valor-wrap">
@@ -214,6 +227,19 @@
 
         <label for="fMes">Mês de referência</label>
         <input type="month" id="fMes">
+
+        <div id="repeticaoWrap" style="display:none;">
+          <label>Repetição</label>
+          <div class="toggle-tri">
+            <button type="button" class="rep-btn active" data-rep="unica">Única</button>
+            <button type="button" class="rep-btn" data-rep="parcelada">Parcelada</button>
+            <button type="button" class="rep-btn" data-rep="fixa">Fixa</button>
+          </div>
+          <div id="parcelasWrap" style="display:none;">
+            <label for="fParcelas">Número de parcelas</label>
+            <input type="number" id="fParcelas" min="2" step="1" placeholder="Ex.: 3">
+          </div>
+        </div>
 
         <div class="check-row">
           <input type="checkbox" id="fConfirmado">
@@ -237,6 +263,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M8 9h8M8 13h8"/></svg>
         Extrato
       </button>
+      <button data-view="previsao">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg>
+        Previsão
+      </button>
       <button data-view="resumo">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M11 20V4M18 20v-7"/></svg>
         Resumo
@@ -250,7 +280,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-// 1) Cole aqui as chaves do seu projeto Firebase (Configurações do projeto > Seus apps > SDK).
 const firebaseConfig = {
   apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
   authDomain: "controle-de-contas-7c11f.firebaseapp.com",
@@ -263,16 +292,23 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-const CATEGORIAS = {
-  receita: ['SALÁRIO','FÉRIAS','13º SALÁRIO','AUXÍLIO MORADIA','OUTROS'],
-  despesa: ['CASA','VEÍCULO','CARTÃO DE CRÉDITO','CONSÓRCIO','ALIMENTAÇÃO','MERCADO','FARMÁCIA','DÍZIMOS E OFERTAS','EMPRÉSTIMO','OUTROS']
+const DEFAULTS = {
+  categoriasReceita: ['Salário','Férias','13º Salário','Auxílio Moradia','Outros'],
+  categoriasDespesa: ['Casa','Veículo','Cartão De Crédito','Consórcio','Alimentação','Mercado','Farmácia','Dízimos E Ofertas','Empréstimo','Outros'],
+  tiposConta: ['Aluguel','Dízimo','Energia','Cartão Jessica','Internet','Consórcio','Parcela Carro','Cartão Mamãe','Empréstimo Mamãe','Nubank [B]','Nubank [K]','Mercado Pago [K]','Catão Izilene','Licenciamento']
 };
+let opcoes = {categoriasReceita:[...DEFAULTS.categoriasReceita], categoriasDespesa:[...DEFAULTS.categoriasDespesa], tiposConta:[...DEFAULTS.tiposConta]};
+
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
 let lancamentos = [];
+let recorrentes = [];
+let materializando = new Set();
 let tipoAtual = 'receita';
+let repeticaoAtual = 'unica';
 let filtroExtrato = 'todos';
-let unsubscribe = null;
+let currentView = 'lancar';
+let unsubLanc = null, unsubRec = null, unsubCfg = null;
 const hoje = new Date();
 let refMes = hoje.getMonth() + 1;
 let refAno = hoje.getFullYear();
@@ -284,7 +320,16 @@ function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 1800);
+  setTimeout(()=>t.classList.remove('show'), 2000);
+}
+function gerarId(){
+  return Date.now() + '-' + Math.random().toString(36).slice(2,8);
+}
+function tituloCase(str){
+  return str.trim().split(/\s+/).map(w=>{
+    if(/^[A-ZÀ-Ú0-9º\[\]]+$/.test(w)) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  }).join(' ');
 }
 
 document.getElementById('formLogin').addEventListener('submit', (e)=>{
@@ -292,7 +337,7 @@ document.getElementById('formLogin').addEventListener('submit', (e)=>{
   const email = document.getElementById('loginEmail').value.trim();
   const senha = document.getElementById('loginSenha').value;
   document.getElementById('loginErro').textContent = '';
-  auth.signInWithEmailAndPassword(email, senha).catch(err=>{
+  auth.signInWithEmailAndPassword(email, senha).catch(()=>{
     document.getElementById('loginErro').textContent = 'E-mail ou senha incorretos.';
   });
 });
@@ -304,33 +349,75 @@ auth.onAuthStateChanged(user=>{
     document.getElementById('app').style.display = 'block';
     iniciarSincronizacao();
   }else{
-    if(unsubscribe){ unsubscribe(); unsubscribe = null; }
+    if(unsubLanc){unsubLanc();unsubLanc=null;}
+    if(unsubRec){unsubRec();unsubRec=null;}
+    if(unsubCfg){unsubCfg();unsubCfg=null;}
     document.getElementById('app').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
   }
 });
 
 function iniciarSincronizacao(){
-  unsubscribe = db.collection('lancamentos').onSnapshot(snapshot=>{
+  unsubLanc = db.collection('lancamentos').onSnapshot(snapshot=>{
     lancamentos = snapshot.docs.map(d=>({id:d.id, ...d.data()}));
+    materializarMes(refMes, refAno);
     renderAll();
-  }, err=>{
-    showToast('Não foi possível sincronizar. Verifique sua conexão.');
+  }, ()=> showToast('Não foi possível sincronizar. Verifique sua conexão.'));
+
+  unsubRec = db.collection('recorrentes').onSnapshot(snapshot=>{
+    recorrentes = snapshot.docs.map(d=>({id:d.id, ...d.data()}));
+    materializarMes(refMes, refAno);
+    if(currentView==='previsao') abrirPrevisao();
+  });
+
+  unsubCfg = db.collection('config').doc('opcoes').onSnapshot(snap=>{
+    if(snap.exists){
+      const d = snap.data();
+      opcoes.categoriasReceita = d.categoriasReceita || DEFAULTS.categoriasReceita;
+      opcoes.categoriasDespesa = d.categoriasDespesa || DEFAULTS.categoriasDespesa;
+      opcoes.tiposConta = d.tiposConta || DEFAULTS.tiposConta;
+    }else{
+      db.collection('config').doc('opcoes').set(DEFAULTS).catch(()=>{});
+    }
+    atualizarCategorias();
+    atualizarTiposConta();
+  });
+}
+
+function materializarMes(mes, ano){
+  recorrentes.forEach(r=>{
+    if(!r.ativo) return;
+    const depoisDoInicio = (ano > r.anoInicio) || (ano === r.anoInicio && mes >= r.mesInicio);
+    if(!depoisDoInicio) return;
+    const chave = r.id+'-'+ano+'-'+mes;
+    if(materializando.has(chave)) return;
+    const jaExiste = lancamentos.some(l=> l.origemRecorrenteId===r.id && l.mes===mes && l.ano===ano);
+    if(jaExiste) return;
+    materializando.add(chave);
+    db.collection('lancamentos').add({
+      tipo:r.tipo, pessoa:r.pessoa, categoria:r.categoria, tipoConta:r.tipoConta||'',
+      valor:r.valor, mes, ano, confirmado:false, origemRecorrenteId:r.id,
+      criadoEm:new Date().toISOString(), criadoPor:''
+    }).catch(()=>{ materializando.delete(chave); });
   });
 }
 
 function trocarView(view){
+  currentView = view;
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   document.querySelectorAll('nav.bottom button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  document.getElementById('monthSwitch').style.display = view==='previsao' ? 'none' : 'flex';
   if(view==='resumo') renderResumo();
   if(view==='extrato') renderExtrato();
+  if(view==='previsao') abrirPrevisao();
 }
 
 function mudarMes(delta){
   refMes += delta;
   if(refMes>12){refMes=1;refAno++;}
   if(refMes<1){refMes=12;refAno--;}
+  materializarMes(refMes, refAno);
   renderMesLabel();
   renderResumo();
   renderExtrato();
@@ -369,7 +456,7 @@ function renderResumo(){
     <div class="bar-row">
       <span class="bar-name">${cat}</span>
       <div class="bar-track"><div class="bar-fill" style="width:${Math.max(4,(val/maxCat)*100)}%"></div></div>
-      <span class="bar-val">${fmtMoeda(val)}</span>
+      <span class="bar-val" style="width:76px;flex:none;">${fmtMoeda(val)}</span>
     </div>`).join('') : '<p class="empty">Nenhuma despesa lançada neste mês.</p>';
 
   const porPessoa = {};
@@ -383,8 +470,17 @@ function renderResumo(){
     <div class="bar-row">
       <span class="bar-name">${p}</span>
       <div class="bar-track"><div class="bar-fill" style="background:var(--teal);width:${v.receita?Math.max(4,Math.min(100,(v.receita/(v.receita+v.despesa||1))*100)):4}%"></div></div>
-      <span class="bar-val">${fmtMoeda(v.receita)} / ${fmtMoeda(v.despesa)}</span>
+      <span class="bar-val" style="width:auto;flex:none;">${fmtMoeda(v.receita)} / ${fmtMoeda(v.despesa)}</span>
     </div>`).join('') : '<p class="empty">Nenhum lançamento neste mês.</p>';
+}
+
+function descricaoTx(i){
+  const partes = [];
+  if(i.tipoConta) partes.push(i.tipoConta);
+  if(i.parcelaTotal) partes.push('Parcela ' + i.parcelaAtual + '/' + i.parcelaTotal);
+  if(i.origemRecorrenteId) partes.push('Fixa');
+  partes.push(i.pessoa);
+  return partes.join(' · ');
 }
 
 function renderExtrato(){
@@ -402,7 +498,7 @@ function renderExtrato(){
       <span class="tx-dot ${i.tipo}"></span>
       <div class="tx-mid">
         <p class="tx-cat">${i.categoria}</p>
-        <p class="tx-desc">${i.descricao || ''}${i.descricao?' · ':''}${i.pessoa}</p>
+        <p class="tx-desc">${descricaoTx(i)}</p>
       </div>
       <div class="tx-right">
         <p class="tx-val ${i.tipo}">${i.tipo==='receita'?'+':'-'} ${fmtMoeda(i.valor)}</p>
@@ -412,17 +508,94 @@ function renderExtrato(){
     </div>`).join('');
 }
 
+function abrirPrevisao(){
+  const lista = [];
+  let m = hoje.getMonth()+1, y = hoje.getFullYear();
+  for(let i=0;i<12;i++){
+    materializarMes(m,y);
+    lista.push({m,y});
+    m++; if(m>12){m=1;y++;}
+  }
+  renderPrevisao(lista);
+}
+
+function renderPrevisao(lista){
+  const box = document.getElementById('listaPrevisao');
+  box.innerHTML = lista.map(({m,y})=>{
+    const itens = lancamentos.filter(i=>i.mes===m && i.ano===y);
+    const receitas = itens.filter(i=>i.tipo==='receita');
+    const despesas = itens.filter(i=>i.tipo==='despesa');
+    const receitaPrevista = receitas.reduce((s,i)=>s+i.valor,0);
+    const despesaPrevista = despesas.reduce((s,i)=>s+i.valor,0);
+    const recebido = receitas.filter(i=>i.confirmado).reduce((s,i)=>s+i.valor,0);
+    const pago = despesas.filter(i=>i.confirmado).reduce((s,i)=>s+i.valor,0);
+    const faltaReceber = receitaPrevista - recebido;
+    const faltaPagar = despesaPrevista - pago;
+    const saldoPrevisto = receitaPrevista - despesaPrevista;
+    const corSaldo = saldoPrevisto >= 0 ? 'var(--teal)' : 'var(--brick)';
+    return `<div class="card wide" style="margin-bottom:10px;">
+      <p class="label">${MESES[m-1]} ${y}</p>
+      <div class="bar-row"><span class="bar-name">A receber</span><span class="bar-val" style="color:var(--teal);">${fmtMoeda(faltaReceber)}</span></div>
+      <div class="bar-row"><span class="bar-name">A pagar</span><span class="bar-val" style="color:var(--brick);">${fmtMoeda(faltaPagar)}</span></div>
+      <div class="bar-row prev-card"><span class="bar-name">Saldo previsto</span><span class="bar-val" style="color:${corSaldo};font-family:var(--serif);font-size:15px;">${fmtMoeda(saldoPrevisto)}</span></div>
+    </div>`;
+  }).join('');
+}
+
 function renderAll(){
   renderMesLabel();
   renderResumo();
   renderExtrato();
-  atualizarCategorias();
+  if(currentView==='previsao') abrirPrevisao();
 }
 
 function atualizarCategorias(){
+  const lista = tipoAtual==='receita' ? opcoes.categoriasReceita : opcoes.categoriasDespesa;
   const sel = document.getElementById('fCategoria');
-  sel.innerHTML = CATEGORIAS[tipoAtual].map(c=>`<option>${c}</option>`).join('');
+  const atual = sel.value;
+  sel.innerHTML = lista.map(c=>`<option>${c}</option>`).join('') + '<option value="__novo__">+ Nova categoria…</option>';
+  if(lista.includes(atual)) sel.value = atual;
 }
+function atualizarTiposConta(){
+  const sel = document.getElementById('fTipoConta');
+  const atual = sel.value;
+  sel.innerHTML = opcoes.tiposConta.map(c=>`<option>${c}</option>`).join('') + '<option value="__novo__">+ Novo tipo de conta…</option>';
+  if(opcoes.tiposConta.includes(atual)) sel.value = atual;
+}
+
+document.getElementById('fCategoria').addEventListener('change', (e)=>{
+  if(e.target.value !== '__novo__') return;
+  const novo = prompt('Nome da nova categoria:');
+  atualizarCategorias();
+  if(novo && novo.trim()){
+    const nome = tituloCase(novo);
+    const campo = tipoAtual==='receita' ? 'categoriasReceita' : 'categoriasDespesa';
+    const listaAtual = tipoAtual==='receita' ? opcoes.categoriasReceita : opcoes.categoriasDespesa;
+    if(!listaAtual.includes(nome)){
+      db.collection('config').doc('opcoes').set({[campo]: [...listaAtual, nome]}, {merge:true})
+        .then(()=>{ document.getElementById('fCategoria').value = nome; })
+        .catch(()=>showToast('Não foi possível salvar a categoria.'));
+    } else {
+      document.getElementById('fCategoria').value = nome;
+    }
+  }
+});
+
+document.getElementById('fTipoConta').addEventListener('change', (e)=>{
+  if(e.target.value !== '__novo__') return;
+  const novo = prompt('Nome do novo tipo de conta:');
+  atualizarTiposConta();
+  if(novo && novo.trim()){
+    const nome = tituloCase(novo);
+    if(!opcoes.tiposConta.includes(nome)){
+      db.collection('config').doc('opcoes').set({tiposConta: [...opcoes.tiposConta, nome]}, {merge:true})
+        .then(()=>{ document.getElementById('fTipoConta').value = nome; })
+        .catch(()=>showToast('Não foi possível salvar o tipo de conta.'));
+    } else {
+      document.getElementById('fTipoConta').value = nome;
+    }
+  }
+});
 
 document.getElementById('mesPrev').addEventListener('click', ()=>mudarMes(-1));
 document.getElementById('mesNext').addEventListener('click', ()=>mudarMes(1));
@@ -436,9 +609,21 @@ document.querySelectorAll('.toggle-pair button').forEach(b=>{
     tipoAtual = b.dataset.tipo;
     document.querySelectorAll('.toggle-pair button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
+    document.getElementById('tipoContaWrap').style.display = tipoAtual==='despesa' ? 'block':'none';
+    document.getElementById('repeticaoWrap').style.display = tipoAtual==='despesa' ? 'block':'none';
     atualizarCategorias();
-    document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa';
     document.getElementById('fConfirmadoLabel').textContent = tipoAtual==='receita' ? 'Já recebido' : 'Já pago';
+    document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : (repeticaoAtual==='fixa' ? 'Cadastrar conta fixa' : 'Lançar despesa');
+  });
+});
+
+document.querySelectorAll('.rep-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    repeticaoAtual = b.dataset.rep;
+    document.querySelectorAll('.rep-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('parcelasWrap').style.display = repeticaoAtual==='parcelada' ? 'block':'none';
+    document.getElementById('btnSalvar').textContent = repeticaoAtual==='fixa' ? 'Cadastrar conta fixa' : (tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa');
   });
 });
 
@@ -470,7 +655,7 @@ document.getElementById('listaExtrato').addEventListener('click', (e)=>{
   }
 });
 
-document.getElementById('formLancamento').addEventListener('submit', (e)=>{
+document.getElementById('formLancamento').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const valorStr = document.getElementById('fValor').value;
   const valor = parseFloat(valorStr);
@@ -484,23 +669,46 @@ document.getElementById('formLancamento').addEventListener('submit', (e)=>{
     const [a,m] = mesInput.split('-');
     ano = parseInt(a,10); mes = parseInt(m,10);
   }
-  const item = {
-    tipo: tipoAtual,
-    pessoa: document.getElementById('fPessoa').value,
-    categoria: document.getElementById('fCategoria').value,
-    descricao: document.getElementById('fDescricao').value.trim(),
-    valor: Math.round(valor*100)/100,
-    mes, ano,
-    confirmado: document.getElementById('fConfirmado').checked,
-    criadoEm: new Date().toISOString(),
-    criadoPor: auth.currentUser ? auth.currentUser.email : ''
-  };
-  db.collection('lancamentos').add(item)
-    .then(()=> showToast(tipoAtual==='receita' ? 'Receita lançada.' : 'Despesa lançada.'))
-    .catch(()=> showToast('Não foi possível salvar. Tente novamente.'));
+  const pessoa = document.getElementById('fPessoa').value;
+  const categoria = document.getElementById('fCategoria').value;
+  const tipoConta = tipoAtual==='despesa' ? document.getElementById('fTipoConta').value : '';
+  const confirmadoInicial = document.getElementById('fConfirmado').checked;
+  const base = {tipo:tipoAtual, pessoa, categoria, tipoConta, valor: Math.round(valor*100)/100, criadoPor: auth.currentUser?auth.currentUser.email:''};
+
+  try{
+    if(tipoAtual==='despesa' && repeticaoAtual==='parcelada'){
+      const n = parseInt(document.getElementById('fParcelas').value,10);
+      if(!n || n<2){ showToast('Informe o número de parcelas (mínimo 2).'); return; }
+      const grupoId = gerarId();
+      for(let i=0;i<n;i++){
+        let mm = mes+i, yy = ano;
+        while(mm>12){mm-=12;yy++;}
+        await db.collection('lancamentos').add({...base, mes:mm, ano:yy, confirmado: i===0?confirmadoInicial:false, parcelaGrupoId:grupoId, parcelaAtual:i+1, parcelaTotal:n, criadoEm:new Date().toISOString()});
+      }
+      showToast('Parcelas lançadas: ' + n + 'x.');
+    } else if(tipoAtual==='despesa' && repeticaoAtual==='fixa'){
+      const ref = await db.collection('recorrentes').add({tipo:'despesa', pessoa, categoria, tipoConta, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()});
+      await db.collection('lancamentos').add({...base, mes, ano, confirmado:confirmadoInicial, origemRecorrenteId:ref.id, criadoEm:new Date().toISOString()});
+      showToast('Conta fixa cadastrada.');
+    } else {
+      await db.collection('lancamentos').add({...base, mes, ano, confirmado:confirmadoInicial, criadoEm:new Date().toISOString()});
+      showToast(tipoAtual==='receita' ? 'Receita lançada.' : 'Despesa lançada.');
+    }
+  }catch(err){
+    showToast('Não foi possível salvar. Tente novamente.');
+    return;
+  }
+
   e.target.reset();
   document.getElementById('fConfirmado').checked = false;
+  repeticaoAtual = 'unica';
+  document.querySelectorAll('.rep-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelector('.rep-btn[data-rep="unica"]').classList.add('active');
+  document.getElementById('parcelasWrap').style.display = 'none';
+  document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa';
   initMesInput();
+  atualizarCategorias();
+  atualizarTiposConta();
 });
 
 function initMesInput(){
@@ -510,6 +718,7 @@ function initMesInput(){
 
 initMesInput();
 atualizarCategorias();
+atualizarTiposConta();
 renderMesLabel();
 </script>
 </body>
