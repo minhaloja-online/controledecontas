@@ -497,6 +497,8 @@ function materializarMes(mes, ano){
     if(!r.ativo) return;
     const depoisDoInicio = (ano > r.anoInicio) || (ano === r.anoInicio && mes >= r.mesInicio);
     if(!depoisDoInicio) return;
+    const chaveExclusao = ano+'-'+mes;
+    if(r.excluidos && r.excluidos.includes(chaveExclusao)) return;
     const chave = r.id+'-'+ano+'-'+mes;
     if(materializando.has(chave)) return;
     const jaExiste = lancamentos.some(l=> l.origemRecorrenteId===r.id && l.mes===mes && l.ano===ano);
@@ -508,6 +510,17 @@ function materializarMes(mes, ano){
       criadoEm:new Date().toISOString(), criadoPor:''
     }).catch(()=>{ materializando.delete(chave); });
   });
+}
+
+function mesesEntre(anoDe,mesDe,anoAte,mesAte){
+  const arr = [];
+  let m = mesDe, y = anoDe, guard = 0;
+  while((y<anoAte || (y===anoAte && m<=mesAte)) && guard<600){
+    arr.push(y+'-'+m);
+    m++; if(m>12){m=1;y++;}
+    guard++;
+  }
+  return arr;
 }
 
 function trocarView(view){
@@ -829,8 +842,17 @@ document.getElementById('listaExtrato').addEventListener('click', (e)=>{
   }
   if(delId){
     if(confirm('Excluir este lançamento?')){
+      const item = lancamentos.find(i=>i.id===delId);
       db.collection('lancamentos').doc(delId).delete()
-        .then(()=>showToast('Lançamento excluído.'))
+        .then(()=>{
+          showToast('Lançamento excluído.');
+          if(item && item.origemRecorrenteId){
+            const chaveExclusao = item.ano+'-'+item.mes;
+            db.collection('recorrentes').doc(item.origemRecorrenteId).update({
+              excluidos: firebase.firestore.FieldValue.arrayUnion(chaveExclusao)
+            }).catch(()=>{});
+          }
+        })
         .catch(()=>showToast('Não foi possível excluir.'));
     }
   }
@@ -864,13 +886,18 @@ document.getElementById('btnExcluirFixas').addEventListener('click', async ()=>{
   const ini = chave(anoDe,mesDe), fim = chave(anoAte,mesAte);
   if(fim < ini){ showToast('O período final deve ser depois do inicial.'); return; }
   const alvo = lancamentos.filter(l=> idsSelecionados.includes(l.origemRecorrenteId) && chave(l.ano,l.mes)>=ini && chave(l.ano,l.mes)<=fim);
-  if(!alvo.length){ showToast('Nenhum lançamento encontrado nesse período.'); return; }
-  if(!confirm('Excluir ' + alvo.length + ' lançamento(s) do período selecionado?')) return;
+  const chavesPeriodo = mesesEntre(anoDe,mesDe,anoAte,mesAte);
+  if(!confirm('Excluir os lançamentos já gerados e impedir que esta(s) conta(s) fixa(s) gerem novos meses no período selecionado?')) return;
   try{
     await Promise.all(alvo.map(l=> db.collection('lancamentos').doc(l.id).delete()));
-    showToast(alvo.length + ' lançamento(s) excluído(s).');
+    await Promise.all(idsSelecionados.map(id=>
+      db.collection('recorrentes').doc(id).update({
+        excluidos: firebase.firestore.FieldValue.arrayUnion(...chavesPeriodo)
+      })
+    ));
+    showToast('Período excluído: ' + alvo.length + ' lançamento(s) removido(s).');
   }catch(e){
-    showToast('Não foi possível excluir todos os lançamentos.');
+    showToast('Não foi possível concluir a exclusão. Tente novamente.');
   }
 });
 
