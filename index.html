@@ -27,6 +27,28 @@
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --shadow: 0 6px 20px rgba(0,0,0,0.28);
   }
+  :root[data-theme="light"]{
+    --bg:#f6f4ee;
+    --bg-elev:#ffffff;
+    --surface:#ffffff;
+    --surface-2:#efeadf;
+    --ink:#211d16;
+    --ink-dim:#6a6558;
+    --ink-faint:#95907f;
+    --line:rgba(33,29,22,0.09);
+    --line-strong:rgba(33,29,22,0.16);
+    --gold:#a8783a;
+    --teal:#25806a;
+    --teal-dim:#dbeee8;
+    --brick:#ad4a30;
+    --brick-dim:#f7e2da;
+    --amber:#a8763a;
+    --shadow: 0 6px 20px rgba(33,29,22,0.10);
+  }
+  :root[data-theme="light"] .save-btn, :root[data-theme="light"] #loginBtn, :root[data-theme="light"] #signupBtn{color:#fff6ea;}
+  :root[data-theme="light"] table.prev-table td.rowlabel, :root[data-theme="light"] table.prev-table th.rowlabel{background:var(--bg);}
+  :root[data-theme="light"] table.prev-table tr.linha-raiz td.rowlabel{background:var(--surface-2);}
+  :root[data-theme="light"] table.prev-table tr.linha-raiz td{background:var(--surface-2);}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
   body{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom));}
@@ -65,6 +87,8 @@
   header.top h1{font-family:var(--serif);font-size:21px;font-weight:400;margin:0 0 12px;letter-spacing:0.2px;}
   .logoutBtn{background:none;border:none;color:var(--ink-faint);font-size:12px;padding:4px;transition:color .15s;}
   .logoutBtn:hover{color:var(--ink);}
+  .theme-btn{background:none;border:1px solid var(--line-strong);color:var(--ink-dim);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;transition:background .15s,color .15s;}
+  .theme-btn:hover{background:var(--surface);color:var(--gold);}
   .month-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;}
   .month-switch button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none;transition:background .15s;}
   .month-switch button:hover{background:var(--surface-2);}
@@ -216,6 +240,7 @@
   .aprov-btns{display:flex;gap:6px;flex:none;}
   .btn-aprovar{background:var(--teal-dim);color:var(--teal);border:1px solid var(--teal);border-radius:8px;font-size:12px;padding:6px 12px;}
   .btn-recusar{background:none;color:var(--ink-faint);border:1px solid var(--line-strong);border-radius:8px;font-size:12px;padding:6px 12px;}
+  #listaAdminLancamentos{max-height:640px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:0 14px;background:var(--bg);}
   .logo-preview{width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--surface-2);border:1px solid var(--line-strong);margin-bottom:12px;display:none;}
   .admin-search{margin-bottom:14px;}
 
@@ -338,7 +363,13 @@
     <header class="top">
       <div class="row1">
         <h1 id="pageTitle">Previsão</h1>
-        <button type="button" class="logoutBtn header-logout">Sair</button>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <button type="button" id="temaToggle" class="theme-btn" aria-label="Alternar tema claro/escuro">
+            <svg id="iconSol" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" style="display:none;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            <svg id="iconLua" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          </button>
+          <button type="button" class="logoutBtn header-logout">Sair</button>
+        </div>
       </div>
       <div class="month-switch" id="monthSwitch" style="display:none;">
         <button id="mesPrev" aria-label="Mês anterior">‹</button>
@@ -572,25 +603,25 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
 // TODO: troque pelo seu e-mail de administrador (o mesmo deve ser colocado no firestore.rules)
-const EMAIL_ADMIN = "brenno.liberty@gmail.com";
+const EMAIL_ADMIN = "SEU_EMAIL_ADMIN_AQUI@exemplo.com";
 
 const DEFAULTS = {
   categoriasReceita: ['Salário','Férias','13º Salário','Auxílio Moradia','Outros'],
   categoriasDespesa: ['Casa','Veículo','Cartão De Crédito','Consórcio','Alimentação','Mercado','Farmácia','Dízimos E Ofertas','Empréstimo','Outros'],
-  tiposConta: ['Aluguel','Dízimo','Energia','Cartão Jessica','Internet','Consórcio','Parcela Carro','Cartão Mamãe','Empréstimo Mamãe','Nubank [B]','Nubank [K]','Mercado Pago [K]','Catão Izilene','Licenciamento'],
-  pessoas: ['Brenno','Karen']
+  tiposConta: ['Aluguel','Dízimo','Energia','Internet','Consórcio','Parcela Carro','Nubank','Mercado Pago','Licenciamento Do Carro'],
+  pessoas: []
 };
 let opcoes = {
   categoriasReceita:[...DEFAULTS.categoriasReceita],
@@ -1106,11 +1137,15 @@ function renderAdminLancamentos(){
 }
 document.getElementById('buscaAdmin').addEventListener('input', renderAdminLancamentos);
 
+function ordenar(lista){
+  return [...lista].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+
 function atualizarFiltroTipoConta(){
   const sel = document.getElementById('filtroTipoConta');
   if(!sel) return;
   const atual = sel.value;
-  sel.innerHTML = '<option value="todos">Todos os tipos de conta</option>' + opcoes.tiposConta.map(c=>`<option>${c}</option>`).join('');
+  sel.innerHTML = '<option value="todos">Todos os tipos de conta</option>' + ordenar(opcoes.tiposConta).map(c=>`<option>${c}</option>`).join('');
   if(atual && (atual==='todos' || opcoes.tiposConta.includes(atual))) sel.value = atual;
 }
 
@@ -1388,8 +1423,9 @@ function renderAll(){
 
 function popularSelectComNovo(sel, lista, textoNovo, permitirVazio){
   const atual = sel.value;
+  const listaOrdenada = ordenar(lista);
   let html = permitirVazio ? '<option value="">Nenhum</option>' : '';
-  html += lista.map(c=>`<option>${c}</option>`).join('') + `<option value="__novo__">${textoNovo}</option>`;
+  html += listaOrdenada.map(c=>`<option>${c}</option>`).join('') + `<option value="__novo__">${textoNovo}</option>`;
   sel.innerHTML = html;
   if(lista.includes(atual) || (permitirVazio && atual==='')) sel.value = atual;
 }
@@ -1407,13 +1443,17 @@ function atualizarTipos(){
 function atualizarPessoas(){
   const sel = document.getElementById('fPessoa');
   const atual = sel.value;
-  sel.innerHTML = opcoes.pessoas.map(p=>`<option>${p}</option>`).join('');
+  if(!opcoes.pessoas.length){
+    sel.innerHTML = '<option value="">Nenhuma pessoa cadastrada</option>';
+    return;
+  }
+  sel.innerHTML = ordenar(opcoes.pessoas).map(p=>`<option>${p}</option>`).join('');
   if(opcoes.pessoas.includes(atual)) sel.value = atual;
 }
 function atualizarPrevPessoa(){
   const sel = document.getElementById('prevPessoa');
   const atual = sel.value;
-  sel.innerHTML = '<option value="todos">Todos</option>' + opcoes.pessoas.map(p=>`<option>${p}</option>`).join('');
+  sel.innerHTML = '<option value="todos">Todos</option>' + ordenar(opcoes.pessoas).map(p=>`<option>${p}</option>`).join('');
   if(atual && (atual==='todos' || opcoes.pessoas.includes(atual))) sel.value = atual;
 }
 
@@ -1545,6 +1585,7 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
     ano = parseInt(a,10); mes = parseInt(m,10);
   }
   const pessoa = document.getElementById('fPessoa').value;
+  if(!pessoa){ showToast('Cadastre uma pessoa na aba Admin antes de lançar.'); return; }
   const categoria = document.getElementById('fCategoria').value;
   const descricao = document.getElementById('fDescricao').value.trim();
   const confirmadoInicial = document.getElementById('fConfirmado').checked;
@@ -1612,7 +1653,8 @@ function initMesInput(){
 function renderListaAdmin(boxId, campo, itens){
   const box = document.getElementById(boxId);
   if(!box) return;
-  box.innerHTML = itens.length ? itens.map(v=>`
+  const ordenados = ordenar(itens);
+  box.innerHTML = ordenados.length ? ordenados.map(v=>`
     <div class="item-row">
       <span>${v}</span>
       <button type="button" class="item-del" data-remover="${campo}" data-valor="${v}">×</button>
@@ -1685,6 +1727,21 @@ atualizarFiltroTipoConta();
 atualizarPessoas();
 atualizarPrevPessoa();
 renderMesLabel();
+
+/* ---------- Tema claro/escuro ---------- */
+function aplicarTema(tema){
+  document.documentElement.setAttribute('data-theme', tema);
+  document.getElementById('iconSol').style.display = tema==='light' ? 'block' : 'none';
+  document.getElementById('iconLua').style.display = tema==='light' ? 'none' : 'block';
+  try{ localStorage.setItem('tema', tema); }catch(e){}
+}
+document.getElementById('temaToggle').addEventListener('click', ()=>{
+  const atual = document.documentElement.getAttribute('data-theme') || 'dark';
+  aplicarTema(atual==='dark' ? 'light' : 'dark');
+});
+let temaSalvo = 'dark';
+try{ temaSalvo = localStorage.getItem('tema') || 'dark'; }catch(e){}
+aplicarTema(temaSalvo);
 </script>
 </body>
 </html>
