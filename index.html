@@ -219,6 +219,11 @@
   .rec-row .rec-nome{font-size:14px;margin:0;}
   .rec-row .rec-sub{font-size:12px;color:var(--ink-faint);margin:2px 0 0;}
   .rec-row .rec-parar{background:none;border:1px solid var(--line-strong);color:var(--ink-faint);font-size:11px;padding:5px 10px;border-radius:8px;flex:none;}
+  .rec-row .rec-parar:hover{color:var(--ink);border-color:var(--line-strong);}
+  .rec-row{gap:8px;}
+  .rec-fim-edit{display:flex;gap:8px;align-items:center;padding:0 0 12px;border-bottom:1px solid var(--line);}
+  .rec-fim-edit input{flex:1;height:38px;}
+  .rec-fim-edit button{flex:none;height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);font-size:12px;}
   .periodo-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
   .btn-danger{width:100%;height:46px;border-radius:10px;border:none;background:var(--brick);color:#2a140d;font-size:14px;font-weight:600;margin-top:14px;}
   .btn-danger:active{opacity:0.85;}
@@ -518,6 +523,10 @@
               <label for="fParcelas">Número de parcelas</label>
               <input type="number" id="fParcelas" min="2" step="1" placeholder="Ex.: 3">
             </div>
+            <div id="fixaFimWrap" style="display:none;">
+              <label for="fFixaFim">Repetir até (opcional)</label>
+              <input type="month" id="fFixaFim">
+            </div>
           </div>
 
           <div class="check-row">
@@ -603,12 +612,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -900,6 +909,10 @@ function materializarMes(mes, ano){
     if(!r.ativo) return;
     const depoisDoInicio = (ano > r.anoInicio) || (ano === r.anoInicio && mes >= r.mesInicio);
     if(!depoisDoInicio) return;
+    if(r.mesFim && r.anoFim){
+      const depoisDoFim = (ano > r.anoFim) || (ano === r.anoFim && mes > r.mesFim);
+      if(depoisDoFim) return;
+    }
     const chaveExclusao = ano+'-'+mes;
     if(r.excluidos && r.excluidos.includes(chaveExclusao)) return;
     const chave = r.id+'-'+ano+'-'+mes;
@@ -1410,15 +1423,26 @@ function renderRecorrentes(){
     box.innerHTML = '<p class="empty">Nenhuma conta fixa cadastrada.</p>';
     return;
   }
-  box.innerHTML = ativas.map(r=>`
+  box.innerHTML = ativas.map(r=>{
+    const temFim = r.mesFim && r.anoFim;
+    const fimTexto = temFim ? (' · até ' + MESES[r.mesFim-1] + ' de ' + r.anoFim) : '';
+    const valorInputFim = temFim ? (r.anoFim + '-' + String(r.mesFim).padStart(2,'0')) : '';
+    return `
     <div class="rec-row">
       <input type="checkbox" class="fixa-check" data-id="${r.id}">
       <div class="rec-mid">
         <p class="rec-nome">${r.tipoConta || r.categoria}</p>
-        <p class="rec-sub">${r.pessoa} · ${fmtMoeda(r.valor)}/mês · desde ${MESES[r.mesInicio-1]} de ${r.anoInicio}</p>
+        <p class="rec-sub">${r.pessoa} · ${fmtMoeda(r.valor)}/mês · desde ${MESES[r.mesInicio-1]} de ${r.anoInicio}${fimTexto}</p>
       </div>
+      <button type="button" class="rec-parar" data-fim="${r.id}">Fim</button>
       <button type="button" class="rec-parar" data-stop="${r.id}">Parar</button>
-    </div>`).join('');
+    </div>
+    <div class="rec-fim-edit" id="fimEdit-${r.id}" style="display:none;">
+      <input type="month" id="fimInput-${r.id}" value="${valorInputFim}">
+      <button type="button" data-salvarfim="${r.id}">Salvar</button>
+      <button type="button" data-limparfim="${r.id}">Sem fim</button>
+    </div>`;
+  }).join('');
 }
 
 function renderAll(){
@@ -1516,6 +1540,7 @@ document.querySelectorAll('.rep-btn').forEach(b=>{
     document.querySelectorAll('.rep-btn').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     document.getElementById('parcelasWrap').style.display = repeticaoAtual==='parcelada' ? 'block':'none';
+    document.getElementById('fixaFimWrap').style.display = repeticaoAtual==='fixa' ? 'block':'none';
     document.getElementById('btnSalvar').textContent = repeticaoAtual==='fixa' ? (tipoAtual==='receita' ? 'Cadastrar receita fixa' : 'Cadastrar conta fixa') : (tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa');
   });
 });
@@ -1556,14 +1581,52 @@ document.getElementById('btnExcluirFixas').addEventListener('click', async ()=>{
   }
 });
 
-document.getElementById('listaRecorrentes').addEventListener('click', (e)=>{
+document.getElementById('listaRecorrentes').addEventListener('click', async (e)=>{
   const stopId = e.target.dataset.stop;
+  const fimId = e.target.dataset.fim;
+  const salvarFimId = e.target.dataset.salvarfim;
+  const limparFimId = e.target.dataset.limparfim;
+
   if(stopId){
     if(confirm('Parar esta conta fixa? Ela deixará de gerar novos meses (os já lançados continuam).')){
       colUser('recorrentes').doc(stopId).update({ativo:false})
         .then(()=>showToast('Conta fixa parada.'))
         .catch(()=>showToast('Não foi possível parar essa conta fixa.'));
     }
+  }
+
+  if(fimId){
+    const painel = document.getElementById('fimEdit-'+fimId);
+    const jaAberto = painel.style.display !== 'none';
+    document.querySelectorAll('.rec-fim-edit').forEach(p=> p.style.display = 'none');
+    painel.style.display = jaAberto ? 'none' : 'flex';
+  }
+
+  if(salvarFimId){
+    const val = document.getElementById('fimInput-'+salvarFimId).value;
+    if(!val){ showToast('Escolha um mês, ou use "Sem fim" para remover.'); return; }
+    const [anoFim, mesFim] = val.split('-').map(Number);
+    const chave = (a,m)=> a*12+m;
+    const limite = chave(anoFim, mesFim);
+    const alvo = lancamentos.filter(l=> l.origemRecorrenteId===salvarFimId && chave(l.ano,l.mes) > limite);
+    const aviso = alvo.length ? (' Isso também vai excluir ' + alvo.length + ' lançamento(s) já gerado(s) depois desse mês.') : '';
+    if(!confirm('Definir ' + MESES[mesFim-1] + ' de ' + anoFim + ' como último mês desta conta fixa?' + aviso)) return;
+    try{
+      await colUser('recorrentes').doc(salvarFimId).update({mesFim, anoFim});
+      await Promise.all(alvo.map(l=> colUser('lancamentos').doc(l.id).delete()));
+      showToast('Data final definida.');
+    }catch(err){
+      showToast('Não foi possível salvar.');
+    }
+  }
+
+  if(limparFimId){
+    if(!confirm('Remover a data final? Essa conta fixa volta a se repetir indefinidamente.')) return;
+    colUser('recorrentes').doc(limparFimId).update({
+      mesFim: firebase.firestore.FieldValue.delete(),
+      anoFim: firebase.firestore.FieldValue.delete()
+    }).then(()=>showToast('Data final removida.'))
+      .catch(()=>showToast('Não foi possível remover.'));
   }
 });
 
@@ -1628,7 +1691,14 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
       }
       showToast('Parcelas lançadas: ' + n + 'x.');
     } else if(repeticaoAtual==='fixa'){
-      const ref = await colUser('recorrentes').add({tipo:tipoAtual, pessoa, categoria, tipoConta:tipoSelecionado, descricao, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()});
+      const fimVal = document.getElementById('fFixaFim').value;
+      const dadosRecorrente = {tipo:tipoAtual, pessoa, categoria, tipoConta:tipoSelecionado, descricao, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()};
+      if(fimVal){
+        const [aFim,mFim] = fimVal.split('-');
+        dadosRecorrente.anoFim = parseInt(aFim,10);
+        dadosRecorrente.mesFim = parseInt(mFim,10);
+      }
+      const ref = await colUser('recorrentes').add(dadosRecorrente);
       await colUser('lancamentos').add({...base, mes, ano, confirmado:confirmadoInicial, origemRecorrenteId:ref.id, criadoEm:new Date().toISOString()});
       showToast(tipoAtual==='receita' ? 'Receita fixa cadastrada.' : 'Conta fixa cadastrada.');
     } else {
@@ -1646,6 +1716,7 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
   document.querySelectorAll('.rep-btn').forEach(x=>x.classList.remove('active'));
   document.querySelector('.rep-btn[data-rep="unica"]').classList.add('active');
   document.getElementById('parcelasWrap').style.display = 'none';
+  document.getElementById('fixaFimWrap').style.display = 'none';
   document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa';
   initMesInput();
   atualizarCategorias();
