@@ -391,7 +391,7 @@
             </div>
           </div>
 
-          <div>
+          <div id="tipoContaWrap">
             <label for="fTipo" id="fTipoLabel">Tipo de conta</label>
             <select id="fTipo"></select>
           </div>
@@ -413,7 +413,7 @@
             </div>
           </div>
 
-          <div id="repeticaoWrap" style="display:none;">
+          <div id="repeticaoWrap">
             <label>Repetição</label>
             <div class="toggle-tri">
               <button type="button" class="rep-btn active" data-rep="unica">Única</button>
@@ -447,12 +447,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -461,14 +461,12 @@ const db = firebase.firestore();
 const DEFAULTS = {
   categoriasReceita: ['Salário','Férias','13º Salário','Auxílio Moradia','Outros'],
   categoriasDespesa: ['Casa','Veículo','Cartão De Crédito','Consórcio','Alimentação','Mercado','Farmácia','Dízimos E Ofertas','Empréstimo','Outros'],
-  tiposConta: ['Aluguel','Dízimo','Energia','Cartão Jessica','Internet','Consórcio','Parcela Carro','Cartão Mamãe','Empréstimo Mamãe','Nubank [B]','Nubank [K]','Mercado Pago [K]','Catão Izilene','Licenciamento'],
-  tiposReceita: ['Salário Brenno','Salário Karen','Outros']
+  tiposConta: ['Aluguel','Dízimo','Energia','Cartão Jessica','Internet','Consórcio','Parcela Carro','Cartão Mamãe','Empréstimo Mamãe','Nubank [B]','Nubank [K]','Mercado Pago [K]','Catão Izilene','Licenciamento']
 };
 let opcoes = {
   categoriasReceita:[...DEFAULTS.categoriasReceita],
   categoriasDespesa:[...DEFAULTS.categoriasDespesa],
-  tiposConta:[...DEFAULTS.tiposConta],
-  tiposReceita:[...DEFAULTS.tiposReceita]
+  tiposConta:[...DEFAULTS.tiposConta]
 };
 
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
@@ -552,7 +550,6 @@ function iniciarSincronizacao(){
       opcoes.categoriasReceita = d.categoriasReceita || DEFAULTS.categoriasReceita;
       opcoes.categoriasDespesa = d.categoriasDespesa || DEFAULTS.categoriasDespesa;
       opcoes.tiposConta = d.tiposConta || DEFAULTS.tiposConta;
-      opcoes.tiposReceita = d.tiposReceita || DEFAULTS.tiposReceita;
     }else{
       db.collection('config').doc('opcoes').set(DEFAULTS).catch(()=>{});
     }
@@ -782,9 +779,8 @@ function atualizarFiltroTipoConta(){
   const sel = document.getElementById('filtroTipoConta');
   if(!sel) return;
   const atual = sel.value;
-  const combinados = Array.from(new Set([...opcoes.tiposConta, ...opcoes.tiposReceita])).sort((a,b)=>a.localeCompare(b,'pt-BR'));
-  sel.innerHTML = '<option value="todos">Todos os tipos de conta</option>' + combinados.map(c=>`<option>${c}</option>`).join('');
-  if(atual && (atual==='todos' || combinados.includes(atual))) sel.value = atual;
+  sel.innerHTML = '<option value="todos">Todos os tipos de conta</option>' + opcoes.tiposConta.map(c=>`<option>${c}</option>`).join('');
+  if(atual && (atual==='todos' || opcoes.tiposConta.includes(atual))) sel.value = atual;
 }
 
 function initPrevisaoFiltros(){
@@ -989,10 +985,10 @@ function atualizarCategorias(){
   popularSelectComNovo(document.getElementById('fCategoria'), lista, '+ Nova categoria…', false);
 }
 function atualizarTipos(){
-  const lista = tipoAtual==='receita' ? opcoes.tiposReceita : opcoes.tiposConta;
-  const lbl = document.getElementById('fTipoLabel');
-  if(lbl) lbl.textContent = tipoAtual==='receita' ? 'Tipo de receita' : 'Tipo de conta';
-  popularSelectComNovo(document.getElementById('fTipo'), lista, tipoAtual==='receita' ? '+ Novo tipo de receita…' : '+ Novo tipo de conta…', tipoAtual==='receita');
+  const wrap = document.getElementById('tipoContaWrap');
+  if(wrap) wrap.style.display = tipoAtual==='despesa' ? 'block' : 'none';
+  if(tipoAtual==='receita') return;
+  popularSelectComNovo(document.getElementById('fTipo'), opcoes.tiposConta, '+ Novo tipo de conta…', false);
 }
 
 function configurarNovoItem(selectId, promptTexto, obterCampo, obterLista, refreshFn){
@@ -1018,9 +1014,9 @@ configurarNovoItem('fCategoria', 'Nome da nova categoria:',
   ()=> tipoAtual==='receita' ? 'categoriasReceita' : 'categoriasDespesa',
   ()=> tipoAtual==='receita' ? opcoes.categoriasReceita : opcoes.categoriasDespesa,
   atualizarCategorias);
-configurarNovoItem('fTipo', 'Nome do novo tipo:',
-  ()=> tipoAtual==='receita' ? 'tiposReceita' : 'tiposConta',
-  ()=> tipoAtual==='receita' ? opcoes.tiposReceita : opcoes.tiposConta,
+configurarNovoItem('fTipo', 'Nome do novo tipo de conta:',
+  ()=> 'tiposConta',
+  ()=> opcoes.tiposConta,
   atualizarTipos);
 
 document.getElementById('mesPrev').addEventListener('click', ()=>mudarMes(-1));
@@ -1035,11 +1031,11 @@ document.querySelectorAll('.toggle-pair button').forEach(b=>{
     tipoAtual = b.dataset.tipo;
     document.querySelectorAll('.toggle-pair button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    document.getElementById('repeticaoWrap').style.display = tipoAtual==='despesa' ? 'block':'none';
+    document.getElementById('repeticaoWrap').style.display = 'block';
     atualizarCategorias();
     atualizarTipos();
     document.getElementById('fConfirmadoLabel').textContent = tipoAtual==='receita' ? 'Já recebido' : 'Já pago';
-    document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : (repeticaoAtual==='fixa' ? 'Cadastrar conta fixa' : 'Lançar despesa');
+    document.getElementById('btnSalvar').textContent = repeticaoAtual==='fixa' ? (tipoAtual==='receita' ? 'Cadastrar receita fixa' : 'Cadastrar conta fixa') : (tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa');
   });
 });
 
@@ -1049,7 +1045,7 @@ document.querySelectorAll('.rep-btn').forEach(b=>{
     document.querySelectorAll('.rep-btn').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     document.getElementById('parcelasWrap').style.display = repeticaoAtual==='parcelada' ? 'block':'none';
-    document.getElementById('btnSalvar').textContent = repeticaoAtual==='fixa' ? 'Cadastrar conta fixa' : (tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa');
+    document.getElementById('btnSalvar').textContent = repeticaoAtual==='fixa' ? (tipoAtual==='receita' ? 'Cadastrar receita fixa' : 'Cadastrar conta fixa') : (tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa');
   });
 });
 
@@ -1124,7 +1120,7 @@ function iniciarEdicao(id){
 function sairModoEdicao(){
   editandoId = null;
   document.getElementById('btnCancelarEdicao').style.display = 'none';
-  document.getElementById('repeticaoWrap').style.display = tipoAtual==='despesa' ? 'block' : 'none';
+  document.getElementById('repeticaoWrap').style.display = 'block';
   document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa';
   document.getElementById('formLancamento').reset();
   initMesInput();
@@ -1194,9 +1190,11 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
     showToast('Informe um valor válido.');
     return;
   }
-  const tipoSelecionado = document.getElementById('fTipo').value;
+  let tipoSelecionado = document.getElementById('fTipo').value;
   if(tipoAtual==='despesa'){
     if(!tipoSelecionado || tipoSelecionado==='__novo__'){ showToast('Selecione o tipo de conta.'); return; }
+  } else {
+    tipoSelecionado = '';
   }
   const mesInput = document.getElementById('fMes').value;
   let mes = refMes, ano = refAno;
@@ -1227,7 +1225,7 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
   }
 
   try{
-    if(tipoAtual==='despesa' && repeticaoAtual==='parcelada'){
+    if(repeticaoAtual==='parcelada'){
       const n = parseInt(document.getElementById('fParcelas').value,10);
       if(!n || n<2){ showToast('Informe o número de parcelas (mínimo 2).'); return; }
       const grupoId = gerarId();
@@ -1237,10 +1235,10 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
         await db.collection('lancamentos').add({...base, mes:mm, ano:yy, confirmado: i===0?confirmadoInicial:false, parcelaGrupoId:grupoId, parcelaAtual:i+1, parcelaTotal:n, criadoEm:new Date().toISOString()});
       }
       showToast('Parcelas lançadas: ' + n + 'x.');
-    } else if(tipoAtual==='despesa' && repeticaoAtual==='fixa'){
-      const ref = await db.collection('recorrentes').add({tipo:'despesa', pessoa, categoria, tipoConta:tipoSelecionado, descricao, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()});
+    } else if(repeticaoAtual==='fixa'){
+      const ref = await db.collection('recorrentes').add({tipo:tipoAtual, pessoa, categoria, tipoConta:tipoSelecionado, descricao, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()});
       await db.collection('lancamentos').add({...base, mes, ano, confirmado:confirmadoInicial, origemRecorrenteId:ref.id, criadoEm:new Date().toISOString()});
-      showToast('Conta fixa cadastrada.');
+      showToast(tipoAtual==='receita' ? 'Receita fixa cadastrada.' : 'Conta fixa cadastrada.');
     } else {
       await db.collection('lancamentos').add({...base, mes, ano, confirmado:confirmadoInicial, criadoEm:new Date().toISOString()});
       showToast(tipoAtual==='receita' ? 'Receita lançada.' : 'Despesa lançada.');
