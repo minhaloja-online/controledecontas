@@ -8,20 +8,21 @@
 <style>
   :root{
     --bg:#121821;
-    --bg-elev:#1a2229;
-    --surface:#202a34;
-    --surface-2:#26313c;
+    --bg-elev:rgba(26,34,44,0.74);
+    --surface:rgba(32,42,52,0.62);
+    --surface-2:rgba(38,49,60,0.68);
     --ink:#edeee8;
-    --ink-dim:#98a4ae;
-    --ink-faint:#657079;
-    --line:rgba(237,238,232,0.09);
-    --line-strong:rgba(237,238,232,0.16);
-    --gold:#c79a4b;
-    --teal:#4fa98c;
-    --teal-dim:#2c4b40;
-    --brick:#c1573b;
-    --brick-dim:#4a2c22;
-    --amber:#d9a441;
+    --ink-dim:#a3aeb7;
+    --ink-faint:#7c8790;
+    --line:rgba(237,238,232,0.10);
+    --line-strong:rgba(237,238,232,0.20);
+    --gold:#d3ab68;
+    --teal:#63b79c;
+    --teal-dim:rgba(47,80,68,0.55);
+    --brick:#cc7058;
+    --brick-dim:rgba(74,44,34,0.55);
+    --amber:#dba75c;
+    --bg-transp:rgba(18,24,33,0.55);
     --radius:14px;
     --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -29,28 +30,38 @@
   }
   :root[data-theme="light"]{
     --bg:#f6f4ee;
-    --bg-elev:#ffffff;
-    --surface:#ffffff;
-    --surface-2:#efeadf;
-    --ink:#211d16;
-    --ink-dim:#6a6558;
-    --ink-faint:#95907f;
-    --line:rgba(33,29,22,0.09);
-    --line-strong:rgba(33,29,22,0.16);
-    --gold:#a8783a;
-    --teal:#25806a;
-    --teal-dim:#dbeee8;
-    --brick:#ad4a30;
-    --brick-dim:#f7e2da;
-    --amber:#a8763a;
+    --bg-elev:rgba(255,255,255,0.74);
+    --surface:rgba(255,255,255,0.62);
+    --surface-2:rgba(238,231,215,0.7);
+    --ink:#131110;
+    --ink-dim:#5c574a;
+    --ink-faint:#8a8474;
+    --line:rgba(19,17,16,0.10);
+    --line-strong:rgba(19,17,16,0.20);
+    --gold:#a97b3d;
+    --teal:#2f8a72;
+    --teal-dim:rgba(219,238,232,0.75);
+    --brick:#b0563b;
+    --brick-dim:rgba(247,226,218,0.75);
+    --amber:#a97b3d;
+    --bg-transp:rgba(246,244,238,0.52);
     --shadow: 0 6px 20px rgba(33,29,22,0.10);
   }
   :root[data-theme="light"] .save-btn, :root[data-theme="light"] #loginBtn, :root[data-theme="light"] #signupBtn{color:#fff6ea;}
   :root[data-theme="light"] table.prev-table td.rowlabel, :root[data-theme="light"] table.prev-table th.rowlabel{background:var(--bg);}
   :root[data-theme="light"] table.prev-table tr.linha-raiz td.rowlabel{background:var(--surface-2);}
+
+  nav.sidenav, header.top, .card, .admin-card, #gestaoFixas, .toast, .rec-fim-edit,
+  input[type=text], input[type=number], input[type=month], input[type=email], input[type=password], select,
+  #loginScreen form, #telaAguardando, .landing-features{
+    backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
   :root[data-theme="light"] table.prev-table tr.linha-raiz td{background:var(--surface-2);}
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
+  html,body{margin:0;padding:0;background:transparent;color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
+  #fundoImg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-repeat:no-repeat;}
+  #fundoOverlay{position:fixed;inset:0;z-index:-1;background:var(--bg);transition:background .2s;}
+  body.tem-fundo #fundoOverlay{background:var(--bg-transp);}
   body{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom));}
   button, input, select{font-family:var(--sans);}
   button{cursor:pointer;}
@@ -59,6 +70,19 @@
   ::-webkit-scrollbar-track{background:transparent;}
 
   #loginScreen, #telaAguardando{max-width:440px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:24px;}
+  #loginScreen{display:none;}
+  #telaAguardando{display:none;}
+
+  #telaLanding{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;}
+  .landing-inner{max-width:440px;text-align:center;}
+  .landing-tag{color:var(--gold);font-size:12px;letter-spacing:2px;text-transform:uppercase;margin:0 0 14px;font-weight:600;}
+  .landing-inner h1{font-family:var(--serif);font-size:29px;font-weight:400;line-height:1.28;margin:0 0 16px;color:var(--ink);}
+  .landing-inner h1 .destaque{color:var(--gold);}
+  .landing-sub{color:var(--ink-dim);font-size:14.5px;line-height:1.6;margin:0 0 26px;}
+  .landing-features{display:flex;flex-direction:column;gap:11px;margin-bottom:30px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .landing-features div{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink);}
+  .landing-features svg{color:var(--gold);flex:none;}
+  .landing-ctas{display:flex;flex-direction:column;gap:6px;}
   #loginScreen h1, #telaAguardando h1{font-family:var(--serif);font-size:25px;font-weight:400;margin:0 0 6px;}
   #loginScreen p.sub, #telaAguardando p.sub{color:var(--ink-dim);font-size:14px;margin:0 0 26px;line-height:1.5;}
   #loginScreen label{display:block;font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
@@ -294,7 +318,28 @@
 </head>
 <body>
 
+<div id="fundoImg"></div>
+<div id="fundoOverlay"></div>
+
+<div id="telaLanding">
+  <div class="landing-inner">
+    <p class="landing-tag">Controle de contas</p>
+    <h1>Organize as contas da casa <span class="destaque">sem planilha</span>.</h1>
+    <p class="landing-sub">Lance receitas e despesas, acompanhe contas fixas e parceladas, e veja a previsão dos próximos meses — tudo sincronizado entre quem mora junto.</p>
+    <div class="landing-features">
+      <div><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg> Lançamentos rápidos de receitas e despesas</div>
+      <div><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/></svg> Previsão mês a mês, com contas por tipo</div>
+      <div><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M8 9h8M8 13h8"/></svg> Contas fixas e parceladas, geradas sozinhas</div>
+    </div>
+    <div class="landing-ctas">
+      <button type="button" id="btnLandingEntrar" class="save-btn">Entrar</button>
+      <button type="button" id="btnLandingCriar" class="auth-toggle">Criar conta</button>
+    </div>
+  </div>
+</div>
+
 <div id="loginScreen">
+  <button type="button" class="auth-toggle" id="voltarLanding" style="margin:0 0 22px;text-align:left;">← Voltar</button>
   <h1>Controle de contas</h1>
   <p class="sub" id="loginSub">Entre com sua conta.</p>
   <form id="formLogin">
@@ -589,6 +634,14 @@
         </div>
 
         <div class="admin-card">
+          <h3>Imagem de fundo</h3>
+          <p style="font-size:13px;color:var(--ink-dim);margin:0 0 12px;">Aparece atrás de toda a tela, por trás dos painéis translúcidos.</p>
+          <img id="fundoPreviewAdmin" class="logo-preview" style="width:100%;height:120px;" alt="Fundo atual">
+          <input type="file" id="fFundo" accept="image/*">
+          <button type="button" class="btn-danger" id="btnRemoverFundo" style="margin-top:10px;">Remover imagem de fundo</button>
+        </div>
+
+        <div class="admin-card">
           <h3>Todos os lançamentos</h3>
           <input type="text" id="buscaAdmin" class="admin-search" placeholder="Buscar por descrição, categoria, pessoa, mês...">
           <div id="listaAdminLancamentos"></div>
@@ -612,12 +665,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -636,9 +689,9 @@ let opcoes = {
   categoriasReceita:[...DEFAULTS.categoriasReceita],
   categoriasDespesa:[...DEFAULTS.categoriasDespesa],
   tiposConta:[...DEFAULTS.tiposConta],
-  pessoas:[...DEFAULTS.pessoas],
-  logoDataUrl:''
+  pessoas:[...DEFAULTS.pessoas]
 };
+let aparencia = {logoDataUrl:'', fundoDataUrl:''};
 
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 const TITULOS = {lancar:'Lançar', extrato:'Extrato', previsao:'Previsão', resumo:'Resumo', admin:'Admin'};
@@ -656,7 +709,7 @@ let uidAtual = null;
 let sincronizadoUid = null;
 let souAdmin = false;
 let previsaoExpandido = {despesaTotal:false, despesaTipos:{}, receitaTotal:false, receitaTipos:{}};
-let unsubLanc = null, unsubRec = null, unsubCfg = null, unsubUserDoc = null, unsubPendentes = null;
+let unsubLanc = null, unsubRec = null, unsubCfg = null, unsubApar = null, unsubUserDoc = null, unsubPendentes = null;
 
 function colUser(nome){
   return db.collection('users').doc(uidAtual).collection(nome);
@@ -730,14 +783,28 @@ function limparListenersDados(){
   if(unsubLanc){unsubLanc();unsubLanc=null;}
   if(unsubRec){unsubRec();unsubRec=null;}
   if(unsubCfg){unsubCfg();unsubCfg=null;}
+  if(unsubApar){unsubApar();unsubApar=null;}
   if(unsubPendentes){unsubPendentes();unsubPendentes=null;}
 }
 
 function mostrarTela(tela){
+  document.getElementById('telaLanding').style.display = tela==='landing' ? 'flex' : 'none';
   document.getElementById('loginScreen').style.display = tela==='login' ? 'flex' : 'none';
   document.getElementById('telaAguardando').style.display = tela==='aguardando' ? 'flex' : 'none';
   document.getElementById('app').style.display = tela==='app' ? 'flex' : 'none';
 }
+
+document.getElementById('btnLandingEntrar').addEventListener('click', ()=>{
+  document.getElementById('formLogin').style.display = 'block';
+  document.getElementById('formSignup').style.display = 'none';
+  mostrarTela('login');
+});
+document.getElementById('btnLandingCriar').addEventListener('click', ()=>{
+  document.getElementById('formLogin').style.display = 'none';
+  document.getElementById('formSignup').style.display = 'block';
+  mostrarTela('login');
+});
+document.getElementById('voltarLanding').addEventListener('click', ()=> mostrarTela('landing'));
 
 auth.onAuthStateChanged(user=>{
   limparListenersDados();
@@ -745,7 +812,7 @@ auth.onAuthStateChanged(user=>{
   sincronizadoUid = null;
   if(!user){
     uidAtual = null;
-    mostrarTela('login');
+    mostrarTela('landing');
     return;
   }
   uidAtual = user.uid;
@@ -770,8 +837,7 @@ auth.onAuthStateChanged(user=>{
       sincronizadoUid = user.uid;
       iniciarSincronizacao();
     }
-    iniciarSincronizacao();
-  }, ()=>{ mostrarTela('login'); });
+  }, ()=>{ mostrarTela('landing'); });
 });
 
 /* ---------- Dados ---------- */
@@ -798,7 +864,6 @@ function iniciarSincronizacao(){
       opcoes.categoriasDespesa = d.categoriasDespesa || DEFAULTS.categoriasDespesa;
       opcoes.tiposConta = d.tiposConta || DEFAULTS.tiposConta;
       opcoes.pessoas = (d.pessoas && d.pessoas.length) ? d.pessoas : DEFAULTS.pessoas;
-      opcoes.logoDataUrl = d.logoDataUrl || '';
     }else{
       colUser('config').doc('opcoes').set(DEFAULTS).catch(()=>{});
     }
@@ -807,9 +872,16 @@ function iniciarSincronizacao(){
     atualizarFiltroTipoConta();
     atualizarPessoas();
     atualizarPrevPessoa();
-    aplicarLogo();
     if(currentView==='admin') renderAdminListas();
     verificarMigracao();
+  });
+
+  unsubApar = colUser('config').doc('aparencia').onSnapshot(snap=>{
+    const d = snap.exists ? snap.data() : {};
+    aparencia.logoDataUrl = d.logoDataUrl || '';
+    aparencia.fundoDataUrl = d.fundoDataUrl || '';
+    aplicarLogo();
+    aplicarFundo();
   });
 
   if(souAdmin){
@@ -827,14 +899,28 @@ function iniciarSincronizacao(){
 function aplicarLogo(){
   const logo = document.getElementById('sideLogo');
   const preview = document.getElementById('logoPreviewAdmin');
-  if(opcoes.logoDataUrl){
-    logo.src = opcoes.logoDataUrl; logo.style.display = 'block';
-    preview.src = opcoes.logoDataUrl; preview.style.display = 'block';
+  if(aparencia.logoDataUrl){
+    logo.src = aparencia.logoDataUrl; logo.style.display = 'block';
+    preview.src = aparencia.logoDataUrl; preview.style.display = 'block';
   }else{
     logo.style.display = 'none';
     preview.style.display = 'none';
   }
   document.getElementById('sideBrandSub').textContent = opcoes.pessoas.join(' & ');
+}
+
+function aplicarFundo(){
+  const el = document.getElementById('fundoImg');
+  const preview = document.getElementById('fundoPreviewAdmin');
+  if(aparencia.fundoDataUrl){
+    el.style.backgroundImage = 'url(' + aparencia.fundoDataUrl + ')';
+    document.body.classList.add('tem-fundo');
+    if(preview){ preview.src = aparencia.fundoDataUrl; preview.style.display = 'block'; }
+  }else{
+    el.style.backgroundImage = 'none';
+    document.body.classList.remove('tem-fundo');
+    if(preview){ preview.style.display = 'none'; }
+  }
 }
 
 let migracaoVerificada = false;
@@ -1772,33 +1858,52 @@ document.getElementById('view-admin').addEventListener('click', (e)=>{
   }
 });
 
-document.getElementById('fLogo').addEventListener('change', (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
+function processarImagemArquivo(file, maxDim, mime, qualidade, callback){
   const leitor = new FileReader();
   leitor.onload = (ev)=>{
     const img = new Image();
     img.onload = ()=>{
-      const maxDim = 240;
       let w = img.width, h = img.height;
       if(w>h){ if(w>maxDim){ h = Math.round(h*maxDim/w); w = maxDim; } }
       else { if(h>maxDim){ w = Math.round(w*maxDim/h); h = maxDim; } }
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL('image/png');
-      if(dataUrl.length > 900000){ showToast('Imagem muito grande, tente uma menor.'); return; }
-      colUser('config').doc('opcoes').set({logoDataUrl:dataUrl}, {merge:true})
-        .then(()=>showToast('Logo atualizada.'))
-        .catch(()=>showToast('Não foi possível salvar a logo.'));
+      callback(canvas.toDataURL(mime, qualidade));
     };
     img.src = ev.target.result;
   };
   leitor.readAsDataURL(file);
+}
+
+document.getElementById('fLogo').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  processarImagemArquivo(file, 220, 'image/png', 1, (dataUrl)=>{
+    if(dataUrl.length > 280000){ showToast('Imagem muito grande, tente uma menor.'); return; }
+    colUser('config').doc('aparencia').set({logoDataUrl:dataUrl}, {merge:true})
+      .then(()=>showToast('Logo atualizada.'))
+      .catch(()=>showToast('Não foi possível salvar a logo.'));
+  });
 });
 document.getElementById('btnRemoverLogo').addEventListener('click', ()=>{
-  colUser('config').doc('opcoes').set({logoDataUrl:''}, {merge:true}).catch(()=>{});
+  colUser('config').doc('aparencia').set({logoDataUrl:''}, {merge:true}).catch(()=>{});
 });
+
+document.getElementById('fFundo').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  processarImagemArquivo(file, 1400, 'image/jpeg', 0.68, (dataUrl)=>{
+    if(dataUrl.length > 700000){ showToast('Imagem muito grande, tente uma menor ou mais simples.'); return; }
+    colUser('config').doc('aparencia').set({fundoDataUrl:dataUrl}, {merge:true})
+      .then(()=>showToast('Imagem de fundo atualizada.'))
+      .catch(()=>showToast('Não foi possível salvar a imagem de fundo.'));
+  });
+});
+document.getElementById('btnRemoverFundo').addEventListener('click', ()=>{
+  colUser('config').doc('aparencia').set({fundoDataUrl:''}, {merge:true}).catch(()=>{});
+});
+
 
 initMesInput();
 atualizarCategorias();
