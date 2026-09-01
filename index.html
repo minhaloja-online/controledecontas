@@ -136,6 +136,12 @@
   table.prev-table tr.rowtotal td{border-top:1px solid var(--line-strong);font-weight:600;color:var(--ink);}
   table.prev-table tr.rowreceita td{color:var(--teal);}
   table.prev-table tr.rowsaldo td{border-top:1px solid var(--line-strong);font-weight:600;}
+  table.prev-table .chev{background:none;border:none;color:var(--ink-dim);font-size:10px;width:14px;height:14px;padding:0;margin-right:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;}
+  table.prev-table tr.linha-raiz td.rowlabel{cursor:pointer;}
+  table.prev-table tr.linha-tipo td.rowlabel{cursor:pointer;}
+  table.prev-table .indent1{padding-left:2px;}
+  table.prev-table .indent2{padding-left:34px;color:var(--ink-faint);font-size:11.5px;}
+  table.prev-table tr.linha-desc td{color:var(--ink-faint);}
 
   .fixas-toggle{display:flex;align-items:center;justify-content:space-between;margin:22px 0 10px;}
   .fixas-toggle button{background:none;border:none;color:var(--gold);font-size:13px;padding:2px;}
@@ -179,7 +185,7 @@
     .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
     .periodo-row{grid-template-columns:1fr 1fr 1fr;align-items:end;}
     #view-resumo, #view-extrato{max-width:1100px;}
-    .prev-filtros{grid-template-columns:repeat(4,1fr);max-width:1000px;}
+    .prev-filtros{grid-template-columns:repeat(3,1fr);max-width:760px;}
   }
 
   @media (min-width:1280px){
@@ -317,10 +323,6 @@
             </select>
           </div>
           <div>
-            <label for="prevConta">Conta</label>
-            <select id="prevConta"><option value="todas">Todas as contas</option></select>
-          </div>
-          <div>
             <label for="prevDe">De</label>
             <input type="month" id="prevDe">
           </div>
@@ -414,12 +416,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -452,6 +454,7 @@ let tipoAtual = 'receita';
 let repeticaoAtual = 'unica';
 let filtroExtrato = 'todos';
 let currentView = 'lancar';
+let previsaoExpandido = {despesaTotal:false, despesaTipos:{}, receitaTotal:false, receitaTipos:{}};
 let unsubLanc = null, unsubRec = null, unsubCfg = null;
 const hoje = new Date();
 let refMes = hoje.getMonth() + 1;
@@ -530,7 +533,6 @@ function iniciarSincronizacao(){
     atualizarCategorias();
     atualizarTipos();
     atualizarGrupos();
-    atualizarPrevConta();
   });
 }
 
@@ -721,89 +723,92 @@ function abrirPrevisao(){
     return;
   }
   const pessoaFiltro = document.getElementById('prevPessoa').value;
-  const contaFiltro = document.getElementById('prevConta').value;
-  renderPrevisao(lista, pessoaFiltro, contaFiltro);
+  renderPrevisao(lista, pessoaFiltro);
 }
 
-function renderPrevisao(lista, pessoaFiltro, contaFiltro){
+function renderPrevisao(lista, pessoaFiltro){
   const headerCols = lista.map(({m,y})=>`<th>${MESES[m-1].slice(0,3)}/${String(y).slice(2)}</th>`).join('');
-  const box = document.getElementById('listaPrevisao');
 
-  if(contaFiltro && contaFiltro !== 'todas'){
-    const porItem = {};
-    lista.forEach(({m,y})=>{
-      const key = y+'-'+m;
-      lancamentos.filter(i=> i.tipo==='despesa' && i.tipoConta===contaFiltro && i.mes===m && i.ano===y && (pessoaFiltro==='todos' || i.pessoa===pessoaFiltro)).forEach(i=>{
-        const nome = i.descricao || i.categoria || 'Sem descrição';
-        porItem[nome] = porItem[nome] || {};
-        porItem[nome][key] = (porItem[nome][key]||0) + i.valor;
-      });
-    });
-    const nomes = Object.keys(porItem).sort((a,b)=>a.localeCompare(b,'pt-BR'));
-    if(!nomes.length){
-      box.innerHTML = '<p class="empty">Nenhum lançamento para "' + contaFiltro + '" neste período.</p>';
-      return;
-    }
-    const rows = nomes.map(nome=>{
-      const cells = lista.map(({m,y})=>{
-        const v = (porItem[nome] && porItem[nome][y+'-'+m]) || 0;
-        return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
-      }).join('');
-      return `<tr><td class="rowlabel">${nome}</td>${cells}</tr>`;
-    }).join('');
-    const totalRow = `<tr class="rowtotal"><td class="rowlabel">Total ${contaFiltro}</td>${lista.map(({m,y})=>{
-      const key = y+'-'+m;
-      let soma = 0; nomes.forEach(n=> soma += (porItem[n] && porItem[n][key]) || 0);
-      return `<td>${fmtMoeda(soma)}</td>`;
-    }).join('')}</tr>`;
-    box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Compra</th>${headerCols}</tr></thead><tbody>${rows}${totalRow}</tbody></table></div>`;
-    return;
-  }
+  const despesaPorTipo = {}, despesaPorTipoDesc = {};
+  const receitaPorTipo = {}, receitaPorTipoDesc = {};
+  const totalDespesa = {}, totalReceita = {};
 
-  const porConta = {};
-  const totalDespesa = {};
-  const totalReceita = {};
   lista.forEach(({m,y})=>{
     const key = y+'-'+m;
     let td = 0, tr = 0;
     lancamentos.filter(i=> i.mes===m && i.ano===y && (pessoaFiltro==='todos' || i.pessoa===pessoaFiltro)).forEach(i=>{
-      if(i.tipo==='despesa'){
-        td += i.valor;
-        const nome = i.tipoConta || i.categoria || 'Outros';
-        porConta[nome] = porConta[nome] || {};
-        porConta[nome][key] = (porConta[nome][key]||0) + i.valor;
-      } else {
-        tr += i.valor;
-      }
+      const tipoNome = i.tipoConta || i.categoria || 'Outros';
+      const descNome = i.descricao || (i.parcelaTotal ? ('Parcela ' + i.parcelaAtual + '/' + i.parcelaTotal) : 'Sem descrição');
+      const porTipo = i.tipo==='despesa' ? despesaPorTipo : receitaPorTipo;
+      const porTipoDesc = i.tipo==='despesa' ? despesaPorTipoDesc : receitaPorTipoDesc;
+      porTipo[tipoNome] = porTipo[tipoNome] || {};
+      porTipo[tipoNome][key] = (porTipo[tipoNome][key]||0) + i.valor;
+      porTipoDesc[tipoNome] = porTipoDesc[tipoNome] || {};
+      porTipoDesc[tipoNome][descNome] = porTipoDesc[tipoNome][descNome] || {};
+      porTipoDesc[tipoNome][descNome][key] = (porTipoDesc[tipoNome][descNome][key]||0) + i.valor;
+      if(i.tipo==='despesa') td += i.valor; else tr += i.valor;
     });
     totalDespesa[key] = td;
     totalReceita[key] = tr;
   });
 
-  const nomesConta = Object.keys(porConta).sort((a,b)=>a.localeCompare(b,'pt-BR'));
-  const rowsContas = nomesConta.map(nome=>{
-    const cells = lista.map(({m,y})=>{
-      const v = (porConta[nome] && porConta[nome][y+'-'+m]) || 0;
+  function linhaValores(mapa){
+    return lista.map(({m,y})=>{
+      const v = (mapa && mapa[y+'-'+m]) || 0;
       return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
     }).join('');
-    return `<tr><td class="rowlabel">${nome}</td>${cells}</tr>`;
-  }).join('');
+  }
 
-  const rowTotalDespesa = `<tr class="rowtotal"><td class="rowlabel">Total despesas</td>${lista.map(({m,y})=>`<td>${fmtMoeda(totalDespesa[y+'-'+m])}</td>`).join('')}</tr>`;
-  const rowReceita = `<tr class="rowreceita"><td class="rowlabel">Receita prevista</td>${lista.map(({m,y})=>`<td>${fmtMoeda(totalReceita[y+'-'+m])}</td>`).join('')}</tr>`;
-  const rowSaldo = `<tr class="rowsaldo"><td class="rowlabel">Saldo previsto</td>${lista.map(({m,y})=>{
+  function blocoGrupo(grupoChave, rotulo, classeRaiz, porTipo, porTipoDesc, totalMapa){
+    const aberto = grupoChave==='despesa' ? previsaoExpandido.despesaTotal : previsaoExpandido.receitaTotal;
+    let html = `<tr class="${classeRaiz} linha-raiz"><td class="rowlabel"><button type="button" class="chev" data-toggle-root="${grupoChave}">${aberto?'▾':'▸'}</button>${rotulo}</td>${linhaValores(totalMapa)}</tr>`;
+    if(aberto){
+      const nomesTipo = Object.keys(porTipo).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+      nomesTipo.forEach(tipoNome=>{
+        const tiposAbertos = grupoChave==='despesa' ? previsaoExpandido.despesaTipos : previsaoExpandido.receitaTipos;
+        const tipoAberto = !!tiposAbertos[tipoNome];
+        html += `<tr class="linha-tipo"><td class="rowlabel"><button type="button" class="chev" data-toggle-tipo="${grupoChave}|${tipoNome}">${tipoAberto?'▾':'▸'}</button><span class="indent1">${tipoNome}</span></td>${linhaValores(porTipo[tipoNome])}</tr>`;
+        if(tipoAberto){
+          const descs = porTipoDesc[tipoNome] || {};
+          Object.keys(descs).sort((a,b)=>a.localeCompare(b,'pt-BR')).forEach(descNome=>{
+            html += `<tr class="linha-desc"><td class="rowlabel"><span class="indent2">${descNome}</span></td>${linhaValores(descs[descNome])}</tr>`;
+          });
+        }
+      });
+    }
+    return html;
+  }
+
+  let rows = blocoGrupo('despesa', 'Total despesas', 'rowtotal', despesaPorTipo, despesaPorTipoDesc, totalDespesa);
+  rows += blocoGrupo('receita', 'Receita prevista', 'rowreceita', receitaPorTipo, receitaPorTipoDesc, totalReceita);
+  rows += `<tr class="rowsaldo"><td class="rowlabel">Saldo previsto</td>${lista.map(({m,y})=>{
     const key = y+'-'+m;
     const saldo = totalReceita[key] - totalDespesa[key];
     const cor = saldo >= 0 ? 'var(--teal)' : 'var(--brick)';
     return `<td style="color:${cor};">${fmtMoeda(saldo)}</td>`;
   }).join('')}</tr>`;
 
-  if(!nomesConta.length){
-    box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Conta</th>${headerCols}</tr></thead><tbody>${rowTotalDespesa}${rowReceita}${rowSaldo}</tbody></table></div>`;
-    return;
-  }
-  box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Conta</th>${headerCols}</tr></thead><tbody>${rowsContas}${rowTotalDespesa}${rowReceita}${rowSaldo}</tbody></table></div>`;
+  const box = document.getElementById('listaPrevisao');
+  box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Conta</th>${headerCols}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
+
+document.getElementById('listaPrevisao').addEventListener('click', (e)=>{
+  const rootKey = e.target.dataset.toggleRoot;
+  const tipoKey = e.target.dataset.toggleTipo;
+  if(rootKey){
+    if(rootKey==='despesa') previsaoExpandido.despesaTotal = !previsaoExpandido.despesaTotal;
+    else previsaoExpandido.receitaTotal = !previsaoExpandido.receitaTotal;
+    abrirPrevisao();
+  }
+  if(tipoKey){
+    const [grupoChave, nome] = tipoKey.split('|');
+    const tiposAbertos = grupoChave==='despesa' ? previsaoExpandido.despesaTipos : previsaoExpandido.receitaTipos;
+    tiposAbertos[nome] = !tiposAbertos[nome];
+    abrirPrevisao();
+  }
+});
+
+
 
 function renderRecorrentes(){
   const box = document.getElementById('listaRecorrentes');
@@ -852,13 +857,6 @@ function atualizarTipos(){
 function atualizarGrupos(){
   const lista = tipoAtual==='receita' ? opcoes.gruposReceita : opcoes.gruposDespesa;
   popularSelectComNovo(document.getElementById('fGrupo'), lista, '+ Novo grupo…', tipoAtual==='receita');
-}
-function atualizarPrevConta(){
-  const sel = document.getElementById('prevConta');
-  if(!sel) return;
-  const atual = sel.value;
-  sel.innerHTML = '<option value="todas">Todas as contas</option>' + opcoes.tiposConta.map(c=>`<option>${c}</option>`).join('');
-  if(atual && (atual==='todas' || opcoes.tiposConta.includes(atual))) sel.value = atual;
 }
 
 function configurarNovoItem(selectId, promptTexto, obterCampo, obterLista, refreshFn){
@@ -1004,7 +1002,7 @@ document.getElementById('btnExcluirFixas').addEventListener('click', async ()=>{
   }
 });
 
-['prevPessoa','prevConta','prevDe','prevAte'].forEach(id=>{
+['prevPessoa','prevDe','prevAte'].forEach(id=>{
   document.getElementById(id).addEventListener('change', ()=>{
     if(currentView==='previsao') abrirPrevisao();
   });
@@ -1082,7 +1080,6 @@ initMesInput();
 atualizarCategorias();
 atualizarTipos();
 atualizarGrupos();
-atualizarPrevConta();
 renderMesLabel();
 document.getElementById('monthSwitch').style.display = 'none';
 </script>
