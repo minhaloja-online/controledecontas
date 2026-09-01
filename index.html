@@ -603,12 +603,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -907,11 +907,20 @@ function materializarMes(mes, ano){
     const jaExiste = lancamentos.some(l=> l.origemRecorrenteId===r.id && l.mes===mes && l.ano===ano);
     if(jaExiste) return;
     materializando.add(chave);
-    colUser('lancamentos').add({
-      tipo:r.tipo, pessoa:r.pessoa, categoria:r.categoria, tipoConta:r.tipoConta||'', descricao:r.descricao||'',
-      valor:r.valor, mes, ano, confirmado:false, origemRecorrenteId:r.id,
-      criadoEm:new Date().toISOString(), criadoPor:''
-    }).catch(()=>{ materializando.delete(chave); });
+    // ID determinístico (recorrente+mês+ano): mesmo se essa função rodar em paralelo
+    // duas vezes (ex.: logo após abrir o app), a transação garante que só um
+    // lançamento é criado para essa combinação, nunca duplicado.
+    const idDoc = 'rec_' + r.id + '_' + ano + '_' + mes;
+    const ref = colUser('lancamentos').doc(idDoc);
+    db.runTransaction(async (tx)=>{
+      const doc = await tx.get(ref);
+      if(doc.exists) return;
+      tx.set(ref, {
+        tipo:r.tipo, pessoa:r.pessoa, categoria:r.categoria, tipoConta:r.tipoConta||'', descricao:r.descricao||'',
+        valor:r.valor, mes, ano, confirmado:false, origemRecorrenteId:r.id,
+        criadoEm:new Date().toISOString(), criadoPor:''
+      });
+    }).catch(()=>{}).finally(()=>{ materializando.delete(chave); });
   });
 }
 
