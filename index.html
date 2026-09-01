@@ -74,7 +74,7 @@
 
   .section-title{font-size:13px;color:var(--ink-dim);margin:22px 0 10px;}
   .bar-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
-  .bar-row .bar-name{width:110px;flex:none;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bar-row .bar-name{width:130px;flex:none;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .bar-track{flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;}
   .bar-fill{height:100%;background:var(--brick);border-radius:4px;}
   .bar-val{width:auto;flex:1;text-align:right;font-size:13px;color:var(--ink-dim);}
@@ -101,7 +101,7 @@
   .tx-del:active{background:var(--surface-2);}
 
   form label{display:block;font-size:12px;color:var(--ink-dim);margin:16px 0 6px;}
-  form label:first-of-type{margin-top:0;}
+  .form-row2{display:block;}
   .toggle-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .toggle-pair button{padding:13px 0;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-dim);font-size:14px;}
   .toggle-pair button.on-receita.active{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);}
@@ -126,7 +126,7 @@
   .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--surface-2);color:var(--ink);padding:10px 18px;border-radius:20px;font-size:13px;border:1px solid var(--line-strong);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;max-width:80%;text-align:center;}
   .toast.show{opacity:1;}
 
-  .prev-filtros{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+  .prev-filtros{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px;}
   .prev-filtros label{display:block;font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
   .prev-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   table.prev-table{border-collapse:collapse;font-size:12px;white-space:nowrap;width:100%;}
@@ -171,14 +171,15 @@
     .header-logout{display:none;}
 
     .content-col{flex:1;min-width:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
-    header.top{flex:none;padding:22px 40px 16px;}
+    header.top{flex:none;padding:22px 44px 16px;}
     main{flex:1;padding:0 44px 48px;max-width:none;}
 
     .cards{grid-template-columns:repeat(4,1fr);}
-    #view-lancar form{max-width:460px;}
+    #view-lancar form{max-width:820px;}
+    .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
     .periodo-row{grid-template-columns:1fr 1fr 1fr;align-items:end;}
     #view-resumo, #view-extrato{max-width:1100px;}
-    .prev-filtros{max-width:640px;}
+    .prev-filtros{grid-template-columns:repeat(4,1fr);max-width:1000px;}
   }
 
   @media (min-width:1280px){
@@ -251,20 +252,23 @@
         <div class="cards">
           <div class="card">
             <p class="label">Receitas recebidas</p>
-            <p class="num teal" id="rReceb">R$ 0,00</p>
-            <p class="sub" id="rPrev">de R$ 0,00 previsto</p>
+            <p class="num teal" id="rReceb">R$ 0</p>
+            <p class="sub" id="rPrev">de R$ 0 previsto</p>
           </div>
           <div class="card">
             <p class="label">Despesas pagas</p>
-            <p class="num brick" id="rPago">R$ 0,00</p>
-            <p class="sub" id="rPrevD">de R$ 0,00 previsto</p>
+            <p class="num brick" id="rPago">R$ 0</p>
+            <p class="sub" id="rPrevD">de R$ 0 previsto</p>
           </div>
           <div class="card wide">
             <p class="label">Saldo realizado no mês</p>
-            <p class="num gold" id="rSaldo">R$ 0,00</p>
-            <p class="sub" id="rSaldoPrev">saldo previsto: R$ 0,00</p>
+            <p class="num gold" id="rSaldo">R$ 0</p>
+            <p class="sub" id="rSaldoPrev">saldo previsto: R$ 0</p>
           </div>
         </div>
+
+        <p class="section-title" style="margin-top:0;">Despesas por grupo (despesas x custos)</p>
+        <div id="rGrupos"></div>
 
         <p class="section-title">Despesas por categoria</p>
         <div id="rCategorias"></div>
@@ -313,6 +317,10 @@
             </select>
           </div>
           <div>
+            <label for="prevConta">Conta</label>
+            <select id="prevConta"><option value="todas">Todas as contas</option></select>
+          </div>
+          <div>
             <label for="prevDe">De</label>
             <input type="month" id="prevDe">
           </div>
@@ -331,28 +339,47 @@
             <button type="button" class="on-despesa" data-tipo="despesa">Despesa</button>
           </div>
 
-          <label for="fPessoa">Pessoa</label>
-          <select id="fPessoa">
-            <option>Brenno</option>
-            <option>Karen</option>
-          </select>
-
-          <label for="fCategoria">Categoria</label>
-          <select id="fCategoria"></select>
-
-          <div id="tipoContaWrap" style="display:none;">
-            <label for="fTipoConta">Tipo de conta</label>
-            <select id="fTipoConta"></select>
+          <div class="form-row2">
+            <div>
+              <label for="fPessoa">Pessoa</label>
+              <select id="fPessoa">
+                <option>Brenno</option>
+                <option>Karen</option>
+              </select>
+            </div>
+            <div>
+              <label for="fCategoria">Categoria</label>
+              <select id="fCategoria"></select>
+            </div>
           </div>
 
-          <label for="fValor">Valor</label>
-          <div class="valor-wrap">
-            <span>R$</span>
-            <input type="number" id="fValor" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+          <div class="form-row2">
+            <div>
+              <label for="fGrupo">Grupo</label>
+              <select id="fGrupo"></select>
+            </div>
+            <div>
+              <label for="fTipo" id="fTipoLabel">Tipo de conta</label>
+              <select id="fTipo"></select>
+            </div>
           </div>
 
-          <label for="fMes">Mês de referência</label>
-          <input type="month" id="fMes">
+          <label for="fDescricao">Descrição (opcional)</label>
+          <input type="text" id="fDescricao" placeholder="Ex.: compra parcelada, observação...">
+
+          <div class="form-row2">
+            <div>
+              <label for="fValor">Valor</label>
+              <div class="valor-wrap">
+                <span>R$</span>
+                <input type="number" id="fValor" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+              </div>
+            </div>
+            <div>
+              <label for="fMes">Mês de referência</label>
+              <input type="month" id="fMes">
+            </div>
+          </div>
 
           <div id="repeticaoWrap" style="display:none;">
             <label>Repetição</label>
@@ -387,12 +414,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -401,9 +428,19 @@ const db = firebase.firestore();
 const DEFAULTS = {
   categoriasReceita: ['Salário','Férias','13º Salário','Auxílio Moradia','Outros'],
   categoriasDespesa: ['Casa','Veículo','Cartão De Crédito','Consórcio','Alimentação','Mercado','Farmácia','Dízimos E Ofertas','Empréstimo','Outros'],
-  tiposConta: ['Aluguel','Dízimo','Energia','Cartão Jessica','Internet','Consórcio','Parcela Carro','Cartão Mamãe','Empréstimo Mamãe','Nubank [B]','Nubank [K]','Mercado Pago [K]','Catão Izilene','Licenciamento']
+  tiposConta: ['Aluguel','Dízimo','Energia','Cartão Jessica','Internet','Consórcio','Parcela Carro','Cartão Mamãe','Empréstimo Mamãe','Nubank [B]','Nubank [K]','Mercado Pago [K]','Catão Izilene','Licenciamento'],
+  tiposReceita: ['Salário Brenno','Salário Karen','Outros'],
+  gruposDespesa: ['Despesa','Custo'],
+  gruposReceita: ['Receita Fixa','Receita Variável']
 };
-let opcoes = {categoriasReceita:[...DEFAULTS.categoriasReceita], categoriasDespesa:[...DEFAULTS.categoriasDespesa], tiposConta:[...DEFAULTS.tiposConta]};
+let opcoes = {
+  categoriasReceita:[...DEFAULTS.categoriasReceita],
+  categoriasDespesa:[...DEFAULTS.categoriasDespesa],
+  tiposConta:[...DEFAULTS.tiposConta],
+  tiposReceita:[...DEFAULTS.tiposReceita],
+  gruposDespesa:[...DEFAULTS.gruposDespesa],
+  gruposReceita:[...DEFAULTS.gruposReceita]
+};
 
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 const TITULOS = {lancar:'Lançar', extrato:'Extrato', previsao:'Previsão', resumo:'Resumo'};
@@ -421,7 +458,7 @@ let refMes = hoje.getMonth() + 1;
 let refAno = hoje.getFullYear();
 
 function fmtMoeda(v){
-  return (v||0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+  return (v||0).toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:0, maximumFractionDigits:0});
 }
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -484,11 +521,16 @@ function iniciarSincronizacao(){
       opcoes.categoriasReceita = d.categoriasReceita || DEFAULTS.categoriasReceita;
       opcoes.categoriasDespesa = d.categoriasDespesa || DEFAULTS.categoriasDespesa;
       opcoes.tiposConta = d.tiposConta || DEFAULTS.tiposConta;
+      opcoes.tiposReceita = d.tiposReceita || DEFAULTS.tiposReceita;
+      opcoes.gruposDespesa = d.gruposDespesa || DEFAULTS.gruposDespesa;
+      opcoes.gruposReceita = d.gruposReceita || DEFAULTS.gruposReceita;
     }else{
       db.collection('config').doc('opcoes').set(DEFAULTS).catch(()=>{});
     }
     atualizarCategorias();
-    atualizarTiposConta();
+    atualizarTipos();
+    atualizarGrupos();
+    atualizarPrevConta();
   });
 }
 
@@ -505,7 +547,7 @@ function materializarMes(mes, ano){
     if(jaExiste) return;
     materializando.add(chave);
     db.collection('lancamentos').add({
-      tipo:r.tipo, pessoa:r.pessoa, categoria:r.categoria, tipoConta:r.tipoConta||'',
+      tipo:r.tipo, pessoa:r.pessoa, categoria:r.categoria, grupo:r.grupo||'', tipoConta:r.tipoConta||'', descricao:r.descricao||'',
       valor:r.valor, mes, ano, confirmado:false, origemRecorrenteId:r.id,
       criadoEm:new Date().toISOString(), criadoPor:''
     }).catch(()=>{ materializando.delete(chave); });
@@ -533,7 +575,8 @@ function trocarView(view){
   if(view==='resumo') renderResumo();
   if(view==='extrato') renderExtrato();
   if(view==='previsao') abrirPrevisao();
-  document.querySelector('.content-col').scrollTop = 0;
+  const cc = document.querySelector('.content-col');
+  if(cc) cc.scrollTop = 0;
 }
 
 function mudarMes(delta){
@@ -570,6 +613,18 @@ function renderResumo(){
   document.getElementById('rSaldo').textContent = fmtMoeda(recebido - pago);
   document.getElementById('rSaldoPrev').textContent = 'saldo previsto: ' + fmtMoeda(previstoR - previstoD);
 
+  const porGrupo = {};
+  despesas.forEach(i=>{ const g = i.grupo || 'Sem grupo'; porGrupo[g] = (porGrupo[g]||0) + i.valor; });
+  const grupoEntries = Object.entries(porGrupo).sort((a,b)=>b[1]-a[1]);
+  const maxGrupo = grupoEntries.length ? grupoEntries[0][1] : 1;
+  const grupoBox = document.getElementById('rGrupos');
+  grupoBox.innerHTML = grupoEntries.length ? grupoEntries.map(([g,val])=>`
+    <div class="bar-row">
+      <span class="bar-name">${g}</span>
+      <div class="bar-track"><div class="bar-fill" style="background:var(--gold);width:${Math.max(4,(val/maxGrupo)*100)}%"></div></div>
+      <span class="bar-val" style="width:76px;flex:none;">${fmtMoeda(val)}</span>
+    </div>`).join('') : '<p class="empty">Nenhuma despesa lançada neste mês.</p>';
+
   const porCategoria = {};
   despesas.forEach(i=>{ porCategoria[i.categoria] = (porCategoria[i.categoria]||0) + i.valor; });
   const catEntries = Object.entries(porCategoria).sort((a,b)=>b[1]-a[1]);
@@ -600,6 +655,7 @@ function renderResumo(){
 function descricaoTx(i){
   const partes = [];
   if(i.tipoConta) partes.push(i.tipoConta);
+  if(i.descricao) partes.push(i.descricao);
   if(i.parcelaTotal) partes.push('Parcela ' + i.parcelaAtual + '/' + i.parcelaTotal);
   if(i.origemRecorrenteId) partes.push('Fixa');
   partes.push(i.pessoa);
@@ -665,10 +721,45 @@ function abrirPrevisao(){
     return;
   }
   const pessoaFiltro = document.getElementById('prevPessoa').value;
-  renderPrevisao(lista, pessoaFiltro);
+  const contaFiltro = document.getElementById('prevConta').value;
+  renderPrevisao(lista, pessoaFiltro, contaFiltro);
 }
 
-function renderPrevisao(lista, pessoaFiltro){
+function renderPrevisao(lista, pessoaFiltro, contaFiltro){
+  const headerCols = lista.map(({m,y})=>`<th>${MESES[m-1].slice(0,3)}/${String(y).slice(2)}</th>`).join('');
+  const box = document.getElementById('listaPrevisao');
+
+  if(contaFiltro && contaFiltro !== 'todas'){
+    const porItem = {};
+    lista.forEach(({m,y})=>{
+      const key = y+'-'+m;
+      lancamentos.filter(i=> i.tipo==='despesa' && i.tipoConta===contaFiltro && i.mes===m && i.ano===y && (pessoaFiltro==='todos' || i.pessoa===pessoaFiltro)).forEach(i=>{
+        const nome = i.descricao || i.categoria || 'Sem descrição';
+        porItem[nome] = porItem[nome] || {};
+        porItem[nome][key] = (porItem[nome][key]||0) + i.valor;
+      });
+    });
+    const nomes = Object.keys(porItem).sort((a,b)=>a.localeCompare(b,'pt-BR'));
+    if(!nomes.length){
+      box.innerHTML = '<p class="empty">Nenhum lançamento para "' + contaFiltro + '" neste período.</p>';
+      return;
+    }
+    const rows = nomes.map(nome=>{
+      const cells = lista.map(({m,y})=>{
+        const v = (porItem[nome] && porItem[nome][y+'-'+m]) || 0;
+        return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
+      }).join('');
+      return `<tr><td class="rowlabel">${nome}</td>${cells}</tr>`;
+    }).join('');
+    const totalRow = `<tr class="rowtotal"><td class="rowlabel">Total ${contaFiltro}</td>${lista.map(({m,y})=>{
+      const key = y+'-'+m;
+      let soma = 0; nomes.forEach(n=> soma += (porItem[n] && porItem[n][key]) || 0);
+      return `<td>${fmtMoeda(soma)}</td>`;
+    }).join('')}</tr>`;
+    box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Compra</th>${headerCols}</tr></thead><tbody>${rows}${totalRow}</tbody></table></div>`;
+    return;
+  }
+
   const porConta = {};
   const totalDespesa = {};
   const totalReceita = {};
@@ -690,8 +781,6 @@ function renderPrevisao(lista, pessoaFiltro){
   });
 
   const nomesConta = Object.keys(porConta).sort((a,b)=>a.localeCompare(b,'pt-BR'));
-  const headerCols = lista.map(({m,y})=>`<th>${MESES[m-1].slice(0,3)}/${String(y).slice(2)}</th>`).join('');
-
   const rowsContas = nomesConta.map(nome=>{
     const cells = lista.map(({m,y})=>{
       const v = (porConta[nome] && porConta[nome][y+'-'+m]) || 0;
@@ -709,7 +798,6 @@ function renderPrevisao(lista, pessoaFiltro){
     return `<td style="color:${cor};">${fmtMoeda(saldo)}</td>`;
   }).join('')}</tr>`;
 
-  const box = document.getElementById('listaPrevisao');
   if(!nomesConta.length){
     box.innerHTML = `<div class="prev-table-wrap"><table class="prev-table"><thead><tr><th class="rowlabel">Conta</th>${headerCols}</tr></thead><tbody>${rowTotalDespesa}${rowReceita}${rowSaldo}</tbody></table></div>`;
     return;
@@ -743,53 +831,67 @@ function renderAll(){
   if(currentView==='previsao') abrirPrevisao();
 }
 
+function popularSelectComNovo(sel, lista, textoNovo, permitirVazio){
+  const atual = sel.value;
+  let html = permitirVazio ? '<option value="">Nenhum</option>' : '';
+  html += lista.map(c=>`<option>${c}</option>`).join('') + `<option value="__novo__">${textoNovo}</option>`;
+  sel.innerHTML = html;
+  if(lista.includes(atual) || (permitirVazio && atual==='')) sel.value = atual;
+}
+
 function atualizarCategorias(){
   const lista = tipoAtual==='receita' ? opcoes.categoriasReceita : opcoes.categoriasDespesa;
-  const sel = document.getElementById('fCategoria');
-  const atual = sel.value;
-  sel.innerHTML = lista.map(c=>`<option>${c}</option>`).join('') + '<option value="__novo__">+ Nova categoria…</option>';
-  if(lista.includes(atual)) sel.value = atual;
+  popularSelectComNovo(document.getElementById('fCategoria'), lista, '+ Nova categoria…', false);
 }
-function atualizarTiposConta(){
-  const sel = document.getElementById('fTipoConta');
+function atualizarTipos(){
+  const lista = tipoAtual==='receita' ? opcoes.tiposReceita : opcoes.tiposConta;
+  const lbl = document.getElementById('fTipoLabel');
+  if(lbl) lbl.textContent = tipoAtual==='receita' ? 'Tipo de receita' : 'Tipo de conta';
+  popularSelectComNovo(document.getElementById('fTipo'), lista, tipoAtual==='receita' ? '+ Novo tipo de receita…' : '+ Novo tipo de conta…', tipoAtual==='receita');
+}
+function atualizarGrupos(){
+  const lista = tipoAtual==='receita' ? opcoes.gruposReceita : opcoes.gruposDespesa;
+  popularSelectComNovo(document.getElementById('fGrupo'), lista, '+ Novo grupo…', tipoAtual==='receita');
+}
+function atualizarPrevConta(){
+  const sel = document.getElementById('prevConta');
+  if(!sel) return;
   const atual = sel.value;
-  sel.innerHTML = opcoes.tiposConta.map(c=>`<option>${c}</option>`).join('') + '<option value="__novo__">+ Novo tipo de conta…</option>';
-  if(opcoes.tiposConta.includes(atual)) sel.value = atual;
+  sel.innerHTML = '<option value="todas">Todas as contas</option>' + opcoes.tiposConta.map(c=>`<option>${c}</option>`).join('');
+  if(atual && (atual==='todas' || opcoes.tiposConta.includes(atual))) sel.value = atual;
 }
 
-document.getElementById('fCategoria').addEventListener('change', (e)=>{
-  if(e.target.value !== '__novo__') return;
-  const novo = prompt('Nome da nova categoria:');
-  atualizarCategorias();
-  if(novo && novo.trim()){
-    const nome = tituloCase(novo);
-    const campo = tipoAtual==='receita' ? 'categoriasReceita' : 'categoriasDespesa';
-    const listaAtual = tipoAtual==='receita' ? opcoes.categoriasReceita : opcoes.categoriasDespesa;
-    if(!listaAtual.includes(nome)){
-      db.collection('config').doc('opcoes').set({[campo]: [...listaAtual, nome]}, {merge:true})
-        .then(()=>{ document.getElementById('fCategoria').value = nome; })
-        .catch(()=>showToast('Não foi possível salvar a categoria.'));
-    } else {
-      document.getElementById('fCategoria').value = nome;
+function configurarNovoItem(selectId, promptTexto, obterCampo, obterLista, refreshFn){
+  document.getElementById(selectId).addEventListener('change', (e)=>{
+    if(e.target.value !== '__novo__') return;
+    const novo = prompt(promptTexto);
+    refreshFn();
+    if(novo && novo.trim()){
+      const nome = tituloCase(novo);
+      const campo = obterCampo();
+      const listaAtual = obterLista();
+      if(!listaAtual.includes(nome)){
+        db.collection('config').doc('opcoes').set({[campo]: [...listaAtual, nome]}, {merge:true})
+          .then(()=>{ document.getElementById(selectId).value = nome; })
+          .catch(()=>showToast('Não foi possível salvar.'));
+      } else {
+        document.getElementById(selectId).value = nome;
+      }
     }
-  }
-});
-
-document.getElementById('fTipoConta').addEventListener('change', (e)=>{
-  if(e.target.value !== '__novo__') return;
-  const novo = prompt('Nome do novo tipo de conta:');
-  atualizarTiposConta();
-  if(novo && novo.trim()){
-    const nome = tituloCase(novo);
-    if(!opcoes.tiposConta.includes(nome)){
-      db.collection('config').doc('opcoes').set({tiposConta: [...opcoes.tiposConta, nome]}, {merge:true})
-        .then(()=>{ document.getElementById('fTipoConta').value = nome; })
-        .catch(()=>showToast('Não foi possível salvar o tipo de conta.'));
-    } else {
-      document.getElementById('fTipoConta').value = nome;
-    }
-  }
-});
+  });
+}
+configurarNovoItem('fCategoria', 'Nome da nova categoria:',
+  ()=> tipoAtual==='receita' ? 'categoriasReceita' : 'categoriasDespesa',
+  ()=> tipoAtual==='receita' ? opcoes.categoriasReceita : opcoes.categoriasDespesa,
+  atualizarCategorias);
+configurarNovoItem('fTipo', 'Nome do novo tipo:',
+  ()=> tipoAtual==='receita' ? 'tiposReceita' : 'tiposConta',
+  ()=> tipoAtual==='receita' ? opcoes.tiposReceita : opcoes.tiposConta,
+  atualizarTipos);
+configurarNovoItem('fGrupo', 'Nome do novo grupo:',
+  ()=> tipoAtual==='receita' ? 'gruposReceita' : 'gruposDespesa',
+  ()=> tipoAtual==='receita' ? opcoes.gruposReceita : opcoes.gruposDespesa,
+  atualizarGrupos);
 
 document.getElementById('mesPrev').addEventListener('click', ()=>mudarMes(-1));
 document.getElementById('mesNext').addEventListener('click', ()=>mudarMes(1));
@@ -803,9 +905,10 @@ document.querySelectorAll('.toggle-pair button').forEach(b=>{
     tipoAtual = b.dataset.tipo;
     document.querySelectorAll('.toggle-pair button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    document.getElementById('tipoContaWrap').style.display = tipoAtual==='despesa' ? 'block':'none';
     document.getElementById('repeticaoWrap').style.display = tipoAtual==='despesa' ? 'block':'none';
     atualizarCategorias();
+    atualizarTipos();
+    atualizarGrupos();
     document.getElementById('fConfirmadoLabel').textContent = tipoAtual==='receita' ? 'Já recebido' : 'Já pago';
     document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : (repeticaoAtual==='fixa' ? 'Cadastrar conta fixa' : 'Lançar despesa');
   });
@@ -901,7 +1004,7 @@ document.getElementById('btnExcluirFixas').addEventListener('click', async ()=>{
   }
 });
 
-['prevPessoa','prevDe','prevAte'].forEach(id=>{
+['prevPessoa','prevConta','prevDe','prevAte'].forEach(id=>{
   document.getElementById(id).addEventListener('change', ()=>{
     if(currentView==='previsao') abrirPrevisao();
   });
@@ -915,6 +1018,12 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
     showToast('Informe um valor válido.');
     return;
   }
+  const grupo = document.getElementById('fGrupo').value;
+  const tipoSelecionado = document.getElementById('fTipo').value;
+  if(tipoAtual==='despesa'){
+    if(!grupo || grupo==='__novo__'){ showToast('Selecione o grupo.'); return; }
+    if(!tipoSelecionado || tipoSelecionado==='__novo__'){ showToast('Selecione o tipo de conta.'); return; }
+  }
   const mesInput = document.getElementById('fMes').value;
   let mes = refMes, ano = refAno;
   if(mesInput){
@@ -923,9 +1032,9 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
   }
   const pessoa = document.getElementById('fPessoa').value;
   const categoria = document.getElementById('fCategoria').value;
-  const tipoConta = tipoAtual==='despesa' ? document.getElementById('fTipoConta').value : '';
+  const descricao = document.getElementById('fDescricao').value.trim();
   const confirmadoInicial = document.getElementById('fConfirmado').checked;
-  const base = {tipo:tipoAtual, pessoa, categoria, tipoConta, valor: Math.round(valor*100)/100, criadoPor: auth.currentUser?auth.currentUser.email:''};
+  const base = {tipo:tipoAtual, pessoa, categoria, grupo, tipoConta:tipoSelecionado, descricao, valor: Math.round(valor*100)/100, criadoPor: auth.currentUser?auth.currentUser.email:''};
 
   try{
     if(tipoAtual==='despesa' && repeticaoAtual==='parcelada'){
@@ -939,7 +1048,7 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
       }
       showToast('Parcelas lançadas: ' + n + 'x.');
     } else if(tipoAtual==='despesa' && repeticaoAtual==='fixa'){
-      const ref = await db.collection('recorrentes').add({tipo:'despesa', pessoa, categoria, tipoConta, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()});
+      const ref = await db.collection('recorrentes').add({tipo:'despesa', pessoa, categoria, grupo, tipoConta:tipoSelecionado, descricao, valor: base.valor, mesInicio:mes, anoInicio:ano, ativo:true, criadoEm:new Date().toISOString()});
       await db.collection('lancamentos').add({...base, mes, ano, confirmado:confirmadoInicial, origemRecorrenteId:ref.id, criadoEm:new Date().toISOString()});
       showToast('Conta fixa cadastrada.');
     } else {
@@ -960,7 +1069,8 @@ document.getElementById('formLancamento').addEventListener('submit', async (e)=>
   document.getElementById('btnSalvar').textContent = tipoAtual==='receita' ? 'Lançar receita' : 'Lançar despesa';
   initMesInput();
   atualizarCategorias();
-  atualizarTiposConta();
+  atualizarTipos();
+  atualizarGrupos();
 });
 
 function initMesInput(){
@@ -970,7 +1080,9 @@ function initMesInput(){
 
 initMesInput();
 atualizarCategorias();
-atualizarTiposConta();
+atualizarTipos();
+atualizarGrupos();
+atualizarPrevConta();
 renderMesLabel();
 document.getElementById('monthSwitch').style.display = 'none';
 </script>
