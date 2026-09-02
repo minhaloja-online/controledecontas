@@ -182,6 +182,83 @@
   :root[data-paleta="papel"] .painel, :root[data-paleta="papel"] .card,
   :root[data-paleta="papel"] .admin-card{border-style:solid;border-width:1px;}
 
+  /* ---- Paletas de cores vivas ---- */
+
+  /* Neon — preto puro com néon saturado */
+  :root[data-paleta="neon"]{
+    --bg:#07070c;--bg-elev:rgba(14,14,24,0.82);--surface:rgba(19,19,32,0.7);--surface-2:rgba(28,28,46,0.76);
+    --surface-solid:#12121f;--bg-transp:rgba(7,7,12,0.6);
+    --ink:#ffffff;--ink-dim:#a9a9c8;--ink-faint:#75759a;
+    --gold:#00e5ff;--teal:#00ff9c;--brick:#ff2e63;--amber:#ffe600;
+    --line:rgba(0,229,255,0.16);--line-strong:rgba(0,229,255,0.34);
+    --teal-dim:rgba(0,90,60,0.5);--brick-dim:rgba(95,10,35,0.5);
+    --shadow:0 0 22px rgba(0,229,255,0.16);
+  }
+  :root[data-paleta="neon"][data-theme="light"]{
+    --bg:#f0f0ff;--bg-elev:rgba(255,255,255,0.8);--surface:rgba(255,255,255,0.7);--surface-2:rgba(228,228,255,0.78);
+    --surface-solid:#e9e9fb;--bg-transp:rgba(240,240,255,0.55);
+    --ink:#08080f;--ink-dim:#4b4b6b;--ink-faint:#7a7a9c;
+    --gold:#0071a8;--teal:#00875a;--brick:#d1004a;--amber:#8a7500;
+    --line:rgba(8,8,15,0.12);--line-strong:rgba(8,8,15,0.24);
+    --teal-dim:rgba(206,244,228,0.8);--brick-dim:rgba(255,216,228,0.8);
+  }
+  :root[data-paleta="neon"] .side-links button.active,
+  :root[data-paleta="neon"] .tema-opcao.ativo{box-shadow:0 0 12px rgba(0,229,255,0.4);}
+
+  /* Tropical — laranja, magenta e turquesa */
+  :root[data-paleta="tropical"]{
+    --bg:#141020;--bg-elev:rgba(28,20,44,0.8);--surface:rgba(38,26,58,0.68);--surface-2:rgba(50,34,74,0.74);
+    --surface-solid:#231a38;--bg-transp:rgba(20,16,32,0.55);
+    --ink:#fff6ee;--ink-dim:#c2adc4;--ink-faint:#93809c;
+    --gold:#ff9f1c;--teal:#00d8c0;--brick:#ff3d7f;--amber:#ffd028;
+    --line:rgba(255,255,255,0.12);--line-strong:rgba(255,159,28,0.32);
+    --teal-dim:rgba(0,80,72,0.5);--brick-dim:rgba(95,18,48,0.5);
+  }
+  :root[data-paleta="tropical"][data-theme="light"]{
+    --bg:#fff4e8;--bg-elev:rgba(255,255,255,0.8);--surface:rgba(255,255,255,0.7);--surface-2:rgba(255,228,206,0.78);
+    --surface-solid:#ffeeda;--bg-transp:rgba(255,244,232,0.55);
+    --ink:#1c1008;--ink-dim:#6b4f3a;--ink-faint:#9c7f68;
+    --gold:#d96b00;--teal:#00877a;--brick:#d1004f;--amber:#a37800;
+    --line:rgba(28,16,8,0.12);--line-strong:rgba(217,107,0,0.34);
+    --teal-dim:rgba(204,242,238,0.8);--brick-dim:rgba(255,214,228,0.8);
+  }
+
+  /* Rubi — vermelho intenso sobre grafite */
+  :root[data-paleta="rubi"]{
+    --bg:#120c0e;--bg-elev:rgba(30,16,20,0.8);--surface:rgba(40,21,26,0.68);--surface-2:rgba(54,28,34,0.74);
+    --surface-solid:#25151a;--bg-transp:rgba(18,12,14,0.55);
+    --ink:#fff0f0;--ink-dim:#c4a5a8;--ink-faint:#9a787c;
+    --gold:#ff4757;--teal:#2ed573;--brick:#ff6b35;--amber:#ffc93c;
+    --line:rgba(255,71,87,0.16);--line-strong:rgba(255,71,87,0.36);
+    --teal-dim:rgba(20,80,44,0.5);--brick-dim:rgba(90,34,16,0.5);
+  }
+  :root[data-paleta="rubi"][data-theme="light"]{
+    --bg:#fff0f1;--bg-elev:rgba(255,255,255,0.8);--surface:rgba(255,255,255,0.7);--surface-2:rgba(255,222,225,0.78);
+    --surface-solid:#ffe6e8;--bg-transp:rgba(255,240,241,0.55);
+    --ink:#1a0b0d;--ink-dim:#6b4348;--ink-faint:#9c6f75;
+    --gold:#d10024;--teal:#0f8a45;--brick:#cc4400;--amber:#a37b00;
+    --line:rgba(26,11,13,0.12);--line-strong:rgba(209,0,36,0.32);
+    --teal-dim:rgba(211,244,222,0.8);--brick-dim:rgba(255,222,208,0.8);
+  }
+
+  /* Cítrico — verde-limão e azul elétrico */
+  :root[data-paleta="citrico"]{
+    --bg:#0b1410;--bg-elev:rgba(16,28,22,0.8);--surface:rgba(21,38,29,0.68);--surface-2:rgba(28,50,38,0.74);
+    --surface-solid:#152619;--bg-transp:rgba(11,20,16,0.55);
+    --ink:#f2ffee;--ink-dim:#a8c4a8;--ink-faint:#7d9a7f;
+    --gold:#c6ff00;--teal:#00e676;--brick:#ff5252;--amber:#ffb300;
+    --line:rgba(198,255,0,0.15);--line-strong:rgba(198,255,0,0.32);
+    --teal-dim:rgba(10,80,44,0.5);--brick-dim:rgba(90,26,26,0.5);
+  }
+  :root[data-paleta="citrico"][data-theme="light"]{
+    --bg:#f4ffe8;--bg-elev:rgba(255,255,255,0.8);--surface:rgba(255,255,255,0.7);--surface-2:rgba(226,246,204,0.78);
+    --surface-solid:#edfada;--bg-transp:rgba(244,255,232,0.55);
+    --ink:#0e1a08;--ink-dim:#4c6440;--ink-faint:#7a9469;
+    --gold:#4f7a00;--teal:#00874a;--brick:#cc2222;--amber:#a37000;
+    --line:rgba(14,26,8,0.12);--line-strong:rgba(79,122,0,0.32);
+    --teal-dim:rgba(210,244,224,0.8);--brick-dim:rgba(255,220,220,0.8);
+  }
+
   nav.sidenav, header.top, .card, .admin-card, #gestaoFixas, .toast, .rec-painel, .painel,
   input[type=text], input[type=number], input[type=month], input[type=email], input[type=password], select,
   #loginScreen form, #telaAguardando, .landing-features,
@@ -888,12 +965,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -2330,7 +2407,11 @@ const PALETAS = [
   {id:'ameixa', nome:'Ameixa', desc:'Roxo e rosa, contraste elegante.', cores:['#c98bd8','#68c2a8','#e0728f','#241e35']},
   {id:'minimal', nome:'Minimalista', desc:'Sem cor, cantos retos, nada de brilho.', cores:['#f0f0f0','#8fbf9f','#d08a7a','#1f1f1f']},
   {id:'aurora', nome:'Aurora', desc:'Fundo com gradiente animado.', cores:['#8b9cff','#54d4b0','#ff7d94','#1c2138']},
-  {id:'papel', nome:'Papel', desc:'Textura pontilhada, ar de caderno.', cores:['#d9a441','#7fb47f','#cc7058','#2c2620']}
+  {id:'papel', nome:'Papel', desc:'Textura pontilhada, ar de caderno.', cores:['#d9a441','#7fb47f','#cc7058','#2c2620']},
+  {id:'neon', nome:'Neon', desc:'Preto puro com ciano e magenta saturados.', cores:['#00e5ff','#00ff9c','#ff2e63','#12121f']},
+  {id:'tropical', nome:'Tropical', desc:'Laranja, magenta e turquesa vibrantes.', cores:['#ff9f1c','#00d8c0','#ff3d7f','#231a38']},
+  {id:'rubi', nome:'Rubi', desc:'Vermelho intenso sobre grafite.', cores:['#ff4757','#2ed573','#ff6b35','#25151a']},
+  {id:'citrico', nome:'Cítrico', desc:'Verde-limão elétrico com alto contraste.', cores:['#c6ff00','#00e676','#ff5252','#152619']}
 ];
 
 function aplicarTema(tema){
