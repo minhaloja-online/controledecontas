@@ -51,6 +51,137 @@
   }
   :root[data-theme="light"] .save-btn, :root[data-theme="light"] #loginBtn, :root[data-theme="light"] #signupBtn{color:#fff6ea;}
 
+  /* ============ PALETAS DE TEMA ============ */
+
+  /* Oceano */
+  :root[data-paleta="oceano"]{
+    --bg:#0d1620;--bg-elev:rgba(19,32,45,0.76);--surface:rgba(24,40,55,0.64);--surface-2:rgba(31,50,68,0.7);
+    --surface-solid:#17293a;--bg-transp:rgba(13,22,32,0.55);
+    --ink:#e8f1f6;--ink-dim:#9db3c4;--ink-faint:#748ba0;
+    --gold:#4bb8d8;--teal:#4fc9a8;--brick:#e07a5f;--amber:#e8b04b;
+    --teal-dim:rgba(31,74,64,0.55);--brick-dim:rgba(74,44,34,0.55);
+  }
+  :root[data-paleta="oceano"][data-theme="light"]{
+    --bg:#eef5f9;--bg-elev:rgba(255,255,255,0.76);--surface:rgba(255,255,255,0.66);--surface-2:rgba(219,235,244,0.72);
+    --surface-solid:#e6f0f6;--bg-transp:rgba(238,245,249,0.52);
+    --ink:#0e1a22;--ink-dim:#4f6675;--ink-faint:#7d94a3;
+    --gold:#146d8a;--teal:#1f8b70;--brick:#b0563b;--amber:#a3761f;
+    --teal-dim:rgba(214,238,231,0.75);--brick-dim:rgba(247,226,218,0.75);
+  }
+
+  /* Floresta */
+  :root[data-paleta="floresta"]{
+    --bg:#101a14;--bg-elev:rgba(22,36,28,0.76);--surface:rgba(27,44,34,0.64);--surface-2:rgba(35,55,43,0.7);
+    --surface-solid:#1a2c22;--bg-transp:rgba(16,26,20,0.55);
+    --ink:#eaf1e8;--ink-dim:#a4b8a6;--ink-faint:#7b8f7d;
+    --gold:#c2b055;--teal:#63bb85;--brick:#cc7058;--amber:#d9a441;
+    --teal-dim:rgba(40,74,54,0.55);--brick-dim:rgba(74,44,34,0.55);
+  }
+  :root[data-paleta="floresta"][data-theme="light"]{
+    --bg:#f1f5ee;--bg-elev:rgba(255,255,255,0.76);--surface:rgba(255,255,255,0.66);--surface-2:rgba(226,236,220,0.72);
+    --surface-solid:#eaf0e4;--bg-transp:rgba(241,245,238,0.52);
+    --ink:#131a13;--ink-dim:#556354;--ink-faint:#84947f;
+    --gold:#7a6f1e;--teal:#2b7d54;--brick:#a8503a;--amber:#8f7220;
+    --teal-dim:rgba(219,238,225,0.75);--brick-dim:rgba(247,226,218,0.75);
+  }
+
+  /* Ameixa */
+  :root[data-paleta="ameixa"]{
+    --bg:#161320;--bg-elev:rgba(30,25,44,0.76);--surface:rgba(37,30,54,0.64);--surface-2:rgba(47,38,68,0.7);
+    --surface-solid:#241e35;--bg-transp:rgba(22,19,32,0.55);
+    --ink:#f0eaf6;--ink-dim:#b0a3c4;--ink-faint:#8878a0;
+    --gold:#c98bd8;--teal:#68c2a8;--brick:#e0728f;--amber:#e0a64b;
+    --teal-dim:rgba(40,70,62,0.55);--brick-dim:rgba(70,36,48,0.55);
+  }
+  :root[data-paleta="ameixa"][data-theme="light"]{
+    --bg:#f6f1fa;--bg-elev:rgba(255,255,255,0.76);--surface:rgba(255,255,255,0.66);--surface-2:rgba(235,225,243,0.72);
+    --surface-solid:#efe7f5;--bg-transp:rgba(246,241,250,0.52);
+    --ink:#17111c;--ink-dim:#5f5170;--ink-faint:#8d7fa0;
+    --gold:#7d3f96;--teal:#26806a;--brick:#b04565;--amber:#95681c;
+    --teal-dim:rgba(219,238,232,0.75);--brick-dim:rgba(248,224,232,0.75);
+  }
+
+  /* Minimalista — sem cor, sem desfoque, tudo reto */
+  :root[data-paleta="minimal"]{
+    --bg:#141414;--bg-elev:rgba(26,26,26,0.9);--surface:rgba(31,31,31,0.85);--surface-2:rgba(42,42,42,0.9);
+    --surface-solid:#1f1f1f;--bg-transp:rgba(20,20,20,0.72);
+    --ink:#f0f0f0;--ink-dim:#a0a0a0;--ink-faint:#6f6f6f;
+    --gold:#f0f0f0;--teal:#8fbf9f;--brick:#d08a7a;--amber:#d4b678;
+    --line:rgba(255,255,255,0.10);--line-strong:rgba(255,255,255,0.22);
+    --teal-dim:rgba(60,72,64,0.6);--brick-dim:rgba(70,50,44,0.6);
+    --radius:4px;--shadow:none;
+  }
+  :root[data-paleta="minimal"][data-theme="light"]{
+    --bg:#fbfbfb;--bg-elev:rgba(255,255,255,0.92);--surface:rgba(255,255,255,0.85);--surface-2:rgba(240,240,240,0.92);
+    --surface-solid:#f4f4f4;--bg-transp:rgba(251,251,251,0.72);
+    --ink:#111111;--ink-dim:#5a5a5a;--ink-faint:#8a8a8a;
+    --gold:#111111;--teal:#2f7d5f;--brick:#a8503a;--amber:#8a6d1f;
+    --line:rgba(0,0,0,0.10);--line-strong:rgba(0,0,0,0.20);
+  }
+  :root[data-paleta="minimal"] .side-brand-title,
+  :root[data-paleta="minimal"] .month-label,
+  :root[data-paleta="minimal"] .card .num,
+  :root[data-paleta="minimal"] .tx-val,
+  :root[data-paleta="minimal"] .landing-inner h1,
+  :root[data-paleta="minimal"] .admin-card h3,
+  :root[data-paleta="minimal"] #loginScreen h1{font-family:var(--sans);font-weight:600;letter-spacing:-0.4px;}
+  :root[data-paleta="minimal"] .save-btn{background:var(--ink);color:var(--bg);}
+  :root[data-paleta="minimal"] *{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+
+  /* Aurora — gradiente animado */
+  :root[data-paleta="aurora"]{
+    --bg:#0f1220;--bg-elev:rgba(23,27,48,0.7);--surface:rgba(30,35,60,0.58);--surface-2:rgba(40,46,78,0.66);
+    --surface-solid:#1c2138;--bg-transp:rgba(15,18,32,0.5);
+    --ink:#eef0ff;--ink-dim:#a8adcf;--ink-faint:#7b81a8;
+    --gold:#8b9cff;--teal:#54d4b0;--brick:#ff7d94;--amber:#ffc46b;
+    --teal-dim:rgba(34,74,66,0.55);--brick-dim:rgba(74,38,50,0.55);
+  }
+  :root[data-paleta="aurora"][data-theme="light"]{
+    --bg:#f2f3fd;--bg-elev:rgba(255,255,255,0.74);--surface:rgba(255,255,255,0.62);--surface-2:rgba(228,231,250,0.7);
+    --surface-solid:#eaecfa;--bg-transp:rgba(242,243,253,0.5);
+    --ink:#0f1020;--ink-dim:#565a80;--ink-faint:#8286a8;
+    --gold:#4b56c4;--teal:#1c8a70;--brick:#c04a67;--amber:#9a6c1c;
+    --teal-dim:rgba(216,240,232,0.75);--brick-dim:rgba(250,224,230,0.75);
+  }
+  :root[data-paleta="aurora"] #fundoOverlay::after{
+    content:'';position:absolute;inset:-30%;
+    background:
+      radial-gradient(closest-side at 25% 30%, rgba(139,156,255,0.30), transparent),
+      radial-gradient(closest-side at 75% 25%, rgba(84,212,176,0.24), transparent),
+      radial-gradient(closest-side at 55% 80%, rgba(255,125,148,0.22), transparent);
+    filter:blur(30px);
+    animation:auroraFlow 22s ease-in-out infinite alternate;
+  }
+  @keyframes auroraFlow{
+    0%{transform:translate(0,0) scale(1);}
+    50%{transform:translate(4%,-3%) scale(1.1);}
+    100%{transform:translate(-4%,3%) scale(1.05);}
+  }
+
+  /* Papel — textura pontilhada, ar de caderno */
+  :root[data-paleta="papel"]{
+    --bg:#1b1814;--bg-elev:rgba(38,33,27,0.78);--surface:rgba(45,39,32,0.66);--surface-2:rgba(56,48,39,0.72);
+    --surface-solid:#2c2620;--bg-transp:rgba(27,24,20,0.55);
+    --ink:#f2ece0;--ink-dim:#b6a893;--ink-faint:#8c7f6d;
+    --gold:#d9a441;--teal:#7fb47f;--brick:#cc7058;--amber:#dbb45c;
+    --teal-dim:rgba(52,72,52,0.55);--brick-dim:rgba(74,44,34,0.55);
+    --radius:10px;
+  }
+  :root[data-paleta="papel"][data-theme="light"]{
+    --bg:#f7f2e6;--bg-elev:rgba(255,252,245,0.8);--surface:rgba(255,252,245,0.7);--surface-2:rgba(238,229,210,0.76);
+    --surface-solid:#f2ebda;--bg-transp:rgba(247,242,230,0.55);
+    --ink:#191410;--ink-dim:#5d5344;--ink-faint:#8b7f6b;
+    --gold:#9a6c1c;--teal:#3d7a4a;--brick:#a8503a;--amber:#8f7220;
+    --teal-dim:rgba(224,238,222,0.75);--brick-dim:rgba(247,226,218,0.75);
+  }
+  :root[data-paleta="papel"] #fundoOverlay::after{
+    content:'';position:absolute;inset:0;opacity:.5;
+    background-image:radial-gradient(currentColor 1px, transparent 1px);
+    background-size:18px 18px;color:var(--ink-faint);
+  }
+  :root[data-paleta="papel"] .painel, :root[data-paleta="papel"] .card,
+  :root[data-paleta="papel"] .admin-card{border-style:solid;border-width:1px;}
+
   nav.sidenav, header.top, .card, .admin-card, #gestaoFixas, .toast, .rec-painel, .painel,
   input[type=text], input[type=number], input[type=month], input[type=email], input[type=password], select,
   #loginScreen form, #telaAguardando, .landing-features,
@@ -60,7 +191,7 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:transparent;color:var(--ink);font-family:var(--sans);-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
   #fundoImg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;background-repeat:no-repeat;}
-  #fundoOverlay{position:fixed;inset:0;z-index:-1;background:var(--bg);transition:background .2s;}
+  #fundoOverlay{position:fixed;inset:0;z-index:-1;background:var(--bg);transition:background .2s;overflow:hidden;pointer-events:none;}
   body.tem-fundo #fundoOverlay{background:var(--bg-transp);}
   body{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom));}
   button, input, select{font-family:var(--sans);}
@@ -315,6 +446,15 @@
   #listaAdminLancamentos .tx-row:last-child{border-bottom:none;}
   .logo-preview{width:64px;height:64px;border-radius:12px;object-fit:cover;background:var(--surface-2);border:1px solid var(--line-strong);margin-bottom:12px;display:none;}
   .admin-search{margin-bottom:14px;}
+  .temas-grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+  .tema-opcao{border:1px solid var(--line-strong);border-radius:12px;padding:0;overflow:hidden;background:none;text-align:left;transition:border-color .15s, transform .1s;}
+  .tema-opcao:hover{border-color:var(--gold);transform:translateY(-2px);}
+  .tema-opcao.ativo{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold);}
+  .tema-amostra{height:56px;display:flex;position:relative;overflow:hidden;}
+  .tema-amostra i{flex:1;display:block;}
+  .tema-info{padding:9px 11px;}
+  .tema-nome{font-size:13px;margin:0;color:var(--ink);font-weight:600;}
+  .tema-desc{font-size:11px;margin:2px 0 0;color:var(--ink-faint);line-height:1.35;}
 
   @media (min-width:860px){
     html,body{height:100%;}
@@ -692,6 +832,12 @@
         </div>
 
         <div class="admin-card">
+          <h3>Tema do site</h3>
+          <p style="font-size:13px;color:var(--ink-dim);margin:0 0 14px;">Escolha um estilo. O modo claro/escuro continua no botão do topo.</p>
+          <div class="temas-grade" id="temasGrade"></div>
+        </div>
+
+        <div class="admin-card">
           <h3>Logo do site</h3>
           <img id="logoPreviewAdmin" class="logo-preview" alt="Logo atual">
           <input type="file" id="fLogo" accept="image/*">
@@ -742,12 +888,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -970,6 +1116,9 @@ function iniciarSincronizacao(){
     aparencia.fundoDataUrl = d.fundoDataUrl || '';
     aplicarLogo();
     aplicarFundo();
+    if(d.paleta && d.paleta !== (document.documentElement.getAttribute('data-paleta') || 'classico')){
+      aplicarPaleta(d.paleta);
+    }
   });
 
   if(souAdmin){
@@ -1134,7 +1283,7 @@ function trocarView(view){
   if(view==='resumo') renderResumo();
   if(view==='extrato') renderExtrato();
   if(view==='previsao') abrirPrevisao();
-  if(view==='admin'){ renderAdminListas(); }
+  if(view==='admin'){ renderAdminListas(); renderTemas(); }
   if(view==='lancar'){ renderAdminLancamentos(); renderRecorrentes(); }
   const cc = document.querySelector('.content-col');
   if(cc) cc.scrollTop = 0;
@@ -2172,20 +2321,72 @@ atualizarPessoas();
 atualizarPrevPessoa();
 renderMesLabel();
 
-/* ---------- Tema claro/escuro ---------- */
+/* ---------- Tema: modo (claro/escuro) + paleta ---------- */
+
+const PALETAS = [
+  {id:'classico', nome:'Clássico', desc:'Dourado e terracota, tipografia serifada.', cores:['#c79a4b','#4fa98c','#c1573b','#202a34']},
+  {id:'oceano', nome:'Oceano', desc:'Azuis frios, ar moderno e limpo.', cores:['#4bb8d8','#4fc9a8','#e07a5f','#17293a']},
+  {id:'floresta', nome:'Floresta', desc:'Verdes e terrosos, tom natural.', cores:['#c2b055','#63bb85','#cc7058','#1a2c22']},
+  {id:'ameixa', nome:'Ameixa', desc:'Roxo e rosa, contraste elegante.', cores:['#c98bd8','#68c2a8','#e0728f','#241e35']},
+  {id:'minimal', nome:'Minimalista', desc:'Sem cor, cantos retos, nada de brilho.', cores:['#f0f0f0','#8fbf9f','#d08a7a','#1f1f1f']},
+  {id:'aurora', nome:'Aurora', desc:'Fundo com gradiente animado.', cores:['#8b9cff','#54d4b0','#ff7d94','#1c2138']},
+  {id:'papel', nome:'Papel', desc:'Textura pontilhada, ar de caderno.', cores:['#d9a441','#7fb47f','#cc7058','#2c2620']}
+];
+
 function aplicarTema(tema){
   document.documentElement.setAttribute('data-theme', tema);
   document.getElementById('iconSol').style.display = tema==='light' ? 'block' : 'none';
   document.getElementById('iconLua').style.display = tema==='light' ? 'none' : 'block';
   try{ localStorage.setItem('tema', tema); }catch(e){}
 }
+
+function aplicarPaleta(paleta){
+  if(paleta && paleta!=='classico') document.documentElement.setAttribute('data-paleta', paleta);
+  else document.documentElement.removeAttribute('data-paleta');
+  try{ localStorage.setItem('paleta', paleta || 'classico'); }catch(e){}
+  renderTemas();
+}
+
+function renderTemas(){
+  const box = document.getElementById('temasGrade');
+  if(!box) return;
+  const atual = document.documentElement.getAttribute('data-paleta') || 'classico';
+  box.innerHTML = PALETAS.map(p=>`
+    <button type="button" class="tema-opcao ${p.id===atual?'ativo':''}" data-paleta="${p.id}">
+      <span class="tema-amostra" style="background:${p.cores[3]};">
+        <i style="background:${p.cores[0]};"></i>
+        <i style="background:${p.cores[1]};"></i>
+        <i style="background:${p.cores[2]};"></i>
+        <i style="background:${p.cores[3]};"></i>
+      </span>
+      <span class="tema-info">
+        <span class="tema-nome">${p.nome}</span>
+        <p class="tema-desc">${p.desc}</p>
+      </span>
+    </button>`).join('');
+}
+
+document.getElementById('temasGrade').addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-paleta]');
+  if(!btn) return;
+  const escolhida = btn.dataset.paleta;
+  aplicarPaleta(escolhida);
+  colUser('config').doc('aparencia').set({paleta:escolhida}, {merge:true}).catch(()=>{});
+  showToast('Tema aplicado.');
+});
+
 document.getElementById('temaToggle').addEventListener('click', ()=>{
   const atual = document.documentElement.getAttribute('data-theme') || 'dark';
   aplicarTema(atual==='dark' ? 'light' : 'dark');
 });
-let temaSalvo = 'dark';
-try{ temaSalvo = localStorage.getItem('tema') || 'dark'; }catch(e){}
+
+let temaSalvo = 'dark', paletaSalva = 'classico';
+try{
+  temaSalvo = localStorage.getItem('tema') || 'dark';
+  paletaSalva = localStorage.getItem('paleta') || 'classico';
+}catch(e){}
 aplicarTema(temaSalvo);
+aplicarPaleta(paletaSalva);
 </script>
 </body>
 </html>
