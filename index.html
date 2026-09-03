@@ -396,7 +396,7 @@
   .tx-cat{font-size:14px;margin:0;}
   .tx-desc{font-size:12px;color:var(--ink-dim);margin:2px 0 0;}
   .tx-right{text-align:right;flex:none;}
-  .tx-val{font-family:var(--serif);font-size:15px;margin:0;}
+  .tx-val{font-family:var(--serif);font-size:15px;margin:0;font-variant-numeric:tabular-nums;}
   .tx-val.receita{color:var(--teal);}
   .tx-val.despesa{color:var(--brick);}
   .tx-status{font-size:11px;margin:3px 0 0;padding:2px 7px;border-radius:10px;display:inline-block;border:1px solid var(--line-strong);color:var(--ink-faint);cursor:pointer;transition:background .15s, color .15s, border-color .15s;}
@@ -460,7 +460,7 @@
   .prev-filtros label{display:block;font-size:12px;color:var(--ink-dim);margin:0 0 6px;}
   .prev-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
   table.prev-table{border-collapse:collapse;font-size:12px;white-space:nowrap;width:100%;}
-  table.prev-table th, table.prev-table td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line);}
+  table.prev-table th, table.prev-table td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;}
   table.prev-table thead th{color:var(--ink-dim);font-weight:400;}
   table.prev-table td.rowlabel, table.prev-table th.rowlabel{position:-webkit-sticky;position:sticky;left:0;background:var(--surface-solid);text-align:left;z-index:3;padding-right:10px;box-shadow:1px 0 0 var(--line);}
   table.prev-table tr.rowtotal td{border-top:1px solid var(--line-strong);font-weight:600;color:var(--ink);}
@@ -587,7 +587,7 @@
 
   @media (min-width:1280px){
     table.prev-table{font-size:13px;}
-    table.prev-table th, table.prev-table td{padding:10px 16px;}
+    table.prev-table th, table.prev-table td{padding:10px 14px;}
     .cards{grid-template-columns:repeat(3,1fr);}
     .card.wide{grid-column:auto;}
   }
@@ -979,12 +979,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1041,7 +1041,7 @@ function statusDe(i){
 }
 
 function fmtMoeda(v){
-  return (v||0).toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:0, maximumFractionDigits:0});
+  return (v||0).toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2});
 }
 function showToast(msg){
   const t = document.getElementById('toast');
@@ -1447,6 +1447,7 @@ function renderResumo(){
     const abs = Math.abs(v);
     const sinal = v<0 ? '-' : '';
     if(abs>=1000) return sinal + (abs/1000).toFixed(1).replace('.0','') + 'k';
+    if(abs>0 && abs<10) return sinal + abs.toFixed(2).replace('.', ',');
     return sinal + Math.round(abs);
   }
   const meses6 = [];
