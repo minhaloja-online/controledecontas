@@ -469,7 +469,6 @@
   table.prev-table tr.rowpago td{color:var(--teal);font-size:11.5px;}
   table.prev-table tr.rowfalta td{color:var(--brick);font-size:11.5px;}
   table.prev-table tr.rowrecebido td{color:var(--teal);font-size:11.5px;}
-  table.prev-table tr.rowareceber td{color:var(--amber);font-size:11.5px;}
   table.prev-table tr.rowcaixa td{border-top:1px solid var(--line-strong);font-weight:600;}
   table.prev-table .cel-falta{display:block;font-size:10px;color:var(--ink-faint);margin-top:1px;font-weight:400;}
 
@@ -985,12 +984,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1962,12 +1961,6 @@ function renderPrevisao(lista, pessoaFiltro){
   rows += `<tr class="rowrecebido"><td class="rowlabel">Total recebido</td>${lista.map(({m,y})=>{
     const info = totalReceita[y+'-'+m];
     const v = (info && info.pago) || 0;
-    return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
-  }).join('')}</tr>`;
-
-  rows += `<tr class="rowareceber"><td class="rowlabel">Falta receber</td>${lista.map(({m,y})=>{
-    const info = totalReceita[y+'-'+m];
-    const v = info ? Math.max(0, info.valor - info.pago) : 0;
     return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
   }).join('')}</tr>`;
 
