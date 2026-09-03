@@ -513,7 +513,10 @@
   .admin-card.aprovacoes{border-color:var(--gold);}
   .item-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;}
   .item-row:last-of-type{border-bottom:none;}
+  .item-acoes{display:flex;align-items:center;gap:2px;flex:none;}
   .item-del{background:none;border:none;color:var(--ink-faint);font-size:16px;padding:2px 8px;flex:none;}
+  .item-edit{background:none;border:none;color:var(--ink-faint);padding:4px 7px;flex:none;display:flex;align-items:center;border-radius:6px;transition:background .15s,color .15s;}
+  .item-edit:hover{color:var(--gold);background:var(--surface-2);}
   .item-del:hover{color:var(--brick);}
   .add-row{display:flex;gap:8px;margin-top:12px;}
   .add-row input{flex:1;height:40px;}
@@ -979,12 +982,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -2380,7 +2383,10 @@ function renderListaAdmin(boxId, campo, itens){
   box.innerHTML = ordenados.length ? ordenados.map(v=>`
     <div class="item-row">
       <span>${v}</span>
-      <button type="button" class="item-del" data-remover="${campo}" data-valor="${v}">×</button>
+      <span class="item-acoes">
+        <button type="button" class="item-edit" data-renomear="${campo}" data-valor="${v}" aria-label="Renomear"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+        <button type="button" class="item-del" data-remover="${campo}" data-valor="${v}" aria-label="Excluir">×</button>
+      </span>
     </div>`).join('') : '<p class="empty">Nenhum item cadastrado.</p>';
 }
 
@@ -2391,10 +2397,72 @@ function renderAdminListas(){
   renderListaAdmin('listaTiposAdmin', 'tiposConta', opcoes.tiposConta);
 }
 
+// Em qual propriedade dos lançamentos cada lista de configuração é usada
+const CAMPO_NO_LANCAMENTO = {
+  pessoas: 'pessoa',
+  tiposConta: 'tipoConta',
+  categoriasReceita: 'categoria',
+  categoriasDespesa: 'categoria'
+};
+
+async function renomearEmCascata(campo, antigo, novo){
+  const prop = CAMPO_NO_LANCAMENTO[campo];
+  const ehReceita = campo==='categoriasReceita';
+  const ehDespesa = campo==='categoriasDespesa';
+
+  const alvoLanc = lancamentos.filter(l=>{
+    if(l[prop] !== antigo) return false;
+    if(ehReceita) return l.tipo==='receita';
+    if(ehDespesa) return l.tipo==='despesa';
+    return true;
+  });
+  const alvoRec = recorrentes.filter(r=>{
+    if(r[prop] !== antigo) return false;
+    if(ehReceita) return r.tipo==='receita';
+    if(ehDespesa) return r.tipo==='despesa';
+    return true;
+  });
+
+  const total = alvoLanc.length + alvoRec.length;
+  const aviso = total
+    ? `\n\nIsso vai atualizar ${alvoLanc.length} lançamento(s) e ${alvoRec.length} conta(s) fixa(s) que usam esse nome.`
+    : '';
+  if(!confirm(`Renomear "${antigo}" para "${novo}"?${aviso}`)) return;
+
+  try{
+    const listaNova = opcoes[campo].map(v=> v===antigo ? novo : v);
+    const semDuplicar = [...new Set(listaNova)];
+    await colUser('config').doc('opcoes').set({[campo]: semDuplicar}, {merge:true});
+    await Promise.all([
+      ...alvoLanc.map(l=> colUser('lancamentos').doc(l.id).update({[prop]: novo})),
+      ...alvoRec.map(r=> colUser('recorrentes').doc(r.id).update({[prop]: novo}))
+    ]);
+    showToast(total ? `Renomeado em ${total} registro(s).` : 'Renomeado.');
+  }catch(err){
+    showToast('Não foi possível renomear tudo. Tente novamente.');
+  }
+}
+
 document.getElementById('view-admin').addEventListener('click', (e)=>{
-  const remover = e.target.dataset.remover;
+  const btnRenomear = e.target.closest('[data-renomear]');
+  if(btnRenomear){
+    const campo = btnRenomear.dataset.renomear;
+    const antigo = btnRenomear.dataset.valor;
+    const digitado = prompt('Novo nome para "' + antigo + '":', antigo);
+    if(digitado === null) return;
+    const novo = tituloCase(digitado);
+    if(!novo || novo === antigo) return;
+    if(opcoes[campo].includes(novo)){
+      showToast('Já existe um item com esse nome.');
+      return;
+    }
+    renomearEmCascata(campo, antigo, novo);
+    return;
+  }
+  const removerEl = e.target.closest('[data-remover]');
+  const remover = removerEl && removerEl.dataset.remover;
   if(remover){
-    const campo = remover, valor = e.target.dataset.valor;
+    const campo = remover, valor = removerEl.dataset.valor;
     const listaAtual = opcoes[campo].filter(v=>v!==valor);
     if(campo==='pessoas' && listaAtual.length===0){ showToast('Deixe pelo menos uma pessoa cadastrada.'); return; }
     if(!confirm('Remover "' + valor + '"? Lançamentos que já usam esse valor não são afetados.')) return;
@@ -2402,9 +2470,10 @@ document.getElementById('view-admin').addEventListener('click', (e)=>{
       .catch(()=>showToast('Não foi possível remover.'));
     return;
   }
-  const addCampo = e.target.dataset.add;
+  const addEl = e.target.closest('[data-add]');
+  const addCampo = addEl && addEl.dataset.add;
   if(addCampo){
-    const inputId = e.target.dataset.input;
+    const inputId = addEl.dataset.input;
     const input = document.getElementById(inputId);
     const nome = tituloCase(input.value || '');
     if(!nome){ showToast('Digite um nome.'); return; }
