@@ -419,7 +419,13 @@
   .tx-del:active, .tx-edit:active{background:var(--surface-2);}
   .tx-edit:hover, .tx-del:hover{background:var(--surface-2);color:var(--ink);}
   .extrato-filtros{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:14px;}
+  @media (min-width:860px){
+    .extrato-filtros{grid-template-columns:repeat(3,1fr);}
+    .extrato-filtros input[type=text]{grid-column:1 / -1;}
+  }
 
+  .extrato-resumo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:2px 0 10px;margin-bottom:4px;border-bottom:1px solid var(--line-strong);font-size:12px;color:var(--ink-dim);}
+  .extrato-resumo b{color:var(--brick);font-weight:600;}
   form label{display:block;font-size:12px;color:var(--ink-dim);margin:16px 0 6px;}
   .form-row2{display:block;}
   .toggle-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -754,7 +760,15 @@
           <button class="chip" data-f="despesa">Despesas</button>
         </div>
         <div class="extrato-filtros">
+          <select id="filtroPessoa"><option value="todos">Todas as pessoas</option></select>
           <select id="filtroTipoConta"><option value="todos">Todos os tipos de conta</option></select>
+          <select id="filtroStatus">
+            <option value="todos">Todos os status</option>
+            <option value="pendente">Pendentes</option>
+            <option value="parcial">Parciais</option>
+            <option value="pago">Pagos / Recebidos</option>
+            <option value="aberto">Em aberto (pendente + parcial)</option>
+          </select>
           <input type="text" id="buscaExtrato" placeholder="Buscar por descrição, categoria, pessoa...">
         </div>
         <div class="painel" id="listaExtrato"></div>
@@ -965,12 +979,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1181,6 +1195,7 @@ function iniciarSincronizacao(){
     atualizarCategorias();
     atualizarTipos();
     atualizarFiltroTipoConta();
+    atualizarFiltroPessoa();
     atualizarPessoas();
     atualizarPrevPessoa();
     if(currentView==='admin') renderAdminListas();
@@ -1554,8 +1569,17 @@ function linhaLancamento(i){
 function renderExtrato(){
   let itens = lancamentos.filter(doMes);
   if(filtroExtrato!=='todos') itens = itens.filter(i=>i.tipo===filtroExtrato);
+  const pessoaSel = document.getElementById('filtroPessoa').value;
+  if(pessoaSel && pessoaSel!=='todos') itens = itens.filter(i=> i.pessoa===pessoaSel);
   const tipoContaSel = document.getElementById('filtroTipoConta').value;
   if(tipoContaSel && tipoContaSel!=='todos') itens = itens.filter(i=> i.tipoConta===tipoContaSel);
+  const statusSel = document.getElementById('filtroStatus').value;
+  if(statusSel && statusSel!=='todos'){
+    itens = itens.filter(i=>{
+      const st = statusDe(i);
+      return statusSel==='aberto' ? (st==='pendente' || st==='parcial') : st===statusSel;
+    });
+  }
   const busca = document.getElementById('buscaExtrato').value.trim().toLowerCase();
   if(busca){
     itens = itens.filter(i=>{
@@ -1566,7 +1590,16 @@ function renderExtrato(){
   itens.sort((a,b)=> (b.criadoEm||'').localeCompare(a.criadoEm||''));
 
   const box = document.getElementById('listaExtrato');
-  box.innerHTML = itens.length ? itens.map(linhaLancamento).join('') : '<p class="empty">Nenhum lançamento encontrado.</p>';
+  if(!itens.length){
+    box.innerHTML = '<p class="empty">Nenhum lançamento encontrado.</p>';
+    return;
+  }
+  const totalValor = itens.reduce((s,i)=> s + (i.tipo==='despesa' ? i.valor : 0), 0);
+  const totalPago = itens.reduce((s,i)=> s + (i.tipo==='despesa' ? valorPagoDe(i) : 0), 0);
+  const resumo = totalValor > 0
+    ? `<div class="extrato-resumo"><span>${itens.length} lançamento(s)</span><span>pago ${fmtMoeda(totalPago)} de ${fmtMoeda(totalValor)} · falta <b>${fmtMoeda(Math.max(0,totalValor-totalPago))}</b></span></div>`
+    : `<div class="extrato-resumo"><span>${itens.length} lançamento(s)</span></div>`;
+  box.innerHTML = resumo + itens.map(linhaLancamento).join('');
 }
 
 function renderAdminLancamentos(){
@@ -1587,6 +1620,14 @@ document.getElementById('buscaAdmin').addEventListener('input', renderAdminLanca
 
 function ordenar(lista){
   return [...lista].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+
+function atualizarFiltroPessoa(){
+  const sel = document.getElementById('filtroPessoa');
+  if(!sel) return;
+  const atual = sel.value;
+  sel.innerHTML = '<option value="todos">Todas as pessoas</option>' + ordenar(opcoes.pessoas).map(p=>`<option>${p}</option>`).join('');
+  if(atual && (atual==='todos' || opcoes.pessoas.includes(atual))) sel.value = atual;
 }
 
 function atualizarFiltroTipoConta(){
@@ -1690,6 +1731,8 @@ document.getElementById('listaExtrato').addEventListener('click', tratarCliqueLa
 document.getElementById('listaAdminLancamentos').addEventListener('click', tratarCliqueLancamento);
 
 document.getElementById('filtroTipoConta').addEventListener('change', renderExtrato);
+document.getElementById('filtroPessoa').addEventListener('change', renderExtrato);
+document.getElementById('filtroStatus').addEventListener('change', renderExtrato);
 document.getElementById('buscaExtrato').addEventListener('input', renderExtrato);
 
 function iniciarEdicao(id){
@@ -2394,6 +2437,7 @@ initMesInput();
 atualizarCategorias();
 atualizarTipos();
 atualizarFiltroTipoConta();
+atualizarFiltroPessoa();
 atualizarPessoas();
 atualizarPrevPessoa();
 renderMesLabel();
