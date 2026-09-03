@@ -468,6 +468,9 @@
   table.prev-table tr.rowsaldo td{border-top:1px solid var(--line-strong);font-weight:600;}
   table.prev-table tr.rowpago td{color:var(--teal);font-size:11.5px;}
   table.prev-table tr.rowfalta td{color:var(--brick);font-size:11.5px;}
+  table.prev-table tr.rowrecebido td{color:var(--teal);font-size:11.5px;}
+  table.prev-table tr.rowareceber td{color:var(--amber);font-size:11.5px;}
+  table.prev-table tr.rowcaixa td{border-top:1px solid var(--line-strong);font-weight:600;}
   table.prev-table .cel-falta{display:block;font-size:10px;color:var(--ink-faint);margin-top:1px;font-weight:400;}
 
   table.prev-table tr.linha-raiz td{background:var(--surface-2);font-weight:700;font-size:13px;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);}
@@ -982,12 +985,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1867,7 +1870,7 @@ function renderPrevisao(lista, pessoaFiltro){
   lista.forEach(({m,y})=>{
     const key = y+'-'+m;
     if(!totalDespesa[key]) totalDespesa[key] = {valor:0, pago:0, qtd:0};
-    let tr = 0;
+    if(!totalReceita[key]) totalReceita[key] = {valor:0, pago:0, qtd:0};
     lancamentos.filter(i=> i.mes===m && i.ano===y && (pessoaFiltro==='todos' || i.pessoa===pessoaFiltro)).forEach(i=>{
       const tipoNome = i.tipoConta || i.categoria || 'Outros';
       const descNome = i.descricao || (i.parcelaTotal ? ('Parcela ' + i.parcelaAtual + '/' + i.parcelaTotal) : 'Sem descrição');
@@ -1879,36 +1882,32 @@ function renderPrevisao(lista, pessoaFiltro){
         despesaPorTipoDesc[tipoNome] = despesaPorTipoDesc[tipoNome] || {};
         acumular(despesaPorTipoDesc[tipoNome], descNome, key, i);
       } else {
-        tr += i.valor;
-        receitaPorTipo[tipoNome] = receitaPorTipo[tipoNome] || {};
-        receitaPorTipo[tipoNome][key] = (receitaPorTipo[tipoNome][key]||0) + i.valor;
+        totalReceita[key].valor += i.valor;
+        totalReceita[key].pago += valorPagoDe(i);
+        totalReceita[key].qtd += 1;
+        acumular(receitaPorTipo, tipoNome, key, i);
         receitaPorTipoDesc[tipoNome] = receitaPorTipoDesc[tipoNome] || {};
-        receitaPorTipoDesc[tipoNome][descNome] = receitaPorTipoDesc[tipoNome][descNome] || {};
-        receitaPorTipoDesc[tipoNome][descNome][key] = (receitaPorTipoDesc[tipoNome][descNome][key]||0) + i.valor;
+        acumular(receitaPorTipoDesc[tipoNome], descNome, key, i);
       }
     });
-    totalReceita[key] = tr;
   });
 
-  function celulaDespesa(info){
+  function celulaValor(info, rotuloFalta){
     if(!info || !info.qtd) return '<td>—</td>';
     const quitado = info.pago >= info.valor - 0.005;
     const parcial = info.pago > 0.005 && !quitado;
     if(quitado) return `<td style="color:var(--teal);">${fmtMoeda(info.valor)}</td>`;
     if(parcial){
       const falta = info.valor - info.pago;
-      return `<td style="color:var(--amber);">${fmtMoeda(info.valor)}<span class="cel-falta">falta ${fmtMoeda(falta)}</span></td>`;
+      return `<td style="color:var(--amber);">${fmtMoeda(info.valor)}<span class="cel-falta">${rotuloFalta} ${fmtMoeda(falta)}</span></td>`;
     }
     return `<td>${fmtMoeda(info.valor)}</td>`;
   }
   function linhaDespesa(mapa){
-    return lista.map(({m,y})=> celulaDespesa(mapa && mapa[y+'-'+m])).join('');
+    return lista.map(({m,y})=> celulaValor(mapa && mapa[y+'-'+m], 'falta')).join('');
   }
   function linhaReceita(mapa){
-    return lista.map(({m,y})=>{
-      const v = (mapa && mapa[y+'-'+m]) || 0;
-      return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
-    }).join('');
+    return lista.map(({m,y})=> celulaValor(mapa && mapa[y+'-'+m], 'a receber')).join('');
   }
 
   function blocoDespesa(){
@@ -1953,9 +1952,23 @@ function renderPrevisao(lista, pessoaFiltro){
   rows += blocoReceita();
   rows += `<tr class="rowsaldo"><td class="rowlabel">Saldo previsto</td>${lista.map(({m,y})=>{
     const key = y+'-'+m;
-    const saldo = totalReceita[key] - ((totalDespesa[key] && totalDespesa[key].valor) || 0);
+    const rec = (totalReceita[key] && totalReceita[key].valor) || 0;
+    const desp = (totalDespesa[key] && totalDespesa[key].valor) || 0;
+    const saldo = rec - desp;
     const cor = saldo >= 0 ? 'var(--teal)' : 'var(--brick)';
     return `<td style="color:${cor};">${fmtMoeda(saldo)}</td>`;
+  }).join('')}</tr>`;
+
+  rows += `<tr class="rowrecebido"><td class="rowlabel">Total recebido</td>${lista.map(({m,y})=>{
+    const info = totalReceita[y+'-'+m];
+    const v = (info && info.pago) || 0;
+    return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
+  }).join('')}</tr>`;
+
+  rows += `<tr class="rowareceber"><td class="rowlabel">Falta receber</td>${lista.map(({m,y})=>{
+    const info = totalReceita[y+'-'+m];
+    const v = info ? Math.max(0, info.valor - info.pago) : 0;
+    return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
   }).join('')}</tr>`;
 
   rows += `<tr class="rowpago"><td class="rowlabel">Total pago</td>${lista.map(({m,y})=>{
@@ -1968,6 +1981,16 @@ function renderPrevisao(lista, pessoaFiltro){
     const info = totalDespesa[y+'-'+m];
     const v = info ? Math.max(0, info.valor - info.pago) : 0;
     return `<td>${v ? fmtMoeda(v) : '—'}</td>`;
+  }).join('')}</tr>`;
+
+  rows += `<tr class="rowcaixa"><td class="rowlabel">Em caixa (recebido − pago)</td>${lista.map(({m,y})=>{
+    const key = y+'-'+m;
+    const recebido = (totalReceita[key] && totalReceita[key].pago) || 0;
+    const pago = (totalDespesa[key] && totalDespesa[key].pago) || 0;
+    const faltaPagar = totalDespesa[key] ? Math.max(0, totalDespesa[key].valor - totalDespesa[key].pago) : 0;
+    const caixa = recebido - pago;
+    const cor = caixa >= faltaPagar ? 'var(--teal)' : (caixa >= 0 ? 'var(--amber)' : 'var(--brick)');
+    return `<td style="color:${cor};">${fmtMoeda(caixa)}</td>`;
   }).join('')}</tr>`;
 
   const box = document.getElementById('listaPrevisao');
