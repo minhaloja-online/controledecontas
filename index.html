@@ -979,12 +979,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1194,8 +1194,6 @@ function iniciarSincronizacao(){
     }
     atualizarCategorias();
     atualizarTipos();
-    atualizarFiltroTipoConta();
-    atualizarFiltroPessoa();
     atualizarPessoas();
     atualizarPrevPessoa();
     if(currentView==='admin') renderAdminListas();
@@ -1567,7 +1565,63 @@ function linhaLancamento(i){
     </div>`;
 }
 
+const ROTULOS_STATUS = {pendente:'Pendentes', parcial:'Parciais', pago:'Pagos / Recebidos', aberto:'Em aberto (pendente + parcial)'};
+
+function passaStatus(i, statusSel){
+  if(!statusSel || statusSel==='todos') return true;
+  const st = statusDe(i);
+  return statusSel==='aberto' ? (st==='pendente' || st==='parcial') : st===statusSel;
+}
+function passaBusca(i, busca){
+  if(!busca) return true;
+  const alvo = [i.descricao, i.categoria, i.tipoConta, i.pessoa].filter(Boolean).join(' ').toLowerCase();
+  return alvo.includes(busca);
+}
+
+function preencherSelect(sel, rotuloTodos, valores, rotulos){
+  const atual = sel.value || 'todos';
+  const lista = valores.slice();
+  if(atual !== 'todos' && !lista.includes(atual)) lista.push(atual);
+  sel.innerHTML = `<option value="todos">${rotuloTodos}</option>` +
+    lista.map(v=>`<option value="${v}">${rotulos ? (rotulos[v]||v) : v}</option>`).join('');
+  sel.value = atual;
+}
+
+// Cada filtro lista apenas o que existe considerando os OUTROS filtros ativos.
+function atualizarOpcoesFiltrosExtrato(){
+  const selPessoa = document.getElementById('filtroPessoa');
+  const selTipo = document.getElementById('filtroTipoConta');
+  const selStatus = document.getElementById('filtroStatus');
+  const pessoaSel = selPessoa.value, tipoSel = selTipo.value, statusSel = selStatus.value;
+  const busca = document.getElementById('buscaExtrato').value.trim().toLowerCase();
+
+  const base = lancamentos.filter(i=>
+    doMes(i) &&
+    (filtroExtrato==='todos' || i.tipo===filtroExtrato) &&
+    passaBusca(i, busca)
+  );
+
+  const paraPessoa = base.filter(i=>
+    (tipoSel==='todos' || i.tipoConta===tipoSel) && passaStatus(i, statusSel));
+  const paraTipo = base.filter(i=>
+    (pessoaSel==='todos' || i.pessoa===pessoaSel) && passaStatus(i, statusSel));
+  const paraStatus = base.filter(i=>
+    (pessoaSel==='todos' || i.pessoa===pessoaSel) && (tipoSel==='todos' || i.tipoConta===tipoSel));
+
+  const pessoas = ordenar([...new Set(paraPessoa.map(i=>i.pessoa).filter(Boolean))]);
+  const tipos = ordenar([...new Set(paraTipo.map(i=>i.tipoConta).filter(Boolean))]);
+
+  const statusPresentes = new Set(paraStatus.map(statusDe));
+  const status = ['pendente','parcial','pago'].filter(s=>statusPresentes.has(s));
+  if(statusPresentes.has('pendente') && statusPresentes.has('parcial')) status.push('aberto');
+
+  preencherSelect(selPessoa, 'Todas as pessoas', pessoas);
+  preencherSelect(selTipo, 'Todos os tipos de conta', tipos);
+  preencherSelect(selStatus, 'Todos os status', status, ROTULOS_STATUS);
+}
+
 function renderExtrato(){
+  atualizarOpcoesFiltrosExtrato();
   let itens = lancamentos.filter(doMes);
   if(filtroExtrato!=='todos') itens = itens.filter(i=>i.tipo===filtroExtrato);
   const pessoaSel = document.getElementById('filtroPessoa').value;
@@ -1575,19 +1629,9 @@ function renderExtrato(){
   const tipoContaSel = document.getElementById('filtroTipoConta').value;
   if(tipoContaSel && tipoContaSel!=='todos') itens = itens.filter(i=> i.tipoConta===tipoContaSel);
   const statusSel = document.getElementById('filtroStatus').value;
-  if(statusSel && statusSel!=='todos'){
-    itens = itens.filter(i=>{
-      const st = statusDe(i);
-      return statusSel==='aberto' ? (st==='pendente' || st==='parcial') : st===statusSel;
-    });
-  }
+  itens = itens.filter(i=> passaStatus(i, statusSel));
   const busca = document.getElementById('buscaExtrato').value.trim().toLowerCase();
-  if(busca){
-    itens = itens.filter(i=>{
-      const alvo = [i.descricao, i.categoria, i.tipoConta, i.pessoa].filter(Boolean).join(' ').toLowerCase();
-      return alvo.includes(busca);
-    });
-  }
+  itens = itens.filter(i=> passaBusca(i, busca));
   itens.sort((a,b)=> (b.criadoEm||'').localeCompare(a.criadoEm||''));
 
   const box = document.getElementById('listaExtrato');
@@ -1621,22 +1665,6 @@ document.getElementById('buscaAdmin').addEventListener('input', renderAdminLanca
 
 function ordenar(lista){
   return [...lista].sort((a,b)=>a.localeCompare(b,'pt-BR'));
-}
-
-function atualizarFiltroPessoa(){
-  const sel = document.getElementById('filtroPessoa');
-  if(!sel) return;
-  const atual = sel.value;
-  sel.innerHTML = '<option value="todos">Todas as pessoas</option>' + ordenar(opcoes.pessoas).map(p=>`<option>${p}</option>`).join('');
-  if(atual && (atual==='todos' || opcoes.pessoas.includes(atual))) sel.value = atual;
-}
-
-function atualizarFiltroTipoConta(){
-  const sel = document.getElementById('filtroTipoConta');
-  if(!sel) return;
-  const atual = sel.value;
-  sel.innerHTML = '<option value="todos">Todos os tipos de conta</option>' + ordenar(opcoes.tiposConta).map(c=>`<option>${c}</option>`).join('');
-  if(atual && (atual==='todos' || opcoes.tiposConta.includes(atual))) sel.value = atual;
 }
 
 function tratarCliqueLancamento(e){
@@ -2437,8 +2465,6 @@ document.getElementById('btnRemoverFundo').addEventListener('click', ()=>{
 initMesInput();
 atualizarCategorias();
 atualizarTipos();
-atualizarFiltroTipoConta();
-atualizarFiltroPessoa();
 atualizarPessoas();
 atualizarPrevPessoa();
 renderMesLabel();
