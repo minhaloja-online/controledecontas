@@ -314,7 +314,7 @@
   .side-links svg{width:20px;height:20px;flex:none;}
   #badgePendentes{display:none;position:absolute;top:4px;right:22%;background:var(--brick);color:#fff;font-size:9px;min-width:15px;height:15px;border-radius:8px;align-items:center;justify-content:center;padding:0 3px;}
 
-  header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:18px 20px 14px;border-bottom:1px solid var(--line);}
+  header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:16px 20px 16px;border-bottom:1px solid var(--line);}
   header.top .row1{display:flex;align-items:center;justify-content:space-between;gap:12px;}
   header.top h1{font-family:var(--serif);font-size:21px;font-weight:400;margin:0;letter-spacing:0.2px;flex:1;min-width:0;}
   .header-acoes{display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;}
@@ -328,7 +328,7 @@
   .month-switch button:active{background:var(--surface-2);}
   .month-label{font-family:var(--serif);font-size:17px;text-transform:capitalize;white-space:nowrap;padding:0 2px;}
   @media (max-width:600px){
-    header.top{padding:14px 16px 12px;}
+    header.top{padding:12px 16px 12px;}
     header.top h1{font-size:16px;}
     .month-label{font-size:14.5px;}
     .month-switch button{width:24px;height:24px;font-size:15px;}
@@ -337,7 +337,7 @@
     .theme-btn{width:28px;height:28px;}
   }
 
-  main{padding:18px 20px 24px;min-width:0;}
+  main{padding:22px 20px 28px;min-width:0;}
   .view{display:none;}
   .view.active{display:block;}
 
@@ -564,8 +564,8 @@
     .header-logout{display:none;}
 
     .content-col{flex:1;min-width:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
-    header.top{flex:none;padding:22px 44px 16px;}
-    main{flex:1;padding:0 44px 48px;max-width:none;}
+    header.top{flex:none;padding:20px 44px 20px;}
+    main{flex:1;padding:28px 44px 48px;max-width:none;}
 
     .cards{grid-template-columns:repeat(4,1fr);}
     #view-lancar form{max-width:none;}
@@ -979,12 +979,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
