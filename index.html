@@ -308,7 +308,7 @@
 
   nav.sidenav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-elev);border-top:1px solid var(--line);z-index:30;}
   .side-brand, .side-logout{display:none;}
-  .side-links{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);}
+  .side-links{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);padding-bottom:env(safe-area-inset-bottom);}
   .side-links button{position:relative;background:none;border:none;color:var(--ink-faint);display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 8px;font-size:10px;transition:color .15s;}
   .side-links button.active{color:var(--gold);}
   .side-links svg{width:20px;height:20px;flex:none;}
@@ -344,6 +344,35 @@
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
   .card{background:var(--surface);border-radius:var(--radius);padding:14px 14px;border:1px solid var(--line);transition:box-shadow .15s, border-color .15s;}
   .painel{background:var(--surface);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+
+  .metas-topo{margin-bottom:16px;}
+  .metas-topo .save-btn{margin-top:0;max-width:220px;}
+  .metas-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  @media (min-width:700px){ .metas-grid{grid-template-columns:1fr 1fr;} }
+  @media (min-width:1150px){ .metas-grid{grid-template-columns:1fr 1fr 1fr;} }
+  .meta-card{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--meta-cor,var(--gold));border-radius:var(--radius);padding:16px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+  .meta-card-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:12px;}
+  .meta-nome{font-family:var(--serif);font-size:16px;color:var(--ink);}
+  .meta-barra{height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden;margin-bottom:8px;}
+  .meta-barra-fill{height:100%;background:var(--meta-cor,var(--gold));border-radius:5px;transition:width .3s;}
+  .meta-valores{display:flex;justify-content:space-between;align-items:baseline;}
+  .meta-valores .atual{font-family:var(--serif);font-size:19px;color:var(--ink);}
+  .meta-valores .alvo{font-size:12px;color:var(--ink-faint);}
+  .meta-pct{font-size:11.5px;color:var(--ink-dim);margin:6px 0 14px;}
+  .meta-btns{display:flex;gap:8px;}
+  .meta-btns button{flex:1;height:38px;border-radius:9px;border:none;background:var(--gold);color:#26190a;font-size:12.5px;font-weight:600;}
+  .meta-hist-toggle{background:none;border:none;color:var(--ink-faint);font-size:11.5px;margin-top:10px;text-decoration:underline;text-underline-offset:2px;padding:0;}
+  .meta-hist{margin-top:10px;border-top:1px solid var(--line);padding-top:8px;}
+  .meta-hist-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line);}
+  .meta-hist-row:last-child{border-bottom:none;}
+  .meta-hist-row .val-pos{color:var(--teal);flex:none;}
+  .meta-hist-row .val-neg{color:var(--brick);flex:none;}
+  .meta-hist-row span:first-child{color:var(--ink-dim);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .meta-hist-row button{background:none;border:none;color:var(--ink-faint);font-size:14px;flex:none;}
+  .metas-cores{display:flex;gap:8px;margin:2px 0 6px;}
+  .cor-opcao{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;}
+  .cor-opcao.selecionada{border-color:var(--ink);}
+
   #formLancamento{padding:20px 20px 22px;margin-bottom:0;}
   #gestaoFixas.painel{margin-top:0;}
   .resumo-grid{display:grid;grid-template-columns:1fr;gap:0 32px;}
@@ -717,6 +746,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M11 20V4M18 20v-7"/></svg>
         Resumo
       </button>
+      <button type="button" data-view="investimentos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>
+        Metas
+      </button>
       <button type="button" data-view="admin" id="btnNavAdmin">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.04 1.56V21a2 2 0 0 1-4 0v-.09A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.04H3a2 2 0 0 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1.04-1.56V3a2 2 0 0 1 4 0v.09A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.56 1.04H21a2 2 0 0 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
         Admin
@@ -925,6 +958,14 @@
         </div>
       </section>
 
+      <section class="view" id="view-investimentos">
+        <div class="metas-topo">
+          <button type="button" class="save-btn" id="btnNovaMeta">+ Nova meta</button>
+        </div>
+        <div id="resumoMetas" class="painel" style="margin-bottom:18px;"></div>
+        <div id="listaMetas" class="metas-grid"></div>
+      </section>
+
       <section class="view" id="view-admin">
         <div class="admin-card aprovacoes" id="painelAprovacoes" style="display:none;">
           <h3>Aprovações pendentes</h3>
@@ -1019,6 +1060,45 @@
   </div>
 </div>
 
+<div class="modal-fundo" id="modalMeta">
+  <div class="modal-caixa">
+    <h3 id="modalMetaTitulo">Nova meta</h3>
+    <label for="metaNome">Nome da meta</label>
+    <input type="text" id="metaNome" placeholder="Ex.: Viagem para a praia">
+    <label for="metaValorAlvo">Valor alvo</label>
+    <div class="valor-wrap">
+      <span>R$</span>
+      <input type="number" id="metaValorAlvo" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+    </div>
+    <label for="metaDataAlvo">Data alvo (opcional)</label>
+    <input type="month" id="metaDataAlvo">
+    <label>Cor</label>
+    <div class="metas-cores" id="metaCoresBox"></div>
+    <button type="button" class="save-btn" id="metaSalvar">Salvar meta</button>
+    <button type="button" id="metaCancelar" class="modal-cancelar">Cancelar</button>
+  </div>
+</div>
+
+<div class="modal-fundo" id="modalAporte">
+  <div class="modal-caixa">
+    <h3 id="modalAporteTitulo">Guardar ou retirar</h3>
+    <p class="modal-sub" id="modalAporteSub"></p>
+    <div class="toggle-pair" id="aporteTipoToggle">
+      <button type="button" class="on-receita active" data-aportetipo="guardar">Guardar</button>
+      <button type="button" class="on-despesa" data-aportetipo="retirar">Retirar</button>
+    </div>
+    <label for="aporteValor" style="margin-top:16px;">Valor</label>
+    <div class="valor-wrap">
+      <span>R$</span>
+      <input type="number" id="aporteValor" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+    </div>
+    <label for="aporteNota">Nota (opcional)</label>
+    <input type="text" id="aporteNota" placeholder="Ex.: 13º salário">
+    <button type="button" class="save-btn" id="aporteSalvar">Confirmar</button>
+    <button type="button" id="aporteCancelar" class="modal-cancelar">Cancelar</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 <div id="areaImpressao"></div>
 
@@ -1057,7 +1137,7 @@ let opcoes = {
 let aparencia = {logoDataUrl:'', fundoDataUrl:''};
 
 const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-const TITULOS = {lancar:'Lançar', extrato:'Extrato', previsao:'Previsão', resumo:'Resumo', admin:'Admin'};
+const TITULOS = {lancar:'Lançar', extrato:'Extrato', previsao:'Previsão', resumo:'Resumo', investimentos:'Metas e investimentos', admin:'Admin'};
 
 let lancamentos = [];
 let recorrentes = [];
@@ -1072,7 +1152,12 @@ let uidAtual = null;
 let sincronizadoUid = null;
 let souAdmin = false;
 let previsaoExpandido = {despesaTotal:false, despesaTipos:{}, receitaTotal:false, receitaTipos:{}};
-let unsubLanc = null, unsubRec = null, unsubCfg = null, unsubApar = null, unsubUserDoc = null, unsubPendentes = null;
+let unsubLanc = null, unsubRec = null, unsubCfg = null, unsubApar = null, unsubUserDoc = null, unsubPendentes = null, unsubMetas = null, unsubAportes = null;
+let metas = [], aportes = [];
+const CORES_METAS = ['#c79a4b','#4fa98c','#c1573b','#4b8bc7','#9b6fd1','#d1698f'];
+let metaEditandoId = null, metaCorSelecionada = CORES_METAS[0];
+let aporteMetaId = null, aporteTipoAtual = 'guardar';
+let metaHistAberta = new Set();
 
 function colUser(nome){
   return db.collection('users').doc(uidAtual).collection(nome);
@@ -1159,6 +1244,8 @@ function limparListenersDados(){
   if(unsubCfg){unsubCfg();unsubCfg=null;}
   if(unsubApar){unsubApar();unsubApar=null;}
   if(unsubPendentes){unsubPendentes();unsubPendentes=null;}
+  if(unsubMetas){unsubMetas();unsubMetas=null;}
+  if(unsubAportes){unsubAportes();unsubAportes=null;}
 }
 
 function mostrarTela(tela){
@@ -1258,6 +1345,15 @@ function iniciarSincronizacao(){
     if(d.paleta && d.paleta !== (document.documentElement.getAttribute('data-paleta') || 'classico')){
       aplicarPaleta(d.paleta);
     }
+  });
+
+  unsubMetas = colUser('metas').onSnapshot(snap=>{
+    metas = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(currentView==='investimentos') renderMetas();
+  });
+  unsubAportes = colUser('aportes').onSnapshot(snap=>{
+    aportes = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    if(currentView==='investimentos') renderMetas();
   });
 
   if(souAdmin){
@@ -1423,6 +1519,7 @@ function trocarView(view){
   if(view==='extrato') renderExtrato();
   if(view==='previsao') abrirPrevisao();
   if(view==='admin'){ renderAdminListas(); renderTemas(); }
+  if(view==='investimentos') renderMetas();
   if(view==='lancar'){ renderAdminLancamentos(); renderRecorrentes(); }
   const cc = document.querySelector('.content-col');
   if(cc) cc.scrollTop = 0;
@@ -1880,10 +1977,18 @@ function iniciarEdicao(id){
   document.querySelectorAll('.toggle-pair button').forEach(b=> b.classList.toggle('active', b.dataset.tipo===tipoAtual));
   document.getElementById('repeticaoWrap').style.display = 'none';
   atualizarCategorias();
-  atualizarTipos();
   document.getElementById('fPessoa').value = item.pessoa;
   document.getElementById('fCategoria').value = item.categoria;
-  document.getElementById('fTipo').value = item.tipoConta || '';
+  atualizarTipos();
+  const selTipo = document.getElementById('fTipo');
+  selTipo.value = item.tipoConta || '';
+  if(item.tipoConta && selTipo.value !== item.tipoConta){
+    const opt = document.createElement('option');
+    opt.value = item.tipoConta;
+    opt.textContent = item.tipoConta;
+    selTipo.insertBefore(opt, selTipo.firstChild);
+    selTipo.value = item.tipoConta;
+  }
   document.getElementById('fDescricao').value = item.descricao || '';
   document.getElementById('fValor').value = item.valor;
   document.getElementById('fMes').value = item.ano + '-' + String(item.mes).padStart(2,'0');
@@ -2196,6 +2301,203 @@ function renderAll(){
   if(currentView==='previsao') abrirPrevisao();
 }
 
+/* ---------- Metas / Investimentos ---------- */
+
+function valorAtualMeta(metaId){
+  return aportes.filter(a=>a.metaId===metaId).reduce((s,a)=>s+a.valor,0);
+}
+
+function projecaoMeta(meta){
+  const historico = aportes.filter(a=> a.metaId===meta.id && a.valor>0);
+  if(!historico.length) return '';
+  const atual = valorAtualMeta(meta.id);
+  const falta = meta.valorAlvo - atual;
+  if(falta<=0) return '';
+  const mesesSet = new Set(historico.map(a=> (a.data||'').slice(0,7)));
+  if(!mesesSet.size) return '';
+  const totalAportado = historico.reduce((s,a)=>s+a.valor,0);
+  const mediaMensal = totalAportado / mesesSet.size;
+  if(mediaMensal<=0) return '';
+  const mesesRestantes = Math.max(1, Math.ceil(falta / mediaMensal));
+  const hoje = new Date();
+  const dataFinal = new Date(hoje.getFullYear(), hoje.getMonth()+mesesRestantes, 1);
+  return 'no ritmo atual, deve chegar lá em ' + MESES[dataFinal.getMonth()] + ' de ' + dataFinal.getFullYear();
+}
+
+function renderMetas(){
+  const boxResumo = document.getElementById('resumoMetas');
+  const box = document.getElementById('listaMetas');
+  if(!box || !boxResumo) return;
+  const ativas = metas.filter(m=> m.ativo!==false);
+
+  const totalAtual = ativas.reduce((s,m)=> s+valorAtualMeta(m.id), 0);
+  const totalAlvo = ativas.reduce((s,m)=> s+(m.valorAlvo||0), 0);
+  boxResumo.innerHTML = ativas.length
+    ? `<p class="label" style="margin:0 0 6px;">Total guardado em metas</p><p class="num gold" style="font-family:var(--serif);font-size:22px;margin:0;">${fmtMoeda(totalAtual)}</p><p class="sub" style="margin:4px 0 0;">de ${fmtMoeda(totalAlvo)} somando todas as metas ativas</p>`
+    : '<p class="empty">Você ainda não tem metas. Crie a primeira para começar a guardar dinheiro para algum objetivo.</p>';
+
+  if(!ativas.length){ box.innerHTML=''; return; }
+
+  box.innerHTML = ativas.map(m=>{
+    const atual = valorAtualMeta(m.id);
+    const pct = m.valorAlvo>0 ? Math.min(100, (atual/m.valorAlvo)*100) : 0;
+    const concluida = m.valorAlvo>0 && atual >= m.valorAlvo - 0.005;
+    let dataTxt = '';
+    if(m.dataAlvo){
+      const [aFim,mFim] = m.dataAlvo.split('-').map(Number);
+      dataTxt = 'até ' + MESES[mFim-1] + ' de ' + aFim;
+    }
+    const proj = !concluida ? projecaoMeta(m) : '';
+    const legenda = concluida ? 'meta concluída' : (dataTxt && proj ? (dataTxt + ' · ' + proj) : (dataTxt || proj));
+    const hist = aportes.filter(a=>a.metaId===m.id).sort((a,b)=> (b.data||'').localeCompare(a.data||''));
+    const histAberto = metaHistAberta.has(m.id);
+    return `
+    <div class="meta-card" style="--meta-cor:${m.cor||'#c79a4b'}">
+      <div class="meta-card-topo">
+        <span class="meta-nome">${m.nome}</span>
+        <span class="item-acoes">
+          <button type="button" class="item-edit" data-editarmeta="${m.id}" aria-label="Editar"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button type="button" class="item-del" data-excluirmeta="${m.id}" aria-label="Excluir">×</button>
+        </span>
+      </div>
+      <div class="meta-barra"><div class="meta-barra-fill" style="width:${pct}%"></div></div>
+      <div class="meta-valores">
+        <span class="atual">${fmtMoeda(atual)}</span>
+        <span class="alvo">de ${fmtMoeda(m.valorAlvo||0)}</span>
+      </div>
+      <p class="meta-pct">${pct.toFixed(0)}% concluído${legenda ? ' · ' + legenda : ''}</p>
+      <div class="meta-btns">
+        <button type="button" data-aportarmeta="${m.id}">+ Guardar / Retirar</button>
+      </div>
+      <button type="button" class="meta-hist-toggle" data-togglehist="${m.id}">${histAberto?'Ocultar':'Ver'} histórico (${hist.length})</button>
+      <div class="meta-hist" style="display:${histAberto?'block':'none'};">
+        ${hist.length ? hist.map(a=>`
+          <div class="meta-hist-row">
+            <span>${a.data ? new Date(a.data).toLocaleDateString('pt-BR') : ''}${a.nota ? ' · ' + a.nota : ''}</span>
+            <span class="${a.valor>=0?'val-pos':'val-neg'}">${a.valor>=0?'+':''}${fmtMoeda(a.valor)}</span>
+            <button type="button" data-delaporte="${a.id}" aria-label="Excluir movimento">×</button>
+          </div>`).join('') : '<p class="empty" style="padding:8px 0;">Nenhum movimento ainda.</p>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('btnNovaMeta').addEventListener('click', ()=> abrirModalMeta(null));
+
+document.getElementById('listaMetas').addEventListener('click', (e)=>{
+  const editEl = e.target.closest('[data-editarmeta]');
+  if(editEl){ abrirModalMeta(editEl.dataset.editarmeta); return; }
+  const delEl = e.target.closest('[data-excluirmeta]');
+  if(delEl){ excluirMeta(delEl.dataset.excluirmeta); return; }
+  const aportarEl = e.target.closest('[data-aportarmeta]');
+  if(aportarEl){ abrirModalAporte(aportarEl.dataset.aportarmeta); return; }
+  const histEl = e.target.closest('[data-togglehist]');
+  if(histEl){
+    const id = histEl.dataset.togglehist;
+    if(metaHistAberta.has(id)) metaHistAberta.delete(id); else metaHistAberta.add(id);
+    renderMetas();
+    return;
+  }
+  const delAporteEl = e.target.closest('[data-delaporte]');
+  if(delAporteEl){
+    if(confirm('Excluir este movimento?')){
+      colUser('aportes').doc(delAporteEl.dataset.delaporte).delete().catch(()=>showToast('Não foi possível excluir.'));
+    }
+  }
+});
+
+function renderCoresMeta(){
+  const box = document.getElementById('metaCoresBox');
+  box.innerHTML = CORES_METAS.map(c=>`<button type="button" class="cor-opcao ${c===metaCorSelecionada?'selecionada':''}" data-cor="${c}" style="background:${c};" aria-label="Cor"></button>`).join('');
+}
+document.getElementById('metaCoresBox').addEventListener('click', (e)=>{
+  const el = e.target.closest('[data-cor]');
+  if(!el) return;
+  metaCorSelecionada = el.dataset.cor;
+  renderCoresMeta();
+});
+
+function abrirModalMeta(id){
+  metaEditandoId = id;
+  const m = id ? metas.find(x=>x.id===id) : null;
+  document.getElementById('modalMetaTitulo').textContent = m ? 'Editar meta' : 'Nova meta';
+  document.getElementById('metaNome').value = m ? m.nome : '';
+  document.getElementById('metaValorAlvo').value = m ? m.valorAlvo : '';
+  document.getElementById('metaDataAlvo').value = m ? (m.dataAlvo || '') : '';
+  metaCorSelecionada = m ? (m.cor || CORES_METAS[0]) : CORES_METAS[0];
+  renderCoresMeta();
+  document.getElementById('modalMeta').classList.add('aberto');
+  setTimeout(()=> document.getElementById('metaNome').focus(), 50);
+}
+document.getElementById('metaCancelar').addEventListener('click', ()=> document.getElementById('modalMeta').classList.remove('aberto'));
+document.getElementById('modalMeta').addEventListener('click', (e)=>{ if(e.target.id==='modalMeta') document.getElementById('modalMeta').classList.remove('aberto'); });
+
+document.getElementById('metaSalvar').addEventListener('click', async ()=>{
+  const nome = document.getElementById('metaNome').value.trim();
+  const valorAlvo = parseFloat(document.getElementById('metaValorAlvo').value);
+  const dataAlvo = document.getElementById('metaDataAlvo').value || null;
+  if(!nome){ showToast('Digite um nome para a meta.'); return; }
+  if(!valorAlvo || valorAlvo<=0){ showToast('Informe um valor alvo válido.'); return; }
+  const dados = {nome, valorAlvo: Math.round(valorAlvo*100)/100, dataAlvo, cor: metaCorSelecionada, ativo:true};
+  try{
+    if(metaEditandoId){
+      await colUser('metas').doc(metaEditandoId).update(dados);
+    }else{
+      dados.criadoEm = new Date().toISOString();
+      await colUser('metas').add(dados);
+    }
+    showToast('Meta salva.');
+    document.getElementById('modalMeta').classList.remove('aberto');
+  }catch(err){
+    showToast('Não foi possível salvar.');
+  }
+});
+
+function excluirMeta(id){
+  const hist = aportes.filter(a=>a.metaId===id);
+  const aviso = hist.length ? ('\n\nIsso também vai excluir ' + hist.length + ' movimento(s) guardado(s) nela.') : '';
+  if(!confirm('Excluir esta meta?' + aviso)) return;
+  Promise.all([
+    colUser('metas').doc(id).delete(),
+    ...hist.map(a=> colUser('aportes').doc(a.id).delete())
+  ]).then(()=>showToast('Meta excluída.')).catch(()=>showToast('Não foi possível excluir tudo.'));
+}
+
+function abrirModalAporte(metaId){
+  aporteMetaId = metaId;
+  aporteTipoAtual = 'guardar';
+  document.querySelectorAll('#aporteTipoToggle button').forEach(b=> b.classList.toggle('active', b.dataset.aportetipo==='guardar'));
+  const m = metas.find(x=>x.id===metaId);
+  document.getElementById('modalAporteSub').textContent = m ? (m.nome + ' · atual: ' + fmtMoeda(valorAtualMeta(metaId)) + ' de ' + fmtMoeda(m.valorAlvo||0)) : '';
+  document.getElementById('aporteValor').value = '';
+  document.getElementById('aporteNota').value = '';
+  document.getElementById('modalAporte').classList.add('aberto');
+  setTimeout(()=> document.getElementById('aporteValor').focus(), 50);
+}
+document.querySelectorAll('#aporteTipoToggle button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    aporteTipoAtual = b.dataset.aportetipo;
+    document.querySelectorAll('#aporteTipoToggle button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+document.getElementById('aporteCancelar').addEventListener('click', ()=> document.getElementById('modalAporte').classList.remove('aberto'));
+document.getElementById('modalAporte').addEventListener('click', (e)=>{ if(e.target.id==='modalAporte') document.getElementById('modalAporte').classList.remove('aberto'); });
+
+document.getElementById('aporteSalvar').addEventListener('click', async ()=>{
+  const valor = parseFloat(document.getElementById('aporteValor').value);
+  if(!valor || valor<=0){ showToast('Informe um valor válido.'); return; }
+  const nota = document.getElementById('aporteNota').value.trim();
+  const valorFinal = aporteTipoAtual==='retirar' ? -(Math.round(valor*100)/100) : Math.round(valor*100)/100;
+  try{
+    await colUser('aportes').add({metaId: aporteMetaId, valor: valorFinal, nota, data: new Date().toISOString(), criadoEm: new Date().toISOString()});
+    showToast(aporteTipoAtual==='retirar' ? 'Retirada registrada.' : 'Valor guardado.');
+    document.getElementById('modalAporte').classList.remove('aberto');
+  }catch(err){
+    showToast('Não foi possível salvar.');
+  }
+});
+
 /* ---------- Listas configuráveis (categorias / tipos / pessoas) ---------- */
 
 function popularSelectComNovo(sel, lista, textoNovo, permitirVazio){
@@ -2215,7 +2517,13 @@ function atualizarTipos(){
   const wrap = document.getElementById('tipoContaWrap');
   if(wrap) wrap.style.display = tipoAtual==='despesa' ? 'block' : 'none';
   if(tipoAtual==='receita') return;
-  popularSelectComNovo(document.getElementById('fTipo'), opcoes.tiposConta.map(tipoNome), '+ Novo tipo de conta…', false);
+  const categoriaSel = document.getElementById('fCategoria').value;
+  let tipos = opcoes.tiposConta;
+  if(categoriaSel && categoriaSel!=='__novo__'){
+    tipos = tipos.filter(t=> tipoCategoria(t) === categoriaSel);
+  }
+  const rotulo = tipos.length ? '+ Novo tipo de conta…' : '+ Novo tipo de conta (nenhum vinculado a essa categoria)…';
+  popularSelectComNovo(document.getElementById('fTipo'), tipos.map(tipoNome), rotulo, false);
 }
 function atualizarPessoas(){
   const sel = document.getElementById('fPessoa');
@@ -2256,6 +2564,9 @@ function configurarNovoItem(selectId, promptTexto, obterCampo, refreshFn){
 configurarNovoItem('fCategoria', 'Nome da nova categoria:',
   ()=> tipoAtual==='receita' ? 'categoriasReceita' : 'categoriasDespesa',
   atualizarCategorias);
+document.getElementById('fCategoria').addEventListener('change', ()=>{
+  if(tipoAtual==='despesa') atualizarTipos();
+});
 function aplicarCategoriaDoTipo(nomeTipo){
   const t = opcoes.tiposConta.find(t=> tipoNome(t)===nomeTipo);
   const cat = t ? tipoCategoria(t) : '';
