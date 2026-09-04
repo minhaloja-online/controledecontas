@@ -344,6 +344,8 @@
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
   .card{background:var(--surface);border-radius:var(--radius);padding:14px 14px;border:1px solid var(--line);transition:box-shadow .15s, border-color .15s;}
   .painel{background:var(--surface);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+  #formLancamento{padding:20px 20px 22px;margin-bottom:0;}
+  #gestaoFixas.painel{margin-top:0;}
   .resumo-grid{display:grid;grid-template-columns:1fr;gap:0 32px;}
   .resumo-painel{padding:4px 18px 18px;}
   .resumo-bloco .section-title{margin:20px 0 8px;}
@@ -442,6 +444,11 @@
   }
   form label{display:block;font-size:12px;color:var(--ink-dim);margin:16px 0 6px;}
   .form-row2{display:block;}
+  .form-row3{display:block;}
+  .form-row-valor{display:block;}
+  .check-col{display:flex;align-items:center;gap:8px;margin-top:16px;}
+  .check-col input{width:20px;height:20px;flex:none;}
+  .check-col label{margin:0;font-size:13px;color:var(--ink);}
   .toggle-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .toggle-pair button{padding:13px 0;border-radius:var(--radius);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-dim);font-size:14px;transition:background .15s,color .15s,border-color .15s;}
   .toggle-pair button.on-receita.active{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);}
@@ -606,6 +613,9 @@
     .lancar-grid{grid-template-columns:minmax(0,7fr) minmax(0,6fr);align-items:start;}
     #view-lancar{max-width:1280px;}
     .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
+    .form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 20px;}
+    .form-row-valor{display:grid;grid-template-columns:1fr 1fr auto;gap:0 20px;align-items:end;}
+    .check-col{margin-top:0;padding-bottom:13px;white-space:nowrap;}
     .periodo-row{grid-template-columns:1fr 1fr 1fr;align-items:end;}
     #view-extrato, #view-admin{max-width:1100px;}
     #view-resumo{max-width:none;}
@@ -834,13 +844,13 @@
       <section class="view" id="view-lancar">
         <div class="lancar-grid">
         <div class="lancar-col-esq">
-        <form id="formLancamento">
+        <form id="formLancamento" class="painel">
           <div class="toggle-pair">
             <button type="button" class="on-receita active" data-tipo="receita">Receita</button>
             <button type="button" class="on-despesa" data-tipo="despesa">Despesa</button>
           </div>
 
-          <div class="form-row2">
+          <div class="form-row3">
             <div>
               <label for="fPessoa">Pessoa</label>
               <select id="fPessoa"></select>
@@ -849,17 +859,16 @@
               <label for="fCategoria">Categoria</label>
               <select id="fCategoria"></select>
             </div>
-          </div>
-
-          <div id="tipoContaWrap">
-            <label for="fTipo" id="fTipoLabel">Tipo de conta</label>
-            <select id="fTipo"></select>
+            <div id="tipoContaWrap">
+              <label for="fTipo" id="fTipoLabel">Tipo de conta</label>
+              <select id="fTipo"></select>
+            </div>
           </div>
 
           <label for="fDescricao">Descrição (opcional)</label>
           <input type="text" id="fDescricao" placeholder="Ex.: compra parcelada, observação...">
 
-          <div class="form-row2">
+          <div class="form-row-valor">
             <div>
               <label for="fValor">Valor</label>
               <div class="valor-wrap">
@@ -870,6 +879,10 @@
             <div>
               <label for="fMes">Mês de referência</label>
               <input type="month" id="fMes">
+            </div>
+            <div class="check-col">
+              <input type="checkbox" id="fConfirmado">
+              <label for="fConfirmado" id="fConfirmadoLabel">Já recebido</label>
             </div>
           </div>
 
@@ -890,11 +903,6 @@
             </div>
           </div>
 
-          <div class="check-row">
-            <input type="checkbox" id="fConfirmado">
-            <label for="fConfirmado" id="fConfirmadoLabel">Já recebido</label>
-          </div>
-
           <button type="submit" class="save-btn" id="btnSalvar">Lançar receita</button>
           <button type="button" id="btnCancelarEdicao" style="display:none;">Cancelar edição</button>
         </form>
@@ -903,7 +911,7 @@
           <span class="section-title" style="margin:0;">Contas fixas e receitas fixas</span>
           <button id="toggleGestaoFixas" type="button">Gerenciar</button>
         </div>
-        <div id="gestaoFixas" style="display:none;">
+        <div id="gestaoFixas" class="painel" style="display:none;">
           <input type="text" id="buscaFixas" placeholder="Buscar conta fixa..." style="margin-bottom:12px;">
           <div id="listaRecorrentes"></div>
         </div>
@@ -1018,21 +1026,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="firebase-config.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
-};
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-
-// TODO: troque pelo seu e-mail de administrador (o mesmo deve ser colocado no firestore.rules)
-const EMAIL_ADMIN = "SEU_EMAIL_ADMIN_AQUI@exemplo.com";
 
 const DEFAULTS = {
   categoriasReceita: ['Salário','Férias','13º Salário','Auxílio Moradia','Outros'],
