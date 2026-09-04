@@ -4,12 +4,12 @@
 // 1) Chaves do seu projeto Firebase.
 //    Onde encontrar: console.firebase.google.com > Configurações do projeto > Seus apps > SDK.
 const firebaseConfig = {
-  apiKey: "COLE_AQUI",
-  authDomain: "COLE_AQUI.firebaseapp.com",
-  projectId: "COLE_AQUI",
-  storageBucket: "COLE_AQUI.appspot.com",
-  messagingSenderId: "COLE_AQUI",
-  appId: "COLE_AQUI"
+  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
+  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
+  projectId: "controle-de-contas-7c11f",
+  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
+  messagingSenderId: "944236549767",
+  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
 };
 
 // 2) E-mail de quem administra o site (aprova novas contas, vê o painel de Admin
