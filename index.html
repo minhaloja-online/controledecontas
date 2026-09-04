@@ -426,6 +426,20 @@
 
   .extrato-resumo{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:2px 0 10px;margin-bottom:4px;border-bottom:1px solid var(--line-strong);font-size:12px;color:var(--ink-dim);}
   .extrato-resumo b{color:var(--brick);font-weight:600;}
+  .extrato-exportar{display:flex;gap:8px;margin-bottom:14px;}
+  .extrato-exportar button{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-dim);font-size:12.5px;transition:color .15s,border-color .15s;}
+  .extrato-exportar button:hover{color:var(--gold);border-color:var(--gold);}
+  #areaImpressao{display:none;}
+  @media print{
+    body *{visibility:hidden;}
+    #areaImpressao, #areaImpressao *{visibility:visible;}
+    #areaImpressao{display:block;position:absolute;left:0;top:0;width:100%;padding:24px;background:#fff;color:#111;}
+    #areaImpressao h2{font-family:Georgia,serif;margin:0 0 4px;font-size:18px;}
+    #areaImpressao p{margin:0 0 14px;font-size:12px;color:#444;}
+    #areaImpressao table{width:100%;border-collapse:collapse;font-size:11px;}
+    #areaImpressao th, #areaImpressao td{border:1px solid #999;padding:5px 7px;text-align:left;}
+    #areaImpressao th{background:#eee;}
+  }
   form label{display:block;font-size:12px;color:var(--ink-dim);margin:16px 0 6px;}
   .form-row2{display:block;}
   .toggle-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
@@ -521,6 +535,20 @@
   .item-edit:hover{color:var(--gold);background:var(--surface-2);}
   .item-del:hover{color:var(--brick);}
   .add-row{display:flex;gap:8px;margin-top:12px;}
+  .add-row-tipo{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+  .add-row-tipo select{height:40px;}
+  .add-row-tipo button{height:40px;border-radius:9px;border:none;background:var(--gold);color:#26190a;font-size:13px;font-weight:600;}
+  @media (min-width:600px){
+    .add-row-tipo{flex-direction:row;}
+    .add-row-tipo input{flex:1;}
+    .add-row-tipo select{flex:1;}
+    .add-row-tipo button{flex:none;padding:0 16px;}
+  }
+  .tipo-cat-badge{font-size:10.5px;color:var(--ink-faint);border:1px solid var(--line-strong);border-radius:8px;padding:1px 7px;margin-left:6px;}
+  .tipo-cat-badge.sem{color:var(--amber);border-color:var(--amber);}
+  .tipo-edit-inline{display:none;gap:8px;align-items:center;padding:0 0 12px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .tipo-edit-inline input, .tipo-edit-inline select{flex:1;min-width:120px;height:38px;}
+  .tipo-edit-inline button{flex:none;height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);font-size:12px;}
   .add-row input{flex:1;height:40px;}
   .add-row button{flex:none;height:40px;padding:0 16px;border-radius:9px;border:none;background:var(--gold);color:#26190a;font-size:13px;font-weight:600;}
   .aprov-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
@@ -776,6 +804,10 @@
           </select>
           <input type="text" id="buscaExtrato" placeholder="Buscar por descrição, categoria, pessoa...">
         </div>
+        <div class="extrato-exportar">
+          <button type="button" id="btnExportExcel"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13"/><path d="M7 11l5 5 5-5"/><path d="M4 21h16"/></svg> Excel</button>
+          <button type="button" id="btnExportPDF"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13"/><path d="M7 11l5 5 5-5"/><path d="M4 21h16"/></svg> PDF</button>
+        </div>
         <div class="painel" id="listaExtrato"></div>
       </section>
 
@@ -920,10 +952,12 @@
 
         <div class="admin-card">
           <h3>Tipos de conta</h3>
+          <p style="font-size:13px;color:var(--ink-dim);margin:0 0 12px;">Cada tipo pode ficar ligado a uma categoria — ao lançar, escolher o tipo já seleciona a categoria certa.</p>
           <div id="listaTiposAdmin"></div>
-          <div class="add-row">
-            <input type="text" id="novoTipoConta" placeholder="Novo tipo de conta">
-            <button type="button" data-add="tiposConta" data-input="novoTipoConta">Adicionar</button>
+          <div class="add-row-tipo">
+            <input type="text" id="novoTipoConta" placeholder="Nome do tipo de conta">
+            <select id="novoTipoContaCategoria"><option value="">Sem categoria</option></select>
+            <button type="button" id="btnAddTipoConta">Adicionar</button>
           </div>
         </div>
 
@@ -978,18 +1012,20 @@
 </div>
 
 <div class="toast" id="toast"></div>
+<div id="areaImpressao"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDxOteyUrA6QtFqwHCHqCSjw9rkM5HQff0",
-  authDomain: "controle-de-contas-7c11f.firebaseapp.com",
-  projectId: "controle-de-contas-7c11f",
-  storageBucket: "controle-de-contas-7c11f.firebasestorage.app",
-  messagingSenderId: "944236549767",
-  appId: "1:944236549767:web:2b84f6672bf050cef88a22"
+  apiKey: "COLE_AQUI",
+  authDomain: "COLE_AQUI.firebaseapp.com",
+  projectId: "COLE_AQUI",
+  storageBucket: "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId: "COLE_AQUI"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -1001,7 +1037,17 @@ const EMAIL_ADMIN = "SEU_EMAIL_ADMIN_AQUI@exemplo.com";
 const DEFAULTS = {
   categoriasReceita: ['Salário','Férias','13º Salário','Auxílio Moradia','Outros'],
   categoriasDespesa: ['Casa','Veículo','Cartão De Crédito','Consórcio','Alimentação','Mercado','Farmácia','Dízimos E Ofertas','Empréstimo','Outros'],
-  tiposConta: ['Aluguel','Dízimo','Energia','Internet','Consórcio','Parcela Carro','Nubank','Mercado Pago','Licenciamento Do Carro'],
+  tiposConta: [
+    {nome:'Aluguel', categoria:'Casa'},
+    {nome:'Dízimo', categoria:'Dízimos E Ofertas'},
+    {nome:'Energia', categoria:'Casa'},
+    {nome:'Internet', categoria:'Casa'},
+    {nome:'Consórcio', categoria:'Consórcio'},
+    {nome:'Parcela Carro', categoria:'Veículo'},
+    {nome:'Nubank', categoria:'Cartão De Crédito'},
+    {nome:'Mercado Pago', categoria:'Cartão De Crédito'},
+    {nome:'Licenciamento Do Carro', categoria:'Veículo'}
+  ],
   pessoas: []
 };
 let opcoes = {
@@ -1625,8 +1671,7 @@ function atualizarOpcoesFiltrosExtrato(){
   preencherSelect(selStatus, 'Todos os status', status, ROTULOS_STATUS);
 }
 
-function renderExtrato(){
-  atualizarOpcoesFiltrosExtrato();
+function itensExtratoFiltrados(){
   let itens = lancamentos.filter(doMes);
   if(filtroExtrato!=='todos') itens = itens.filter(i=>i.tipo===filtroExtrato);
   const pessoaSel = document.getElementById('filtroPessoa').value;
@@ -1638,6 +1683,12 @@ function renderExtrato(){
   const busca = document.getElementById('buscaExtrato').value.trim().toLowerCase();
   itens = itens.filter(i=> passaBusca(i, busca));
   itens.sort((a,b)=> (b.criadoEm||'').localeCompare(a.criadoEm||''));
+  return itens;
+}
+
+function renderExtrato(){
+  atualizarOpcoesFiltrosExtrato();
+  const itens = itensExtratoFiltrados();
 
   const box = document.getElementById('listaExtrato');
   if(!itens.length){
@@ -1671,6 +1722,8 @@ document.getElementById('buscaAdmin').addEventListener('input', renderAdminLanca
 function ordenar(lista){
   return [...lista].sort((a,b)=>a.localeCompare(b,'pt-BR'));
 }
+function tipoNome(t){ return typeof t === 'string' ? t : t.nome; }
+function tipoCategoria(t){ return typeof t === 'string' ? '' : (t.categoria || ''); }
 
 function tratarCliqueLancamento(e){
   const toggleEl = e.target.closest('[data-toggle]');
@@ -1767,6 +1820,58 @@ document.getElementById('listaAdminLancamentos').addEventListener('click', trata
 document.getElementById('filtroTipoConta').addEventListener('change', renderExtrato);
 document.getElementById('filtroPessoa').addEventListener('change', renderExtrato);
 document.getElementById('filtroStatus').addEventListener('change', renderExtrato);
+
+function rotuloStatusExport(i){
+  const st = statusDe(i);
+  if(st==='pago') return i.tipo==='receita' ? 'Recebido' : 'Pago';
+  if(st==='parcial') return 'Parcial';
+  return 'Pendente';
+}
+
+document.getElementById('btnExportExcel').addEventListener('click', ()=>{
+  const itens = itensExtratoFiltrados();
+  if(!itens.length){ showToast('Nada para exportar com esses filtros.'); return; }
+  const linhas = itens.map(i=>({
+    Tipo: i.tipo==='receita' ? 'Receita' : 'Despesa',
+    Categoria: i.categoria || '',
+    'Tipo de conta': i.tipoConta || '',
+    Descrição: i.descricao || '',
+    Pessoa: i.pessoa || '',
+    Mês: MESES[i.mes-1] + '/' + i.ano,
+    Valor: i.valor,
+    'Valor pago': valorPagoDe(i),
+    Status: rotuloStatusExport(i)
+  }));
+  const ws = XLSX.utils.json_to_sheet(linhas);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Extrato');
+  XLSX.writeFile(wb, 'extrato-' + MESES[refMes-1] + '-' + refAno + '.xlsx');
+});
+
+document.getElementById('btnExportPDF').addEventListener('click', ()=>{
+  const itens = itensExtratoFiltrados();
+  if(!itens.length){ showToast('Nada para exportar com esses filtros.'); return; }
+  const linhas = itens.map(i=>`
+    <tr>
+      <td>${i.tipo==='receita'?'Receita':'Despesa'}</td>
+      <td>${i.categoria||''}</td>
+      <td>${i.tipoConta||'-'}</td>
+      <td>${i.descricao||'-'}</td>
+      <td>${i.pessoa||''}</td>
+      <td>${fmtMoeda(i.valor)}</td>
+      <td>${rotuloStatusExport(i)}</td>
+    </tr>`).join('');
+  document.getElementById('areaImpressao').innerHTML = `
+    <h2>Extrato — ${MESES[refMes-1]} ${refAno}</h2>
+    <p>${itens.length} lançamento(s) · gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
+    <table>
+      <thead><tr><th>Tipo</th><th>Categoria</th><th>Tipo de conta</th><th>Descrição</th><th>Pessoa</th><th>Valor</th><th>Status</th></tr></thead>
+      <tbody>${linhas}</tbody>
+    </table>`;
+  showToast('Escolha "Salvar como PDF" na janela de impressão.');
+  setTimeout(()=> window.print(), 200);
+});
+
 document.getElementById('buscaExtrato').addEventListener('input', renderExtrato);
 
 function iniciarEdicao(id){
@@ -2112,7 +2217,7 @@ function atualizarTipos(){
   const wrap = document.getElementById('tipoContaWrap');
   if(wrap) wrap.style.display = tipoAtual==='despesa' ? 'block' : 'none';
   if(tipoAtual==='receita') return;
-  popularSelectComNovo(document.getElementById('fTipo'), opcoes.tiposConta, '+ Novo tipo de conta…', false);
+  popularSelectComNovo(document.getElementById('fTipo'), opcoes.tiposConta.map(tipoNome), '+ Novo tipo de conta…', false);
 }
 function atualizarPessoas(){
   const sel = document.getElementById('fPessoa');
@@ -2153,7 +2258,35 @@ function configurarNovoItem(selectId, promptTexto, obterCampo, refreshFn){
 configurarNovoItem('fCategoria', 'Nome da nova categoria:',
   ()=> tipoAtual==='receita' ? 'categoriasReceita' : 'categoriasDespesa',
   atualizarCategorias);
-configurarNovoItem('fTipo', 'Nome do novo tipo de conta:', 'tiposConta', atualizarTipos);
+function aplicarCategoriaDoTipo(nomeTipo){
+  const t = opcoes.tiposConta.find(t=> tipoNome(t)===nomeTipo);
+  const cat = t ? tipoCategoria(t) : '';
+  if(cat && opcoes.categoriasDespesa.includes(cat)){
+    document.getElementById('fCategoria').value = cat;
+  }
+}
+
+document.getElementById('fTipo').addEventListener('change', (e)=>{
+  if(e.target.value === '__novo__'){
+    const novo = prompt('Nome do novo tipo de conta:');
+    atualizarTipos();
+    if(novo && novo.trim()){
+      const nome = tituloCase(novo);
+      if(opcoes.tiposConta.some(t=> tipoNome(t)===nome)){
+        document.getElementById('fTipo').value = nome;
+        aplicarCategoriaDoTipo(nome);
+        return;
+      }
+      const categoriaAtual = document.getElementById('fCategoria').value;
+      const novoItem = {nome, categoria: (categoriaAtual && categoriaAtual!=='__novo__') ? categoriaAtual : ''};
+      colUser('config').doc('opcoes').set({tiposConta:[...opcoes.tiposConta, novoItem]}, {merge:true})
+        .then(()=>{ document.getElementById('fTipo').value = nome; })
+        .catch(()=>showToast('Não foi possível salvar.'));
+    }
+    return;
+  }
+  aplicarCategoriaDoTipo(e.target.value);
+});
 
 document.getElementById('mesPrev').addEventListener('click', ()=>mudarMes(-1));
 document.getElementById('mesNext').addEventListener('click', ()=>mudarMes(1));
@@ -2410,8 +2543,93 @@ function renderAdminListas(){
   renderListaAdmin('listaPessoasAdmin', 'pessoas', opcoes.pessoas);
   renderListaAdmin('listaCatReceitaAdmin', 'categoriasReceita', opcoes.categoriasReceita);
   renderListaAdmin('listaCatDespesaAdmin', 'categoriasDespesa', opcoes.categoriasDespesa);
-  renderListaAdmin('listaTiposAdmin', 'tiposConta', opcoes.tiposConta);
+  atualizarSelectCategoriaTipo();
+  renderTiposAdmin();
 }
+
+let tiposAdminOrdenados = [];
+
+function renderTiposAdmin(){
+  const box = document.getElementById('listaTiposAdmin');
+  if(!box) return;
+  tiposAdminOrdenados = [...opcoes.tiposConta].sort((a,b)=> tipoNome(a).localeCompare(tipoNome(b),'pt-BR'));
+  if(!tiposAdminOrdenados.length){
+    box.innerHTML = '<p class="empty">Nenhum item cadastrado.</p>';
+    return;
+  }
+  box.innerHTML = tiposAdminOrdenados.map((t,idx)=>{
+    const nome = tipoNome(t), cat = tipoCategoria(t);
+    const opcoesCat = opcoes.categoriasDespesa.map(c=>`<option ${c===cat?'selected':''}>${c}</option>`).join('');
+    return `
+    <div class="item-row">
+      <span>${nome}${cat ? ` <span class="tipo-cat-badge">${cat}</span>` : ' <span class="tipo-cat-badge sem">sem categoria</span>'}</span>
+      <span class="item-acoes">
+        <button type="button" class="item-edit" data-edittipo="${idx}" aria-label="Editar"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+        <button type="button" class="item-del" data-deltipo="${idx}" aria-label="Excluir">×</button>
+      </span>
+    </div>
+    <div class="tipo-edit-inline" id="tipoEdit-${idx}">
+      <input type="text" id="tipoEditNome-${idx}" value="${nome}">
+      <select id="tipoEditCat-${idx}"><option value="">Sem categoria</option>${opcoesCat}</select>
+      <button type="button" data-salvartipo="${idx}">Salvar</button>
+    </div>`;
+  }).join('');
+}
+
+function atualizarSelectCategoriaTipo(){
+  const sel = document.getElementById('novoTipoContaCategoria');
+  if(!sel) return;
+  const atual = sel.value;
+  sel.innerHTML = '<option value="">Sem categoria</option>' + ordenar(opcoes.categoriasDespesa).map(c=>`<option>${c}</option>`).join('');
+  if(opcoes.categoriasDespesa.includes(atual)) sel.value = atual;
+}
+
+async function editarTipoConta(antigoNome, novoNomeBruto, novaCategoria){
+  const novoNome = tituloCase(novoNomeBruto || antigoNome);
+  if(!novoNome) return;
+  if(novoNome !== antigoNome && opcoes.tiposConta.some(t=> tipoNome(t)===novoNome)){
+    showToast('Já existe um tipo com esse nome.');
+    return;
+  }
+  const nomeMudou = novoNome !== antigoNome;
+  const alvoLanc = nomeMudou ? lancamentos.filter(l=> l.tipoConta===antigoNome && l.tipo==='despesa') : [];
+  const alvoRec = nomeMudou ? recorrentes.filter(r=> r.tipoConta===antigoNome && r.tipo==='despesa') : [];
+  const total = alvoLanc.length + alvoRec.length;
+  const aviso = total ? `\n\nIsso vai atualizar ${alvoLanc.length} lançamento(s) e ${alvoRec.length} conta(s) fixa(s).` : '';
+  if(!confirm(`Salvar "${novoNome}" (categoria: ${novaCategoria || 'sem categoria'})?${aviso}`)) return;
+  try{
+    const listaNova = opcoes.tiposConta.map(t=> tipoNome(t)===antigoNome ? {nome:novoNome, categoria:novaCategoria} : t);
+    await colUser('config').doc('opcoes').set({tiposConta:listaNova}, {merge:true});
+    if(nomeMudou){
+      await Promise.all([
+        ...alvoLanc.map(l=> colUser('lancamentos').doc(l.id).update({tipoConta:novoNome})),
+        ...alvoRec.map(r=> colUser('recorrentes').doc(r.id).update({tipoConta:novoNome}))
+      ]);
+    }
+    showToast('Tipo de conta atualizado.');
+  }catch(err){
+    showToast('Não foi possível salvar.');
+  }
+}
+
+function removerTipoConta(nome){
+  if(!confirm('Remover "' + nome + '"? Lançamentos que já usam esse valor não são afetados.')) return;
+  const listaNova = opcoes.tiposConta.filter(t=> tipoNome(t)!==nome);
+  colUser('config').doc('opcoes').set({tiposConta:listaNova}, {merge:true})
+    .catch(()=>showToast('Não foi possível remover.'));
+}
+
+document.getElementById('btnAddTipoConta').addEventListener('click', ()=>{
+  const inputNome = document.getElementById('novoTipoConta');
+  const selectCat = document.getElementById('novoTipoContaCategoria');
+  const nome = tituloCase(inputNome.value || '');
+  if(!nome){ showToast('Digite um nome.'); return; }
+  if(opcoes.tiposConta.some(t=> tipoNome(t)===nome)){ showToast('Já existe.'); return; }
+  const categoria = selectCat.value;
+  colUser('config').doc('opcoes').set({tiposConta:[...opcoes.tiposConta, {nome, categoria}]}, {merge:true})
+    .then(()=>{ inputNome.value = ''; showToast('Adicionado.'); })
+    .catch(()=>showToast('Não foi possível adicionar.'));
+});
 
 // Em qual propriedade dos lançamentos cada lista de configuração é usada
 const CAMPO_NO_LANCAMENTO = {
@@ -2460,6 +2678,30 @@ async function renomearEmCascata(campo, antigo, novo){
 }
 
 document.getElementById('view-admin').addEventListener('click', (e)=>{
+  const editTipoEl = e.target.closest('[data-edittipo]');
+  if(editTipoEl){
+    const idx = editTipoEl.dataset.edittipo;
+    document.querySelectorAll('.tipo-edit-inline').forEach(el=>{ if(el.id !== 'tipoEdit-'+idx) el.style.display='none'; });
+    const painel = document.getElementById('tipoEdit-'+idx);
+    painel.style.display = (painel.style.display==='flex') ? 'none' : 'flex';
+    return;
+  }
+  const salvarTipoEl = e.target.closest('[data-salvartipo]');
+  if(salvarTipoEl){
+    const idx = salvarTipoEl.dataset.salvartipo;
+    const antigo = tiposAdminOrdenados[idx];
+    const antigoNome = tipoNome(antigo);
+    const novoNome = document.getElementById('tipoEditNome-'+idx).value;
+    const novaCategoria = document.getElementById('tipoEditCat-'+idx).value;
+    editarTipoConta(antigoNome, novoNome, novaCategoria);
+    return;
+  }
+  const delTipoEl = e.target.closest('[data-deltipo]');
+  if(delTipoEl){
+    const idx = delTipoEl.dataset.deltipo;
+    removerTipoConta(tipoNome(tiposAdminOrdenados[idx]));
+    return;
+  }
   const btnRenomear = e.target.closest('[data-renomear]');
   if(btnRenomear){
     const campo = btnRenomear.dataset.renomear;
