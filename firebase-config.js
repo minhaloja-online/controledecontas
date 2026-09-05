@@ -17,4 +17,4 @@ const firebaseConfig = {
 //    IMPORTANTE: esse mesmo e-mail também precisa estar copiado dentro do
 //    arquivo firestore.rules (na função isAdmin), senão as regras de segurança
 //    não vão reconhecer você como administrador.
-const EMAIL_ADMIN = "brenno.liberty@exemplo.com";
+const EMAIL_ADMIN = "brenno.liberty@gmail.com";
